@@ -1,0 +1,49 @@
+<?php
+// Check if a file was uploaded
+if ($_FILES['cv_file']['error'] === UPLOAD_ERR_OK) {
+    // Get the uploaded file
+    $uploaded_file = $_FILES['cv_file']['tmp_name'];
+
+    // Read the contents of the uploaded file
+    $pdf_content = file_get_contents($uploaded_file);
+
+    // Establish a connection to the MySQL database
+    $servername = "localhost";
+    $username = "root";
+    $password = ""; // This may vary depending on your XAMPP configuration
+    $database = "jobjett";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $database);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Prepare SQL statement to insert the PDF content into the database
+    $sql_insert_pdf = "INSERT INTO pdf_files (file_name, file_data) VALUES (?, ?)";
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare($sql_insert_pdf);
+
+    // Bind parameters
+    $null = null;
+    $stmt->bind_param("sb", $_FILES['cv_file']['name'], $null);
+
+    // Initialize a stream
+    $stmt->send_long_data(1, file_get_contents($_FILES['cv_file']['tmp_name']));
+
+    // Execute the SQL statement
+    if ($stmt->execute()) {
+        echo "PDF file added successfully.";
+    } else {
+        echo "Error adding PDF file: " . $conn->error;
+    }
+
+    // Close the database connection
+    $conn->close();
+} else {
+    echo "Error uploading file.";
+}
+?>

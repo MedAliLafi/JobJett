@@ -1,0 +1,24 @@
+Home:
+N3arfou bel site
+fih win ta3mel compte as candidat w win ta3mel as societe
+
+Candidat:
+page home w enti 3amel login yjiwk feha des offres, feha alert ken cv mich keml, feha search des offres
+page cv feha plusieurs versions(AR EN FR), feha tscanni w texporti(optional)
+page applications li 3malthom w les offres li jewk (feha lfavourites)
+page profile
+pop up messenger (optional)
+
+Societe:
+page home w enti 3amel login yjiwk feha des candidats, feha search mte3 des candidats
+page win ta3mel offre(offre ynajem ykoun feha plusieurs postes)
+page applications elli jewk
+page profile
+pop up messenger (optional)
+
+Les formulaires:
+compte candidat
+compte societe
+cv
+post
+zone de texte sghira mte3 lettre de motivation ki tji tpostuli

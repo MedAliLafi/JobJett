@@ -1,0 +1,37 @@
+Sprint 0 (Fondations) 
+    Authentifier et gérer mon compte 
+        En tant qu'utilisateur(Candidat et Employeur) je peux créer un compte (Estimation: 5 jours)
+        En tant qu'utilisateur(Candidat et Employeur) je peux se connecter (Estimation: 3 jours)
+        En tant qu'utilisateur(Candidat et Employeur) je peux sodifier les informations du profil (Estimation: 3 jours)
+        En tant qu'utilisateur(Candidat et Employeur) je peux supprimer le compte (Estimation: 2 jours)
+    Gérer les utilisateurs et les entreprises
+        En tant qu'administrateur, je peux Créer des comptes utilisateurs (Estimation: 4 jours)
+        En tant qu'administrateur, je peux Supprimer des comptes utilisateurs (Estimation: 3 jours)
+        En tant qu'administrateur, je peux Gérer les rôles et les permissions (Estimation: 5 jours)
+
+Sprint 1 (Espace Candidat)
+    Consulter et postuler aux offres d'emploi
+        En tant que candidat, je peux Naviguer les offres d'emploi (Estimation: 4 jours)
+        En tant que candidat, je peux Filtrer les offres d'emploi (Estimation: 3 jours)
+        En tant que candidat, je peux Afficher les détails des offres d'emploi (Estimation: 3 jours)
+        En tant que candidat, je peux Postuler aux offres d'emploi (Estimation: 4 jours)
+        En tant que candidat, je peux Recevoir des notifications de mise à jour des candidatures (Estimation: 3 jours)
+    Gérer mon CV et mes candidatures
+        En tant que candidat, je peux Créer plusieurs versions de CV (Arabe, Français, Anglais) (Estimation: 5 jours)
+        En tant que candidat, je peux Modifier plusieurs versions de CV (Arabe, Français, Anglais) (Estimation: 5 jours)
+        En tant que candidat, je peux Importer des CV du format PDF (Optionelle) (Estimation: 3 jours)
+        En tant que candidat, je peux Télécharger des CV au format PDF (Estimation: 3 jours)
+        En tant que candidat, je peux Consulter l'historique des candidatures et des propositions reçues (Estimation: 3 jours)
+        En tant que candidat, je peux Gérer les favoris (Estimation: 3 jours)
+
+Sprint 2 (Espace Employeur)
+    Publier et gérer des offres d'emploi
+        En tant qu'employeur, je peux Créer des offres d'emploi (Estimation: 4 jours)
+        En tant qu'employeur, je peux Modifier des offres d'emploi (Estimation: 3 jours)
+        En tant qu'employeur, je peux Désactiver les offres d'emploi (Estimation: 2 jours)
+    Consulter et gérer les candidatures aux offres d'emploi
+        En tant qu'employeur, je peux Naviguer les CV et les profils des candidats (Estimation: 4 jours)
+        En tant qu'employeur, je peux Faire des offres aux candidats (Estimation: 3 jours)
+        En tant qu'employeur, je peux Visualiser les candidats qui ont postulé à chaque offre (Estimation: 4 jours)
+        En tant qu'employeur, je peux Filtrer et trier les candidats (Estimation: 3 jours)
+        En tant qu'employeur, je peux Envoyer des messages aux candidats (Estimation: 3 jours)

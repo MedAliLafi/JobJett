@@ -1,0 +1,33 @@
+function fillForm() {
+    var fileInput = document.getElementById('cv_file');
+    var file = fileInput.files[0];
+    var statusDiv = document.getElementById('status');
+
+    if (!file) {
+        statusDiv.innerHTML = "Please select a file.";
+        return;
+    }
+
+    if (file.type !== "application/pdf") {
+        statusDiv.innerHTML = "Please upload a PDF file.";
+        return;
+    }
+
+
+
+    /*var parsedData = parsePDF(contents); 
+    document.getElementById('full_name').value = parsedData.full_name;
+    document.getElementById('email').value = parsedData.email;
+    document.getElementById('phone').value = parsedData.phone;
+    document.getElementById('education').value = parsedData.education;
+    document.getElementById('experience').value = parsedData.experience;
+    document.getElementById('skills').value = parsedData.skills;*/
+
+
+    reader.onerror = function() {
+        statusDiv.innerHTML = "Error occurred while reading the file.";
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+{\rtf1}

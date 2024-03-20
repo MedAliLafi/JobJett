@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+</head>
+<body>
+  <div class="background">
+    <div class="blurry-bg"></div>
+    <div class="content">
+      <div class="big-text">
+        <img src="logo.png" alt="Logo" class="logo">
+        <p>Welcome to Your Professional Community</p>
+      </div>
+      <div class="container">
+        <h1>Sign In</h1>
+        <form action="#">
+          <label for="username">Email</label>
+          <input type="text" id="username" name="username" required>
+          <label for="password">Password</label>
+          <div class="password-input">
+            <input type="password" id="password" name="password" required>
+            <i class="far fa-eye" id="show-password-button"></i>
+          </div>      
+          <a href="#" id="forget-password">Forgot password?</a>
+          <button type="submit">Sign in</button>
+          <p>or</p>
+          <a href="#" class="button">Continue with Google</a>
+          <a href="register.html" class="button">New to? Join now</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    const passwordInput = document.getElementById('password');
+    const showPasswordButton = document.getElementById('show-password-button');
+
+    showPasswordButton.addEventListener('click', () => {
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        showPasswordButton.classList.remove('fa-eye');
+        showPasswordButton.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        showPasswordButton.classList.remove('fa-eye-slash');
+        showPasswordButton.classList.add('fa-eye');
+    }
+    });
+  </script>
+</body>
+</html>
