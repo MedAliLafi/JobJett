@@ -15,7 +15,8 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
         // First, register the user using the function from user.js module
         registerUser(pool, username, email, hashedPassword, 'Candidate', async (error, result) => {
             if (error) {
-                return res.status(500).json({ error: "Error registering user." });
+                console.error('Error registering user:', error);
+                return res.status(500).json({ error: 'An error occurred while registering the user.' });
             }
 
             const userID = result.insertId;
@@ -33,8 +34,8 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
             });
         });
     } catch (error) {
-        console.error('Error hashing password:', error);
-        return res.status(500).json({ error: 'An error occurred while hashing the password.' });
+        console.error('Error registering candidate:', error);
+        return res.status(500).json({ error: 'An error occurred while registering the candidate.' });
     }
 });
 

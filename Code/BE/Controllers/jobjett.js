@@ -5,10 +5,11 @@ const { userRoutes, registerUser } = require('./user.js');
 const candidateRoutes = require('./candidate.js');
 const employerRoutes = require('./employer.js');
 const jobofferRoutes = require('./joboffer.js');
-
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 // Pool configuration
 const pool = mysql.createPool({
@@ -25,10 +26,10 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/user', userRoutes);
-app.use('/candidate', candidateRoutes);
-app.use('/employer', employerRoutes);
-app.use('/joboffer', jobofferRoutes);
+app.use('/User', userRoutes);
+app.use('/Candidate', candidateRoutes);
+app.use('/Employer', employerRoutes);
+app.use('/Joboffer', jobofferRoutes);
 
 // Starting the server
 const port = 3000;
