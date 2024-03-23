@@ -1,28 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employer Register</title>
-</head>
-<body>
-    <h2>Employer Registration</h2>
-    <form id="employerRegistrationForm" action="/Employer/registerEmployer" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <label for="companyName">Company Name:</label>
-        <input type="text" id="companyName" name="companyName" required><br><br>
-        <label for="industry">Industry:</label>
-        <input type="text" id="industry" name="industry" required><br><br>
-        <label for="phone">Phone:</label>
-        <input type="text" id="phone" name="phone"><br><br>
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address"><br><br>
-        <button type="submit">Register</button>
-    </form>
-</body>
-</html>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Employer Register</title>
+    </head>
+    <body>
+        <h2>Employer Registration</h2>
+        <form id="employerRegistrationForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" name="companyName" required><br><br>
+            <label for="industry">Industry:</label>
+            <input type="text" id="industry" name="industry" required><br><br>
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone"><br><br>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address"><br><br>
+            <button type="submit" onclick="registerEmployer()">Register</button>
+        </form>
+        <script>
+            async function registerEmployer() {
+                const formData = new FormData(document.getElementById('employerRegistrationForm'));
+                try {
+                    const response = await fetch('http://localhost:3000/Employer/registerEmployer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: formData.get('username'),
+                            email: formData.get('email'),
+                            password: formData.get('password'),
+                            companyName: formData.get('companyName'),
+                            industry: formData.get('industry'),
+                            phone: formData.get('phone'),
+                            address: formData.get('address')
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Registration failed');
+                    }
+
+                    const data = await response.json();
+                    console.log('Registration successful:', data);
+                    // After successful registration, call the login function
+                    const loginResponse = await fetch('http://localhost:3000/Employer/loginEmployer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: formData.get('email'),
+                            password: formData.get('password')
+                        })
+                    });
+
+                    if (!loginResponse.ok) {
+                        throw new Error('Login failed');
+                    }
+
+                    const loginData = await loginResponse.json();
+                    console.log('Login successful:', loginData);
+                    const token = loginData.token;
+                    window.location.href = `token.html?token=${token}`;
+                } catch (error) {
+                    console.error('Error registering employer:', error);
+                }
+            }
+        </script>
+    </body>
+    </html>

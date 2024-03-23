@@ -12,8 +12,36 @@
         <input type="email" id="email" name="email" required><br><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
-        <button type="submit">Login</button>
+        <button type="submit" onclick="loginEmployer()">Login</button>
     </form>
     <p>Don't have an account? <a href="employer_register.html">Register here</a></p>
+
+    <script>
+        async function loginEmployer() {
+            const formData = new FormData(document.getElementById('employerLoginForm'));
+            try {
+                const response = await fetch('http://localhost:3000/Employer/loginEmployer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: formData.get('email'),
+                        password: formData.get('password')
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+                const data = await response.json();
+                console.log('Login successful:', data);
+                const token = data.token;
+                window.location.href = `token.html?token=${token}`;
+            } catch (error) {
+                console.error('Error logging in employer:', error);
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 const express = require('express');
-const { userRoutes, registerUser } = require('./user.js');
+const { userRoutes, registerUser, loginUser } = require('./user.js');
 const employerRoutes = express.Router();
 const bcrypt=require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // Route to register a new employer
 employerRoutes.post('/registerEmployer', async (req, res) => {
@@ -39,7 +40,7 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 });
 
 // Route to login employer
-userRoutes.post('/loginEmployer', async (req, res) => {
+employerRoutes.post('/loginEmployer', async (req, res) => {
     const pool = req.pool;
     const { email, password } = req.body;
     try {
