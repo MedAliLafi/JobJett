@@ -1,15 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-const { userRoutes, registerUser } = require('./user.js');
+const { userRoutes, registerUser, loginUser } = require('./user.js');
 const candidateRoutes = require('./candidate.js');
 const employerRoutes = require('./employer.js');
 const jobofferRoutes = require('./joboffer.js');
-const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+
+// Serve static files from the 'frontend' directory
+app.use(express.static('frontend'));
 
 // Pool configuration
 const pool = mysql.createPool({

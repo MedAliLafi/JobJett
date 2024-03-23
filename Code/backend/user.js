@@ -1,7 +1,6 @@
 const express = require('express');
 const userRoutes = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 // Function to register a new user
 function registerUser(pool, username, email, password, userType, callback) {
@@ -19,44 +18,32 @@ function registerUser(pool, username, email, password, userType, callback) {
     });
 }
 
-// Route to login
-userRoutes.post('/login', async (req, res) => {
-    const pool = req.pool;
-    const { email, password } = req.body;
+function loginUser(pool, email, password, callback) {
+    // Query the database to find the user with the provided email
+    const query = 'SELECT * FROM User WHERE Email = ?';
+    pool.query(query, [email], async (error, results) => {
+        if (error) {
+            console.error('Error querying user:', error);
+            return callback(error, null);
+        }
 
-    try {
-        // Query the database to find the user with the provided email
-        const query = 'SELECT * FROM User WHERE Email = ?';
-        pool.query(query, [email], async (error, results) => {
-            if (error) {
-                console.error('Error querying user:', error);
-                return res.status(500).json({ error: 'An error occurred while logging in.' });
-            }
+        if (results.length === 0) {
+            // User with the provided email does not exist
+            return callback(null, { error: 'User not found.' });
+        }
 
-            if (results.length === 0) {
-                // User with the provided email does not exist
-                return res.status(404).json({ error: 'User not found.' });
-            }
+        // Compare the provided password with the hashed password stored in the database
+        const user = results[0];
+        const passwordMatch = await bcrypt.compare(password, user.Password);
+        if (!passwordMatch) {
+            // Passwords do not match
+            return callback(null, { error: 'Invalid password.' });
+        }
 
-            // Compare the provided password with the hashed password stored in the database
-            const user = results[0];
-            const passwordMatch = await bcrypt.compare(password, user.Password);
-            if (!passwordMatch) {
-                // Passwords do not match
-                return res.status(401).json({ error: 'Invalid password.' });
-            }
-
-            // If passwords match, generate a JWT token
-            const token = jwt.sign({ userId: user.UserID, userType: user.UserType }, 'secret_key');
-            res.status(200).json({ message: 'Login successful', token: token });
-
-
-        });
-    } catch (error) {
-        console.error('Error logging in:', error);
-        return res.status(500).json({ error: 'An error occurred while logging in.' });
-    }
-});
+        // If passwords match, return the user details
+        callback(null, { message: 'Login successful', user });
+    });
+}
 
 // Route to change password
 userRoutes.post('/changePassword', async (req, res) => {
@@ -176,4 +163,4 @@ userRoutes.delete('/deleteUser', async (req, res) => {
     }
 });
 
-module.exports = { userRoutes, registerUser };
+module.exports = { userRoutes, registerUser , loginUser};

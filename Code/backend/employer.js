@@ -38,4 +38,31 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
     }
 });
 
+// Route to login employer
+userRoutes.post('/loginEmployer', async (req, res) => {
+    const pool = req.pool;
+    const { email, password } = req.body;
+    try {
+        loginUser(pool, email, password, (error, result) => {
+            if (error) {
+                console.error('Error logging in:', error);
+                return res.status(500).json({ error: 'An error occurred while logging in.' });
+            }
+            if (result.error) {
+                return res.status(401).json({ error: result.error });
+            }
+            const user = result.user;
+            if (user.UserType !== 'Employer') {
+                console.log('User is not a employer');
+                return res.status(401).json({ error: 'User is not a employer.' });
+            }
+            const token = jwt.sign({ userId: user.UserID}, 'secret_key');
+            res.status(200).json({ message: 'Login successful', token: token });
+        });
+    } catch (error) {
+        console.error('Error logging in:', error);
+        return res.status(500).json({ error: 'An error occurred while logging in.' });
+    }
+});
+
 module.exports = employerRoutes;
