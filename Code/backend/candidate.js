@@ -67,4 +67,30 @@ candidateRoutes.post('/loginCandidate', async (req, res) => {
     }
 });
 
-module.exports = candidateRoutes;
+// Function to decode JWT token and retrieve candidate ID
+function getCandidateIdFromToken(req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, 'secret_key');
+    const userId = decodedToken.userId;
+
+    // Query the database to get the candidateId using the userId
+    const query = 'SELECT CandidateID FROM Candidate WHERE UserID = ?';
+    return new Promise((resolve, reject) => {
+        req.pool.query(query, [userId], (error, results) => {
+            if (error) {
+                console.error('Error querying candidate:', error);
+                reject('An error occurred while fetching candidate data.');
+            }
+
+            if (results.length === 0) {
+                // User is not an candidate
+                reject('User is not authorized to perform this action.');
+            }
+
+            const candidateId = results[0].CandidateID;
+            resolve(candidateId);
+        });
+    });
+}
+
+module.exports = {candidateRoutes, getCandidateIdFromToken};

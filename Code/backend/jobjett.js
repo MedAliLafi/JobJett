@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const { userRoutes, registerUser, loginUser } = require('./user.js');
-const candidateRoutes = require('./candidate.js');
-const employerRoutes = require('./employer.js');
+const { candidateRoutes, getCandidateIdFromToken } = require('./candidate.js');
+const { employerRoutes, getEmployerIdFromToken } = require('./employer.js');
 const jobofferRoutes = require('./joboffer.js');
 
 const app = express();
@@ -26,85 +26,47 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware for employer authentication
-function isAuthenticatedAsEmployer(req, res, next) {
-  // Check if the user is authenticated as an employer
-  const token = req.headers.authorization.split(' ')[1];
-  if (!token) {
-    return res.redirect('/employer/employer_login.html');
-  }
+// Middleware to verify JWT token
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, 'secret_key', (err, decoded) => {
-      if (err) {
-        return res.redirect('/employer/employer_login.html');
-      }
-
-      // Check if the user is an employer
-      const userId = decoded.userId;
-      const query = 'SELECT * FROM User WHERE UserID = ? AND UserType = "Employer"';
-      req.pool.query(query, [userId], (error, results) => {
-          if (error || results.length === 0) {
-            return res.redirect('/employer/employer_login.html');
-          }
-          next(); // Proceed to the next middleware or route handler
-      });
+  jwt.verify(token, 'your_secret_key', (err, user) => {
+      if (err) return res.sendStatus(403);
+      req.user = user;
+      next();
   });
 }
 
-// Employer space route (protected)
-app.get('/employer', isAuthenticatedAsEmployer, (req, res) => {
-  // Render employer dashboard or any other employer-specific page
-  res.send('Welcome to the employer space');
-});
-
-// Other employer-specific routes (protected)
-app.get('/employer/profile', isAuthenticatedAsEmployer, (req, res) => {
-  // Render employer profile page
-  res.send('This is your profile page as an employer');
-});
-
-// Middleware for candidate authentication
-function isAuthenticatedAsCandidate(req, res, next) {
-  // Check if the user is authenticated as an candidate
-  const token = req.headers.authorization.split(' ')[1];
-  if (!token) {
-      return res.redirect('/candidate/candidate_login.html');
+// Middleware to restrict access to candidates
+function restrictToCandidates(req, res, next) {
+  if (req.user && req.user.userType === 'Candidate') {
+      return next();
+  } else {
+      return res.sendStatus(403); // Forbidden
   }
-
-  jwt.verify(token, 'secret_key', (err, decoded) => {
-      if (err) {
-        return res.redirect('/candidate/candidate_login.html');
-      }
-
-      // Check if the user is an candidate
-      const userId = decoded.userId;
-      const query = 'SELECT * FROM User WHERE UserID = ? AND UserType = "Candidate"';
-      req.pool.query(query, [userId], (error, results) => {
-          if (error || results.length === 0) {
-            return res.redirect('/candidate/candidate_login.html');
-          }
-          next(); // Proceed to the next middleware or route handler
-      });
-  });
 }
 
-// Candidate space route (protected)
-app.get('/candidate', isAuthenticatedAsCandidate, (req, res) => {
-  // Render candidate dashboard or any other candidate-specific page
-  res.send('Welcome to the candidate space');
-});
+// Middleware to restrict access to employers
+function restrictToEmployers(req, res, next) {
+  if (req.user && req.user.userType === 'Employer') {
+      return next();
+  } else {
+      return res.sendStatus(403); // Forbidden
+  }
+}
 
-// Other candidate-specific routes (protected)
-app.get('/candidate/profile', isAuthenticatedAsCandidate, (req, res) => {
-  // Render candidate profile page
-  res.send('This is your profile page as an candidate');
-});
 
 // Routes
 app.use('/User', userRoutes);
-app.use('/Candidate', candidateRoutes);
-app.use('/Employer', employerRoutes);
-app.use('/Joboffer', jobofferRoutes);
+app.use('/Candidate', authenticateCandidateToken, restrictToCandidates, candidateRoutes);
+app.use('/Employer', authenticateEmployerToken, restrictToEmployers, employerRoutes);
+app.use('/Employer/addJobOffer', authenticateEmployerToken, restrictToEmployers, jobofferRoutes);
+
+// Login route
+app.post('/Candidate/login', authenticateCandidateToken, candidateLoginHandler);
+app.post('/Employer/login', authenticateEmployerToken, employerLoginHandler);
 
 // Starting the server
 const port = 3000;

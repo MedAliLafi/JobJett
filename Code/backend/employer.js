@@ -66,4 +66,30 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
     }
 });
 
-module.exports = employerRoutes;
+// Function to decode JWT token and retrieve employer ID
+function getEmployerIdFromToken(req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, 'secret_key');
+    const userId = decodedToken.userId;
+
+    // Query the database to get the employerId using the userId
+    const query = 'SELECT EmployerID FROM Employer WHERE UserID = ?';
+    return new Promise((resolve, reject) => {
+        req.pool.query(query, [userId], (error, results) => {
+            if (error) {
+                console.error('Error querying employer:', error);
+                reject('An error occurred while fetching employer data.');
+            }
+
+            if (results.length === 0) {
+                // User is not an employer
+                reject('User is not authorized to perform this action.');
+            }
+
+            const employerId = results[0].EmployerID;
+            resolve(employerId);
+        });
+    });
+}
+
+module.exports = {employerRoutes, getEmployerIdFromToken};
