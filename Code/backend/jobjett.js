@@ -1,13 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const cookieParser = require('cookie-parser');
 const { userRoutes, registerUser, loginUser } = require('./user.js');
-const { candidateRoutes, getCandidateIdFromToken } = require('./candidate.js');
-const { employerRoutes, getEmployerIdFromToken } = require('./employer.js');
+const {candidateRoutes, getCandidateIdFromToken} = require('./candidate.js');
+const {employerRoutes, getEmployerIdFromToken} = require('./employer.js');
 const jobofferRoutes = require('./joboffer.js');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Serve static files from the 'frontend' directory
 app.use(express.static('frontend'));
@@ -26,47 +29,53 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware to verify JWT token
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
+// Middleware to verify JWT token for candidates
+function authenticateCandidateToken(req, res, next) {
+  if (req.path === '/loginCandidate') {
+    return next(); // Skip authentication for login route
+  }
 
-  jwt.verify(token, 'your_secret_key', (err, user) => {
-      if (err) return res.sendStatus(403);
-      req.user = user;
+  const token = req.cookies.token; // Retrieve token from cookies
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, 'secret_key', (err, decoded) => {
+    if (err) return res.sendStatus(403);
+    req.user = decoded.user; // Extract the user object from the decoded token
+    // Check if the decoded token represents a candidate
+    if (req.user.UserType === 'Candidate') {
       next();
+    } else {
+      return res.sendStatus(403); // Forbidden
+    }
   });
 }
 
-// Middleware to restrict access to candidates
-function restrictToCandidates(req, res, next) {
-  if (req.user && req.user.userType === 'Candidate') {
-      return next();
-  } else {
-      return res.sendStatus(403); // Forbidden
+// Middleware to verify JWT token for employers
+function authenticateEmployerToken(req, res, next) {
+  if (req.path === '/loginEmployer') {
+    return next(); // Skip authentication for login route
   }
-}
 
-// Middleware to restrict access to employers
-function restrictToEmployers(req, res, next) {
-  if (req.user && req.user.userType === 'Employer') {
-      return next();
-  } else {
+  const token = req.cookies.token; // Retrieve token from cookies
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, 'secret_key', (err, decoded) => {
+    if (err) return res.sendStatus(403);
+    req.user = decoded.user; // Extract the user object from the decoded token
+    // Check if the decoded token represents an employer
+    if (req.user.UserType === 'Employer') {
+      next();
+    } else {
       return res.sendStatus(403); // Forbidden
-  }
+    }
+  });
 }
-
 
 // Routes
 app.use('/User', userRoutes);
-app.use('/Candidate', authenticateCandidateToken, restrictToCandidates, candidateRoutes);
-app.use('/Employer', authenticateEmployerToken, restrictToEmployers, employerRoutes);
-app.use('/Employer/addJobOffer', authenticateEmployerToken, restrictToEmployers, jobofferRoutes);
-
-// Login route
-app.post('/Candidate/login', authenticateCandidateToken, candidateLoginHandler);
-app.post('/Employer/login', authenticateEmployerToken, employerLoginHandler);
+app.use('/Candidate', authenticateCandidateToken, candidateRoutes);
+app.use('/Employer', authenticateEmployerToken, employerRoutes);
+app.use('/Employer/addJobOffer', authenticateEmployerToken, jobofferRoutes);
 
 // Starting the server
 const port = 3000;

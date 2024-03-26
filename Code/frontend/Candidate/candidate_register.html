@@ -72,7 +72,7 @@
                 const loginData = await loginResponse.json();
                 console.log('Login successful:', loginData);
                 const token = loginData.token;
-                window.location.href = `token.html?token=${token}`;
+                window.location.href = `candidate_profile.html`;
             } catch (error) {
                 console.error('Error registering candidate:', error);
             }

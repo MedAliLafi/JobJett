@@ -58,7 +58,8 @@ candidateRoutes.post('/loginCandidate', async (req, res) => {
                 console.log('User is not a candidate');
                 return res.status(401).json({ error: 'User is not a candidate.' });
             }
-            const token = jwt.sign({ userId: user.UserID}, 'secret_key');
+            const token = jwt.sign({ user: user}, 'secret_key');
+            res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // One month expiration
             res.status(200).json({ message: 'Login successful', token: token });
         });
     } catch (error) {
@@ -67,30 +68,15 @@ candidateRoutes.post('/loginCandidate', async (req, res) => {
     }
 });
 
-// Function to decode JWT token and retrieve candidate ID
-function getCandidateIdFromToken(req) {
-    const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'secret_key');
-    const userId = decodedToken.userId;
-
-    // Query the database to get the candidateId using the userId
-    const query = 'SELECT CandidateID FROM Candidate WHERE UserID = ?';
-    return new Promise((resolve, reject) => {
-        req.pool.query(query, [userId], (error, results) => {
-            if (error) {
-                console.error('Error querying candidate:', error);
-                reject('An error occurred while fetching candidate data.');
-            }
-
-            if (results.length === 0) {
-                // User is not an candidate
-                reject('User is not authorized to perform this action.');
-            }
-
-            const candidateId = results[0].CandidateID;
-            resolve(candidateId);
-        });
-    });
+async function getCandidateIdFromToken(req) {
+    const token = req.cookies.token;
+    if (!token) return null;
+    const decoded = jwt.verify(token, 'secret_key');
+    const userID = decoded.user.UserID;
+    const query = 'SELECT CandidateID FROM candidate WHERE UserID = ?';
+    const [rows] = await pool.query(query, [userID]);
+    return rows.length > 0 ? rows[0].CandidateID : null;
 }
 
-module.exports = {candidateRoutes, getCandidateIdFromToken};
+
+module.exports = { candidateRoutes, getCandidateIdFromToken };

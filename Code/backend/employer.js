@@ -57,7 +57,8 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
                 console.log('User is not a employer');
                 return res.status(401).json({ error: 'User is not a employer.' });
             }
-            const token = jwt.sign({ userId: user.UserID}, 'secret_key');
+            const token = jwt.sign({ user: user}, 'secret_key');
+            res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // One month expiration
             res.status(200).json({ message: 'Login successful', token: token });
         });
     } catch (error) {
@@ -66,30 +67,14 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
     }
 });
 
-// Function to decode JWT token and retrieve employer ID
-function getEmployerIdFromToken(req) {
-    const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'secret_key');
-    const userId = decodedToken.userId;
-
-    // Query the database to get the employerId using the userId
-    const query = 'SELECT EmployerID FROM Employer WHERE UserID = ?';
-    return new Promise((resolve, reject) => {
-        req.pool.query(query, [userId], (error, results) => {
-            if (error) {
-                console.error('Error querying employer:', error);
-                reject('An error occurred while fetching employer data.');
-            }
-
-            if (results.length === 0) {
-                // User is not an employer
-                reject('User is not authorized to perform this action.');
-            }
-
-            const employerId = results[0].EmployerID;
-            resolve(employerId);
-        });
-    });
+async function getEmployerIdFromToken(req) {
+    const token = req.cookies.token;
+    if (!token) return null;
+    const decoded = jwt.verify(token, 'secret_key');
+    const userID = decoded.user.UserID;
+    const query = 'SELECT EmployerID FROM employer WHERE UserID = ?';
+    const [rows] = await pool.query(query, [userID]);
+    return rows.length > 0 ? rows[0].EmployerID : null;
 }
 
-module.exports = {employerRoutes, getEmployerIdFromToken};
+module.exports = { employerRoutes, getEmployerIdFromToken };

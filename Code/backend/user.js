@@ -48,9 +48,10 @@ function loginUser(pool, email, password, callback) {
 // Route to change password
 userRoutes.post('/changePassword', async (req, res) => {
     const pool = req.pool;
-    const { userId, currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
 
     try {
+        const userId = req.user.user.UserId;
         // Check if the current password matches the one in the database
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
@@ -94,9 +95,10 @@ userRoutes.post('/changePassword', async (req, res) => {
 // Route to change email
 userRoutes.post('/changeEmail', async (req, res) => {
     const pool = req.pool;
-    const { userId, newEmail } = req.body;
+    const newEmail = req.body;
 
     try {
+        const userId = req.user.user.UserId;
         // Check if the user exists
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
@@ -130,9 +132,8 @@ userRoutes.post('/changeEmail', async (req, res) => {
 // Route to delete user
 userRoutes.delete('/deleteUser', async (req, res) => {
     const pool = req.pool;
-    const { userId } = req.body;
-
     try {
+        const userId = req.user.user.UserId;
         // Check if the user exists
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
