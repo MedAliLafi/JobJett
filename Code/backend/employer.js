@@ -77,4 +77,35 @@ async function getEmployerIdFromToken(req) {
     return rows.length > 0 ? rows[0].EmployerID : null;
 }
 
+// Route to get employer information
+employerRoutes.get('/profile', async (req, res) => {
+    try {
+        const employerId = await getEmployerIdFromToken(req); // Get employer ID from token
+        if (!employerId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const employerInfo = await getEmployerInfoById(req.pool, employerId); // Fetch employer info by ID
+        res.status(200).json(employerInfo);
+    } catch (error) {
+        console.error('Error fetching employer information:', error);
+        res.status(500).json({ error: 'An error occurred while fetching employer information' });
+    }
+});
+
+// Function to get employer information by ID
+async function getEmployerInfoById(pool, employerId) {
+    const query = 'SELECT * FROM Employer WHERE EmployerID = ?';
+    const [rows] = await pool.query(query, [employerId]);
+    if (rows.length > 0) {
+        return {
+            companyName: rows[0].CompanyName,
+            email: rows[0].Email,
+            industry: rows[0].Industry,
+            phone: rows[0].Phone,
+            address: rows[0].Address
+        };
+    }
+    return null;
+}
+
 module.exports = { employerRoutes, getEmployerIdFromToken };

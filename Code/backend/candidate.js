@@ -78,5 +78,4 @@ async function getCandidateIdFromToken(req) {
     return rows.length > 0 ? rows[0].CandidateID : null;
 }
 
-
 module.exports = { candidateRoutes, getCandidateIdFromToken };

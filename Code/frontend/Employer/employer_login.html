@@ -17,6 +17,33 @@
     <p>Don't have an account? <a href="employer_register.html">Register here</a></p>
 
     <script>
+        async function checkLoggedIn() {
+            try {
+                const response = await fetch('http://localhost:3000/Employer/loginEmployer/checkEmployerAuth', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.loggedIn) {
+                        // Redirect to profile page if employer is already logged in
+                        window.location.href = 'employer_profile.html';
+                    }
+                } else {
+                    console.error('Failed to check if employer is logged in');
+                }
+            } catch (error) {
+                console.error('Error checking if employer is logged in:', error);
+            }
+        }
+
+
+        // Call checkLoggedIn function when the page loads
+        window.onload = checkLoggedIn;
+
         async function loginEmployer() {
             const formData = new FormData(document.getElementById('employerLoginForm'));
             try {
