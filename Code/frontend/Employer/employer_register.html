@@ -25,55 +25,81 @@
             <button type="submit" onclick="registerEmployer()">Register</button>
         </form>
         <script>
-            async function registerEmployer() {
-                const formData = new FormData(document.getElementById('employerRegistrationForm'));
-                try {
-                    const response = await fetch('http://localhost:3000/Employer/registerEmployer', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            username: formData.get('username'),
-                            email: formData.get('email'),
-                            password: formData.get('password'),
-                            companyName: formData.get('companyName'),
-                            industry: formData.get('industry'),
-                            phone: formData.get('phone'),
-                            address: formData.get('address')
-                        })
-                    });
+            async function checkLoggedIn() {
+            try {
+                const response = await fetch('http://localhost:3000/Employer/loginEmployer/checkEmployerAuth', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-                    if (!response.ok) {
-                        throw new Error('Registration failed');
-                    }
-
+                if (response.ok) {
                     const data = await response.json();
-                    console.log('Registration successful:', data);
-                    // After successful registration, call the login function
-                    const loginResponse = await fetch('http://localhost:3000/Employer/loginEmployer', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email: formData.get('email'),
-                            password: formData.get('password')
-                        })
-                    });
-
-                    if (!loginResponse.ok) {
-                        throw new Error('Login failed');
+                    if (data.loggedIn) {
+                        // Redirect to profile page if employer is already logged in
+                        window.location.href = 'employer_profile.html';
                     }
-
-                    const loginData = await loginResponse.json();
-                    console.log('Login successful:', loginData);
-                    const token = loginData.token;
-                    window.location.href = `employer_profile.html`;
-                } catch (error) {
-                    console.error('Error registering employer:', error);
+                } else {
+                    console.error('Failed to check if employer is logged in');
                 }
+            } catch (error) {
+                console.error('Error checking if employer is logged in:', error);
             }
+        }
+
+
+        // Call checkLoggedIn function when the page loads
+        window.onload = checkLoggedIn;
+
+        async function registerEmployer() {
+            const formData = new FormData(document.getElementById('employerRegistrationForm'));
+            try {
+                const response = await fetch('http://localhost:3000/Employer/registerEmployer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: formData.get('username'),
+                        email: formData.get('email'),
+                        password: formData.get('password'),
+                        companyName: formData.get('companyName'),
+                        industry: formData.get('industry'),
+                        phone: formData.get('phone'),
+                        address: formData.get('address')
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Registration failed');
+                }
+
+                const data = await response.json();
+                console.log('Registration successful:', data);
+                // After successful registration, call the login function
+                const loginResponse = await fetch('http://localhost:3000/Employer/loginEmployer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: formData.get('email'),
+                        password: formData.get('password')
+                    })
+                });
+
+                if (!loginResponse.ok) {
+                    throw new Error('Login failed');
+                }
+
+                const loginData = await loginResponse.json();
+                console.log('Login successful:', loginData);
+                window.location.href = `employer_profile.html`;
+            } catch (error) {
+                console.error('Error registering employer:', error);
+            }
+        }
         </script>
     </body>
     </html>

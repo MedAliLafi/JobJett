@@ -1,10 +1,10 @@
-const express = require('express');
+  const express = require('express');
   const bodyParser = require('body-parser');
   const mysql = require('mysql');
   const cookieParser = require('cookie-parser');
   const { userRoutes, registerUser, loginUser } = require('./user.js');
-  const {candidateRoutes, getCandidateIdFromToken} = require('./candidate.js');
-  const {employerRoutes, getEmployerIdFromToken} = require('./employer.js');
+  const { candidateRoutes, getCandidateIdFromToken } = require('./candidate.js');
+  const { employerRoutes, getEmployerIdFromToken } = require('./employer.js');
   const jobofferRoutes = require('./joboffer.js');
   const jwt = require('jsonwebtoken');
 
