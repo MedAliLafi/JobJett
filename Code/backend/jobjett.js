@@ -95,7 +95,7 @@
       }
     } catch (error) {
       console.error('Error authenticating employer token:', error);
-      return res.status(500).send('Internal Server Error');
+      return res.redirect('/Employer/employer_login.html');
     }
   }
 
