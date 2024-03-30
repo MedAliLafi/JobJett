@@ -1,0 +1,21 @@
+Job title:
+
+Job location type:
+In-person, precise location
+In-person, within a limited area
+Fully remote: no on-site work required
+Hybrid: some on-site work required
+On the road
+
+Job Type:
+Full-time
+Part-time
+Contract
+Temporary
+Internship
+
+Pay:
+Range, Starting amount, Maximum amount, Exact amount
+per year, per month, per week, per day, per hour
+
+Job Description:

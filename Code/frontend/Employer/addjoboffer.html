@@ -1,56 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Job Offer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Job Offer</title>
 </head>
 <body>
-    <h2>Add Job Offer</h2>
-    <form id="jobOfferForm">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" required><br><br>
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description" rows="4" cols="50" required></textarea><br><br>
-        <label for="requirements">Requirements:</label><br>
-        <textarea id="requirements" name="requirements" rows="4" cols="50" required></textarea><br><br>
-        <label for="salary">Salary:</label><br>
-        <input type="number" id="salary" name="salary" required><br><br>
-        <label for="location">Location:</label><br>
-        <input type="text" id="location" name="location" required><br><br>
-        <label for="datePosted">Date Posted:</label><br>
-        <input type="date" id="datePosted" name="datePosted" required><br><br>
-        <!-- Add a hidden input field to store the employer's ID -->
-        <input type="hidden" id="employerId" name="employerId" value="1"> <!-- Replace "1" with the actual employer ID -->
-        <button type="submit">Add Job Offer</button>
-    </form>
+<h1>Add Job Offer Page</h1>
+<form id="jobOfferForm">
+    <div class="form-section">
+        <label for="jobTitle">Job Title:</label>
+        <input type="text" id="jobTitle" name="jobTitle" required>
+    </div>
 
-    <script>
-        document.getElementById('jobOfferForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            try {
-                const response = await fetch('http://localhost:3000/Joboffer/addJobOffer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                });
+    <div class="form-section">
+        <label for="jobLocationType">Job Location Type:</label>
+        <select id="jobLocationType" name="jobLocationType" required>
+            <option value="">Select Location Type</option>
+            <option value="In-person, precise location">In-person, precise location</option>
+            <option value="In-person, within a limited area">In-person, within a limited area</option>
+            <option value="Fully remote: no on-site work required">Fully remote: no on-site work required</option>
+            <option value="Hybrid: some on-site work required">Hybrid: some on-site work required</option>
+            <option value="On the road">On the road</option>
+        </select>
+    </div>
 
-                if (!response.ok) {
-                    throw new Error('Failed to add job offer');
-                }
+    <div class="form-section">
+        <label for="jobType">Job Type:</label>
+        <select id="jobType" name="jobType" required>
+            <option value="">Select Job Type</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+            <option value="Temporary">Temporary</option>
+            <option value="Internship">Internship</option>
+        </select>
+    </div>
 
-                const data = await response.json();
-                console.log('Job offer added successfully:', data);
-                alert('Job offer added successfully');
-                // Redirect or do something else after successful job offer addition
-            } catch (error) {
-                console.error('Error adding job offer:', error);
-                alert('Failed to add job offer');
-            }
-        });
-    </script>
+    <div class="form-section" id="paySection">
+        <label for="payType">Pay Type:</label>
+        <select id="payType" name="payType" required>
+            <option value="">Select Pay Type</option>
+            <option value="Starting amount">Starting amount</option>
+            <option value="Maximum amount">Maximum amount</option>
+            <option value="Exact amount">Exact amount</option>
+        </select>
+    
+        <div id="payInput">
+            <label for="pay">Amount:</label>
+            <input type="text" id="pay" name="pay" required>
+        </div>
+    
+        <label for="payFrequency">Pay Frequency:</label>
+        <select id="payFrequency" name="payFrequency" required>
+            <option value="">Select Pay Frequency</option>
+            <option value="per year">per year</option>
+            <option value="per month">per month</option>
+            <option value="per week">per week</option>
+            <option value="per day">per day</option>
+            <option value="per hour">per hour</option>
+        </select>
+    </div>    
+
+    <div class="form-section">
+        <label for="jobDescription">Job Description:</label>
+        <textarea id="jobDescription" name="jobDescription" required></textarea>
+    </div>
+
+    <button type="submit">Submit</button>
+</form>
 </body>
 </html>

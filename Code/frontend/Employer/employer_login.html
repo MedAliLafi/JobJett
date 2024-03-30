@@ -64,6 +64,8 @@
                 const data = await response.json();
                 console.log('Login successful:', data);
                 window.location.href = `employer_profile.html`;
+                sleep(1000);
+                window.location.reload();
             } catch (error) {
                 console.error('Error logging in employer:', error);
             }

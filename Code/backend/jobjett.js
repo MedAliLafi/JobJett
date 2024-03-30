@@ -1,6 +1,7 @@
   const express = require('express');
   const bodyParser = require('body-parser');
   const mysql = require('mysql');
+  const cors = require('cors');
   const cookieParser = require('cookie-parser');
   const { userRoutes, registerUser, loginUser } = require('./user.js');
   const { candidateRoutes, getCandidateIdFromToken } = require('./candidate.js');
@@ -11,6 +12,7 @@
   const app = express();
   app.use(bodyParser.json());
   app.use(cookieParser());
+  app.use(cors());
 
   // Serve static files from the 'frontend' directory
   app.use(express.static('frontend'));
@@ -133,6 +135,10 @@
   app.post('/logout', (req, res) => {
     res.clearCookie('token');
     res.status(200).send('Logout successful');
+  });
+
+  app.get('/', (req, res) => {
+    res.redirect('/home/home.html');
   });
 
   // Routes
