@@ -67,7 +67,40 @@
         <textarea id="jobDescription" name="jobDescription" required></textarea>
     </div>
 
-    <button type="submit">Submit</button>
+    <button type="button" onclick="submitJobOffer()">Submit</button>
 </form>
+
+<script>
+    async function submitJobOffer() {
+        const formData = new FormData(document.getElementById('jobOfferForm'));
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        
+        try {
+            const response = await fetch('/Employer/addJobOffer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            if (response.ok) {
+                console.log(result.message);
+                // Optionally, redirect or display a success message
+            } else {
+                console.error(result.error);
+                // Handle error response
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle network errors
+        }
+    }
+</script>
 </body>
 </html>

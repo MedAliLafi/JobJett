@@ -11,6 +11,7 @@
 
     </div>
     <h3>Actions</h3>
+    <button onclick="redirectToJobOffer()">Add Job Offer</button>
     <button onclick="changePassword()">Change Password</button>
     <button onclick="changeEmail()">Change Email</button>
     <button onclick="deleteAccount()">Delete Account</button>
@@ -55,6 +56,9 @@
             `;
         }
 
+        function redirectToJobOffer() {
+            window.location.href = 'addjoboffer.html';
+        }
         async function changePassword() {
             // Implement function to change password
         }
@@ -64,7 +68,23 @@
         }
 
         async function deleteAccount() {
-            // Implement function to delete account
+            try {
+                const response = await fetch('http://localhost:3000/user/deleteUser', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    logout();
+                    window.location.href = 'employer_login.html';
+                } else {
+                    console.error('Account deletion failed');
+                }
+            } catch (error) {
+                console.error('Error during account deletion:', error);
+            }
         }
         
         async function logout() {

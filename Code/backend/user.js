@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // Function to register a new user
 function registerUser(pool, username, email, password, userType, callback) {
@@ -133,30 +134,19 @@ userRoutes.post('/changeEmail', async (req, res) => {
 userRoutes.delete('/deleteUser', async (req, res) => {
     const pool = req.pool;
     try {
-        const userId = req.user.user.UserId;
-        // Check if the user exists
-        const query = 'SELECT * FROM User WHERE UserID = ?';
-        pool.query(query, [userId], async (error, results) => {
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
+        // Delete the user from the database
+        const deleteQuery = 'DELETE FROM User WHERE UserID = ?';
+        pool.query(deleteQuery, [userId], (error, result) => {
             if (error) {
-                console.error('Error querying user:', error);
+                console.error('Error deleting user:', error);
                 return res.status(500).json({ error: 'An error occurred while deleting user.' });
             }
-
-            if (results.length === 0) {
-                // User not found
-                return res.status(404).json({ error: 'User not found.' });
-            }
-
-            // Delete the user from the database
-            const deleteQuery = 'DELETE FROM User WHERE UserID = ?';
-            pool.query(deleteQuery, [userId], (error, result) => {
-                if (error) {
-                    console.error('Error deleting user:', error);
-                    return res.status(500).json({ error: 'An error occurred while deleting user.' });
-                }
-                console.log('User deleted successfully');
-                res.status(200).json({ message: 'User deleted successfully' });
-            });
+            console.log('User deleted successfully');
+            res.status(200).json({ message: 'User deleted successfully' });
         });
     } catch (error) {
         console.error('Error deleting user:', error);

@@ -1,5 +1,5 @@
 const express = require('express');
-const { userRoutes, registerUser, loginUser } = require('./user.js');
+const { registerUser, loginUser } = require('./user.js');
 const candidateRoutes = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -16,7 +16,6 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
         // First, register the user using the function from user.js module
         registerUser(pool, username, email, hashedPassword, 'Candidate', async (error, result) => {
             if (error) {
-                console.error('Error registering user:', error);
                 return res.status(500).json({ error: 'An error occurred while registering the user.' });
             }
 
