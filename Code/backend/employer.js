@@ -112,7 +112,7 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
 });
 
 // Route to get employer information
-employerRoutes.get('/profile', async (req, res) => {
+employerRoutes.get('/employerInfo', async (req, res) => {
     try {
         const pool = req.pool;
         const employerId = await getEmployerIdFromToken(pool, req);

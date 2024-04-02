@@ -137,7 +137,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('/home/home.html');
+  res.redirect('/home.html');
 });
 
 app.get('/Employer', (req, res) => {
@@ -145,7 +145,7 @@ app.get('/Employer', (req, res) => {
 });
 
 app.get('/Candidate', (req, res) => {
-  res.redirect('/home/home.html');
+  res.redirect('/Candidate/candidate_login.html');
 });
 
 // Routes

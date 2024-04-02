@@ -17,6 +17,35 @@
     <p>Don't have an account? <a href="candidate_register.html">Register here</a></p>
 
     <script>
+        async function checkLoggedIn() {
+            try {
+                const response = await fetch('http://localhost:3000/Candidate/loginCandidate/checkCandidateAuth', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.loggedIn) {
+                        // Redirect to profile page if candidate is already logged in
+                        window.location.href = 'candidate_profile.html';
+                        sleep(1000);
+                        window.location.reload();
+                    }
+                } else {
+                    console.error('Failed to check if candidate is logged in');
+                }
+            } catch (error) {
+                console.error('Error checking if candidate is logged in:', error);
+            }
+        }
+
+
+        // Call checkLoggedIn function when the page loads
+        window.onload = checkLoggedIn;
+
         async function loginCandidate() {
             const formData = new FormData(document.getElementById('candidateLoginForm'));
             try {
@@ -36,8 +65,9 @@
                 }
                 const data = await response.json();
                 console.log('Login successful:', data);
-                const token = data.token;
                 window.location.href = `candidate_profile.html`;
+                sleep(1000);
+                window.location.reload();
             } catch (error) {
                 console.error('Error logging in candidate:', error);
             }

@@ -24,9 +24,35 @@
         <input type="text" id="phone" name="phone"><br><br>
         <label for="address">Address:</label>
         <input type="text" id="address" name="address"><br><br>
-        <button type="submit" onclick="registerCandidate()">Register</button>
+        <button type="submit">Register</button>
     </form>
+    <p>Already Registered? <a href="candidate_login.html">Login here</a></p>
     <script>
+        async function checkLoggedIn() {
+            try {
+                const response = await fetch('http://localhost:3000/Candidate/loginCandidate/checkCandidateAuth', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.loggedIn) {
+                        // Redirect to profile page if candidate is already logged in
+                        window.location.href = 'candidate_profile.html';
+                    }
+                } else {
+                    console.error('Failed to check if candidate is logged in');
+                }
+            } catch (error) {
+                console.error('Error checking if candidate is logged in:', error);
+            }
+        }
+
+        window.onload = checkLoggedIn;
+
         async function registerCandidate() {
             const formData = new FormData(document.getElementById('candidateRegistrationForm'));
             try {
@@ -51,9 +77,9 @@
                     throw new Error('Registration failed');
                 }
 
-                const data = await response.json();
-                console.log('Registration successful:', data);
-                // After successful registration, call the login function
+                console.log('Registration successful');
+
+                // After successful registration, automatically log in
                 const loginResponse = await fetch('http://localhost:3000/Candidate/loginCandidate', {
                     method: 'POST',
                     headers: {
@@ -69,14 +95,20 @@
                     throw new Error('Login failed');
                 }
 
-                const loginData = await loginResponse.json();
-                console.log('Login successful:', loginData);
-                const token = loginData.token;
-                window.location.href = `candidate_profile.html`;
+                console.log('Login successful');
+
+                // Redirect to profile page after successful registration and login
+                window.location.href = 'candidate_profile.html';
             } catch (error) {
                 console.error('Error registering candidate:', error);
             }
         }
+
+        // Call registerCandidate function when the form is submitted
+        document.getElementById('candidateRegistrationForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            registerCandidate(); // Call registerCandidate function
+        });
     </script>
 </body>
 </html>

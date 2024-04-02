@@ -3,39 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employer Profile</title>
+    <title>Candidate Profile</title>
 </head>
 <body>
-    <h2>Employer Profile</h2>
-    <div id="employerInfo">
+    <h2>Candidate Profile</h2>
+    <div id="candidateInfo">
 
     </div>
     <h3>Actions</h3>
-    <button onclick="addJobOffer()">Add Job Offer</button>
+    <button onclick="manageCV()">Manage CV</button>
     <button onclick="changePassword()">Change Password</button>
     <button onclick="changeEmail()">Change Email</button>
     <button onclick="deleteAccount()">Delete Account</button>
     <button onclick="logout()">Logout</button>
 
     <script>
-        // Fetch and display employer information when the page loads
+        // Fetch and display candidate information when the page loads
         window.onload = async () => {
             try {
-                const response = await fetchEmployerInfo(); // Implement this function
+                const response = await fetchCandidateInfo();
                 if (response.ok) {
-                    const employerInfo = await response.json();
-                    displayEmployerInfo(employerInfo);
+                    const candidateInfo = await response.json();
+                    displayCandidateInfo(candidateInfo);
                 } else {
-                    console.error('Failed to fetch employer information');
+                    console.error('Failed to fetch candidate information');
                 }
             } catch (error) {
-                console.error('Error fetching employer information:', error);
+                console.error('Error fetching candidate information:', error);
             }
         };
 
-        async function fetchEmployerInfo() {
-            // Fetch employer information from the backend
-            const response = await fetch('http://localhost:3000/Employer/employerInfo', {
+        async function fetchCandidateInfo() {
+            // Fetch candidate information from the backend
+            const response = await fetch('http://localhost:3000/Candidate/candidateInfo', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,29 +44,29 @@
             return response;
         }
 
-        function displayEmployerInfo(employerInfo) {
-            // Display employer information on the page
-            const employerInfoDiv = document.getElementById('employerInfo');
-            employerInfoDiv.innerHTML = `
-                <p><strong>Company Name:</strong> ${employerInfo.companyName}</p>
-                <p><strong>Email:</strong> ${employerInfo.email}</p>
-                <p><strong>Industry:</strong> ${employerInfo.industry}</p>
-                <p><strong>Phone:</strong> ${employerInfo.phone}</p>
-                <p><strong>Address:</strong> ${employerInfo.address}</p>
-                <p><strong>State:</strong> ${employerInfo.state}</p>
-                <p><strong>Country:</strong> ${employerInfo.country}</p>
+        function displayCandidateInfo(candidateInfo) {
+            const candidateInfoDiv = document.getElementById('candidateInfo');
+            candidateInfoDiv.innerHTML = `
+                <p><strong>First Name:</strong> ${candidateInfo.firstName}</p>
+                <p><strong>Last Name:</strong> ${candidateInfo.lastName}</p>
+                <p><strong>Email:</strong> ${candidateInfo.email}</p>
+                <p><strong>Date of birth:</strong> ${candidateInfo.dateOfBirth}</p>
+                <p><strong>Phone:</strong> ${candidateInfo.phone}</p>
+                <p><strong>Address:</strong> ${candidateInfo.address}</p>
+                <p><strong>State:</strong> ${candidateInfo.state}</p>
+                <p><strong>Country:</strong> ${candidateInfo.country}</p>
             `;
         }
 
-        function addJobOffer() {
-            window.location.href = 'addjoboffer.html';
+        async function manageCV() {
+            window.location.href = 'cv.html';
+
         }
+
         async function changePassword() {
-            // Implement function to change password
         }
 
         async function changeEmail() {
-            // Implement function to change email
         }
 
         async function deleteAccount() {
@@ -80,7 +80,7 @@
                 });
                 if (response.ok) {
                     logout();
-                    window.location.href = 'employer_login.html';
+                    window.location.href = 'candidate_login.html';
                 } else {
                     console.error('Account deletion failed');
                 }
@@ -98,7 +98,7 @@
                     },
                 });
                 if (response.ok) {
-                    window.location.href = 'employer_login.html'; // Redirect to login page after logout
+                    window.location.href = 'candidate_login.html';
                 } else {
                     console.error('Logout failed');
                 }

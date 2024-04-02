@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Resume</title>
+</head>
+<body>
+    <h2>Candidate Resume</h2>
+    <div id="candidateInfo">
+
+    </div>
+
+    <div>
+        <!-- Inputs to fill -->
+        <div>
+            <label for="summary">Summary:</label>
+            <textarea id="summary"></textarea>
+        </div>
+        <div>
+            <button onclick="addEducationForm()">Add Education</button>
+            <div id="educationForms"></div>
+        </div>
+        <div>
+            <button onclick="addWorkExperienceForm()">Add Work Experience</button>
+            <div id="workExperienceForms"></div>
+        </div>
+        <div>
+            <label for="skills">Skills:</label>
+            <input type="text" id="skills" onkeydown="addSkill(event)">
+            <div id="skillsList"></div>
+        </div>
+        <div>
+            <button onclick="addCertificationsInput()">Add Certifications or Licenses</button>
+            <div id="certificationsInput"></div>
+        </div>
+        <div>
+            <label for="searchable">Searchable:</label>
+            <input type="checkbox" id="searchable">
+        </div>
+    </div>
+
+    <script>
+        // Fetch and display candidate information when the page loads
+        window.onload = async () => {
+            try {
+                const response = await fetchCandidateInfo();
+                if (response.ok) {
+                    const candidateInfo = await response.json();
+                    displayCandidateInfo(candidateInfo);
+                } else {
+                    console.error('Failed to fetch candidate information');
+                }
+            } catch (error) {
+                console.error('Error fetching candidate information:', error);
+            }
+        };
+
+        async function fetchCandidateInfo() {
+            // Fetch candidate information from the backend
+            const response = await fetch('http://localhost:3000/Candidate/candidateInfo', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            return response;
+        }
+
+        function displayCandidateInfo(candidateInfo) {
+            const candidateInfoDiv = document.getElementById('candidateInfo');
+            candidateInfoDiv.innerHTML = `
+                <p><strong>First Name:</strong> ${candidateInfo.firstName}</p>
+                <p><strong>Last Name:</strong> ${candidateInfo.lastName}</p>
+                <p><strong>Phone:</strong> ${candidateInfo.phone}</p>
+                <p><strong>Address:</strong> ${candidateInfo.address}</p>
+                <p><strong>State:</strong> ${candidateInfo.state}</p>
+                <p><strong>Country:</strong> ${candidateInfo.country}</p>
+            `;
+        }
+
+        function addEducationForm() {
+            const educationFormsDiv = document.getElementById('educationForms');
+            const form = document.createElement('div');
+            form.innerHTML = `
+                <input type="text" placeholder="Level of Education">
+                <input type="text" placeholder="Field of Study">
+                <input type="text" placeholder="School">
+                <input type="text" placeholder="Time Period">
+                <button onclick="removeFormItem(this)">Delete</button>
+            `;
+            educationFormsDiv.appendChild(form);
+        }
+
+        function addWorkExperienceForm() {
+            const workExperienceFormsDiv = document.getElementById('workExperienceForms');
+            const form = document.createElement('div');
+            form.innerHTML = `
+                <input type="text" placeholder="Job Title">
+                <input type="text" placeholder="Company">
+                <input type="text" placeholder="Time Period">
+                <input type="text" placeholder="Description">
+                <button onclick="removeFormItem(this)">Delete</button>
+            `;
+            workExperienceFormsDiv.appendChild(form);
+        }
+
+        function addSkill(event) {
+            if (event.keyCode === 13) { // Check if Enter key is pressed
+                const skillsInput = document.getElementById('skills');
+                const skill = skillsInput.value.trim();
+                if (skill !== '') {
+                    const skillsListDiv = document.getElementById('skillsList');
+                    const skillItem = document.createElement('div');
+                    skillItem.textContent = skill;
+                    skillsListDiv.appendChild(skillItem);
+                    skillsInput.value = ''; // Clear the input
+                }
+            }
+        }
+
+        function addCertificationsInput() {
+            const certificationsInputDiv = document.getElementById('certificationsInput');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Certifications or Licenses';
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = function() {
+                this.parentNode.removeChild(this.previousSibling);
+                this.parentNode.removeChild(this);
+            };
+            certificationsInputDiv.appendChild(input);
+            certificationsInputDiv.appendChild(deleteButton);
+        }
+
+        function removeFormItem(button) {
+            button.parentNode.parentNode.removeChild(button.parentNode);
+        }
+    </script>
+</body>
+</html>
