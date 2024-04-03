@@ -69,13 +69,35 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
             const sql = 'INSERT INTO Candidate (UserID, FirstName, LastName, DateOfBirth, Phone, Address) VALUES (?, ?, ?, ?, ?, ?)';
             const values = [userID, firstName, lastName, dateOfBirth, phone, address];
 
-            pool.query(sql, values, (error, candidateResult) => {
+            pool.query(sql, values, async (error, candidateResult) => {
                 if (error) {
                     console.error('Error registering candidate:', error);
                     return res.status(500).json({ error: 'An error occurred while registering the candidate.' });
                 }
-                console.log('Candidate registered successfully');
-                res.status(200).json({ message: 'Candidate registered successfully' });
+                
+                // Insert a new CV record
+                const cvSql = 'INSERT INTO CV (CandidateID, Summary, Skills, Searchable) VALUES (?, ?, ?, ?)';
+                const cvValues = [candidateResult.insertId, '', '', 'false'];
+
+                pool.query(cvSql, cvValues, (cvError, cvResult) => {
+                    if (cvError) {
+                        console.error('Error adding CV:', cvError);
+                        return res.status(500).json({ error: 'An error occurred while adding the CV.' });
+                    }
+                    
+                    // Update the candidate record with the CV_ID
+                    const updateSql = 'UPDATE Candidate SET CV_ID = ? WHERE CandidateID = ?';
+                    const updateValues = [cvResult.insertId, candidateResult.insertId];
+
+                    pool.query(updateSql, updateValues, (updateError, updateResult) => {
+                        if (updateError) {
+                            console.error('Error updating candidate record with CV_ID:', updateError);
+                            return res.status(500).json({ error: 'An error occurred while updating the candidate record.' });
+                        }
+                        console.log('Candidate registered successfully');
+                        res.status(200).json({ message: 'Candidate registered successfully' });
+                    });
+                });
             });
         });
     } catch (error) {
@@ -127,5 +149,6 @@ candidateRoutes.get('/candidateInfo', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while fetching candidate information' });
     }
 });
+
 
 module.exports = { candidateRoutes, getCandidateIdFromToken, getCandidateInfoById };

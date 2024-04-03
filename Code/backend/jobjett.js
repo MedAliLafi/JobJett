@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const { userRoutes, registerUser, loginUser } = require('./user.js');
 const { candidateRoutes, getCandidateIdFromToken } = require('./candidate.js');
 const { employerRoutes, getEmployerIdFromToken } = require('./employer.js');
+const cvRoutes = require('./cv.js');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -152,6 +153,7 @@ app.get('/Candidate', (req, res) => {
 app.use('/User', userRoutes);
 app.use('/Candidate', authenticateCandidateToken, candidateRoutes);
 app.use('/Employer', authenticateEmployerToken, employerRoutes);
+app.use('/Candidate/cv', authenticateCandidateToken, cvRoutes);
 
 // Starting the server
 const port = 3000;
