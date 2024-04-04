@@ -8,7 +8,7 @@
 <body>
     <h2>Candidate Resume</h2>
     <div id="candidateInfo">
-
+        <!-- Candidate information will be displayed here -->
     </div>
 
     <div>
@@ -16,30 +16,39 @@
             <label for="summary">Summary:</label>
             <textarea id="summary"></textarea>
         </div>
-        <div>
-            <h3>Education</h3>
+
+        <fieldset>
+            <legend>Education</legend>
             <div id="educationForms"></div>
             <button onclick="addEducationForm()">Add Education</button>
-        </div>
-        <div>
-            <h3>Work Experience</h3>
+        </fieldset>
+
+        <fieldset>
+            <legend>Work Experience</legend>
             <div id="workExperienceForms"></div>
             <button onclick="addWorkExperienceForm()">Add Work Experience</button>
-        </div>
-        <div>
-            <label for="skills">Skills:</label>
-            <input type="text" id="skills" onkeydown="addSkill(event)">
+        </fieldset>
+
+        <fieldset>
+            <legend>Skills</legend>
+            <div>
+                <label for="skills">Add Skill:</label>
+                <input type="text" id="skills" onkeydown="addSkill(event)">
+            </div>
             <div id="skillsList"></div>
-        </div>
-        <div>
-            <h3>Certificate</h3>
+        </fieldset>
+
+        <fieldset>
+            <legend>Certificates</legend>
             <div id="certificationsForm"></div>
-            <button onclick="addCertificationsForm()">Add Certifications or Certificates</button>
-        </div>
+            <button onclick="addCertificateForm()">Add Certificates</button>
+        </fieldset>
+
         <div>
             <label for="searchable">Searchable:</label>
             <input type="checkbox" id="searchable">
         </div>
+
         <div>
             <button type="submit" onclick="submitCV()">Submit</button>
         </div>
@@ -57,29 +66,58 @@
                     console.error('Failed to fetch candidate information');
                 }
 
+                // Fetch CV data
+                const cvResponse = await fetchExistingData('getCV');
+                if (cvResponse.ok) {
+                    const cvData = await cvResponse.json();
+                    populateCVFields(cvData);
+                } else {
+                    console.error('Failed to fetch CV data');
+                }
+
                 // Fetch existing education data
                 const educationResponse = await fetchExistingData('getEducation');
-                if (educationResponse.ok) {
-                    const educationData = await educationResponse.json();
-                    educationData.forEach(education => {
-                        addEducationForm(
-                            education.level,
-                            education.fieldOfStudy,
-                            education.school,
-                            education.fromDate,
-                            education.toDate,
-                            education.currentlyEnrolled
-                        );
-                    });
-                } else {
-                    console.error('Failed to fetch existing education data');
-                }
+                    if (educationResponse.ok) {
+                        const educationData = await educationResponse.json();
+                        educationData.forEach(education => {
+                            const [fromDatePart, toDatePart] = education.TimePeriod.split('_');
+                            let currentlyEnrolled = false;
+                            if (toDatePart === 'Present') {
+                                currentlyEnrolled = true;
+                            }
+                            addEducationForm(
+                                education.Level,
+                                education.FieldOfStudy,
+                                education.School,
+                                fromDatePart,
+                                toDatePart,
+                                currentlyEnrolled
+                            );
+                        });
+                    } else {
+                        console.error('Failed to fetch existing education data');
+                    }
+
 
                 // Fetch existing work experience data
                 const workExperienceResponse = await fetchExistingData('getWorkExperience');
                 if (workExperienceResponse.ok) {
                     const workExperienceData = await workExperienceResponse.json();
-                    workExperienceData.forEach(addWorkExperienceForm); // Iterate through each work experience item and add a form
+                    workExperienceData.forEach(workExperience => {
+                        const [fromDatePart, toDatePart] = workExperience.TimePeriod.split('_');
+                        let currentlyWorkHere = false;
+                        if (toDatePart === 'Present') { 
+                            currentlyWorkHere = true;
+                        }
+                        addWorkExperienceForm(
+                            workExperience.JobTitle,
+                            workExperience.Company,
+                            fromDatePart,
+                            toDatePart,
+                            currentlyWorkHere,
+                            workExperience.Description
+                        );
+                    });
                 } else {
                     console.error('Failed to fetch existing work experience data');
                 }
@@ -90,8 +128,8 @@
                     const certificateData = await certificateResponse.json();
                     certificateData.forEach(certificate => {
                         addCertificateForm(
-                            certificate.certificateName,
-                            certificate.dateIssued,
+                            certificate.Certification,
+                            certificate.DateIssued,
                             certificate.description
                         );
                     });
@@ -192,19 +230,44 @@
             });
         }
 
-        function addCertificationsForm(certificationName = '', dateIssued = '', description = '') {
+        function addCertificateForm(certificationName = '', dateIssued = '', description = '') {
             const certificationsFormsDiv = document.getElementById('certificationsForm');
             const form = document.createElement('div');
+            // Extracting year and month from the date string
+            const year = dateIssued.substring(0, 4);
+            const month = dateIssued.substring(5, 7);
             form.innerHTML = `
                 <input type="text" placeholder="Certification" value="${certificationName}">
                 <label for="DateIssued">Date Issued:</label>
-                <input type="month" id="DateIssued" value="${dateIssued}">
+                <input type="month" id="DateIssued" value="${year}-${month}">
                 <input type="text" placeholder="Certification Description" value="${description}">
                 <button onclick="removeFormItem(this)">Delete</button>
             `;
             certificationsFormsDiv.appendChild(form);
         }
 
+        function populateCVFields(cvData) {
+            const summaryTextarea = document.getElementById('summary');
+            summaryTextarea.value = cvData.Summary;
+
+            const searchableCheckbox = document.getElementById('searchable');
+            searchableCheckbox.checked = cvData.Searchable;
+
+            const skillsDiv = document.getElementById('skillsList');
+            const skills = cvData.Skills.split(';'); // Assuming skills are separated by semicolon
+            skills.forEach(skill => {
+                const skillItem = document.createElement('div');
+                skillItem.textContent = skill;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = function() {
+                    skillsDiv.removeChild(skillItem);
+                    skillsDiv.removeChild(this);
+                };
+                skillsDiv.appendChild(skillItem);
+                skillsDiv.appendChild(deleteButton);
+            });
+        }
 
         function addSkill(event) {
             if (event.keyCode === 13) { // Check if Enter key is pressed
@@ -227,7 +290,7 @@
             }
         }
 
-
+        
         function removeFormItem(button) {
             button.parentNode.parentNode.removeChild(button.parentNode);
         }
@@ -296,9 +359,9 @@
                             },
                             body: JSON.stringify({
                                 cvId,
-                                level,
-                                fieldOfStudy,
-                                school,
+                                Level,
+                                FieldOfStudy,
+                                School,
                                 TimePeriod
                             })
                         });

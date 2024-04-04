@@ -100,6 +100,32 @@ cvRoutes.post('/addWorkExperience', async (req, res) => {
     }
 });
 
+// Route to fetch CV data
+cvRoutes.get('/getCV', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateId = await getCandidateIdFromToken(pool, req);
+        if (!candidateId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const sql = 'SELECT Summary, Skills, Searchable FROM cv WHERE CandidateID = ?';
+        pool.query(sql, [candidateId], (error, rows) => {
+            if (error) {
+                console.error('Error fetching CV data:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching CV data.' });
+            }
+            if (rows.length > 0) {
+                res.status(200).json(rows[0]);
+            } else {
+                res.status(404).json({ message: 'CV data not found' });
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching CV data:', error);
+        res.status(500).json({ error: 'An error occurred while fetching CV data.' });
+    }
+});
+
 // Route to fetch existing education data
 cvRoutes.get('/getEducation', async (req, res) => {
     try {
@@ -152,8 +178,8 @@ cvRoutes.get('/getWorkExperience', async (req, res) => {
     }
 });
 
-// Route to fetch existing license data
-cvRoutes.get('/getLicense', async (req, res) => {
+// Route to fetch existing certificate data
+cvRoutes.get('/getCertificate', async (req, res) => {
     try {
         const pool = req.pool;
         const candidateId = await getCandidateIdFromToken(pool, req);
@@ -163,18 +189,18 @@ cvRoutes.get('/getLicense', async (req, res) => {
         const sql = 'SELECT * FROM certification WHERE CandidateID = ?';
         pool.query(sql, [candidateId], (error, rows) => {
             if (error) {
-                console.error('Error fetching license data:', error);
-                return res.status(500).json({ error: 'An error occurred while fetching license data.' });
+                console.error('Error fetching certificate data:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching certificate data.' });
             }
             if (rows.length > 0) {
                 res.status(200).json(rows);
             } else {
-                res.status(404).json({ message: 'License data not found' });
+                res.status(404).json({ message: 'Certificate data not found' });
             }
         });
     } catch (error) {
-        console.error('Error fetching license data:', error);
-        res.status(500).json({ error: 'An error occurred while fetching license data.' });
+        console.error('Error fetching certificate data:', error);
+        res.status(500).json({ error: 'An error occurred while fetching certificate data.' });
     }
 });
 
