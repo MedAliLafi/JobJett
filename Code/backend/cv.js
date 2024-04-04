@@ -204,4 +204,70 @@ cvRoutes.get('/getCertificate', async (req, res) => {
     }
 });
 
+// Route to delete education data
+cvRoutes.delete('/deleteEducation', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateId = await getCandidateIdFromToken(pool, req);
+        if (!candidateId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const deleteSql = 'DELETE FROM education WHERE CandidateID = ?';
+        pool.query(deleteSql, [candidateId], (error, result) => {
+            if (error) {
+                console.error('Error deleting education data:', error);
+                return res.status(500).json({ error: 'An error occurred while deleting education data.' });
+            }
+            res.status(200).json({ message: 'Education data deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting education data:', error);
+        res.status(500).json({ error: 'An error occurred while deleting education data.' });
+    }
+});
+
+// Route to delete work experience data
+cvRoutes.delete('/deleteWorkExperience', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateId = await getCandidateIdFromToken(pool, req);
+        if (!candidateId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const deleteSql = 'DELETE FROM work_experience WHERE CandidateID = ?';
+        pool.query(deleteSql, [candidateId], (error, result) => {
+            if (error) {
+                console.error('Error deleting work experience data:', error);
+                return res.status(500).json({ error: 'An error occurred while deleting work experience data.' });
+            }
+            res.status(200).json({ message: 'Work experience data deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting work experience data:', error);
+        res.status(500).json({ error: 'An error occurred while deleting work experience data.' });
+    }
+});
+
+// Route to delete certificate data
+cvRoutes.delete('/deleteCertificate', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateId = await getCandidateIdFromToken(pool, req);
+        if (!candidateId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const deleteSql = 'DELETE FROM certification WHERE CandidateID = ?';
+        pool.query(deleteSql, [candidateId], (error, result) => {
+            if (error) {
+                console.error('Error deleting certificate data:', error);
+                return res.status(500).json({ error: 'An error occurred while deleting certificate data.' });
+            }
+            res.status(200).json({ message: 'Certificate data deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting certificate data:', error);
+        res.status(500).json({ error: 'An error occurred while deleting certificate data.' });
+    }
+});
+
 module.exports = cvRoutes;

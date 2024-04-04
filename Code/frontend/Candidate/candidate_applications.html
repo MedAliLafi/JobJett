@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Applications</title>
+</head>
+<body>
+    <h2>Candidate Applications</h2>
+    <div id="applicationsList">
+    </div>
+
+    <script>
+        window.onload = async () => {
+            try {
+                const applications = await fetchCandidateApplications();
+                displayApplications(applications);
+            } catch (error) {
+                console.error('Error fetching candidate applications:', error);
+            }
+        };
+
+        async function fetchCandidateApplications() {
+            // Fetch candidate applications from the backend
+            const response = await fetch('/Candidate/JobOffer/candidate_applications', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            if (response.ok) {
+                const applications = await response.json();
+                return applications;
+            } else {
+                console.error('Failed to fetch candidate applications');
+            }
+        }
+
+        function displayApplications(applications) {
+            const applicationsDiv = document.getElementById('applicationsList');
+
+            if (!applications || applications.length === 0) {
+                applicationsDiv.innerHTML = '<p>No applications found.</p>';
+                return;
+            }
+
+            let html = '<h3>Applications</h3>';
+            html += '<ul>';
+            applications.forEach(application => {
+                html += `<li>${application.Description} - Status: ${application.Status}</li>`;
+            });
+            html += '</ul>';
+
+            applicationsDiv.innerHTML = html;
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <h2>Job Offer Details</h2>
+    <div id="jobOfferDetails">
+    </div>
+    <button onclick="redirectToApplication()">Apply Now</button>
+
+    <script>
+        async function fetchJobOfferDetails(jobofferId) {
+            try {
+                const response = await fetch(`/Candidate/JobOffer/${jobofferId}`);
+                if (response.ok) {
+                    const jobofferDetails = await response.json();
+                    // Display job offer details on the page
+                    document.getElementById('jobOfferDetails').innerHTML = `
+                        <p><strong>Job Title:</strong> ${jobofferDetails.Title}</p>
+                        <p><strong>Description:</strong> ${jobofferDetails.Description}</p>
+                        <p><strong>Type:</strong> ${jobofferDetails.Type}</p>
+                        <p><strong>Salary:</strong> ${jobofferDetails.Salary}</p>
+                        <p><strong>Location:</strong> ${jobofferDetails.Location}</p>
+                        <p><strong>Date Posted:</strong> ${jobofferDetails.DatePosted}</p>
+                    `;
+                } else {
+                    console.error('Failed to fetch job offer details');
+                }
+            } catch (error) {
+                console.error('Error fetching job offer details:', error);
+            }
+        }
+
+        function redirectToApplication() {
+            // Extract jobofferId from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobofferId = urlParams.get('jobofferId');
+            
+            fetchJobOfferDetails(jobofferId)
+                .then(() => {
+                    // Redirect to application.html with jobofferId in the URL
+                    window.location.href = `application.html?jobofferId=${jobofferId}`;
+                })
+                .catch(error => {
+                    console.error('Error redirecting to application:', error);
+                });
+        }
+
+        // Call fetchJobOfferDetails function with extracted jobofferId from URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobofferId = urlParams.get('jobofferId');
+            fetchJobOfferDetails(jobofferId);
+        }
+    </script>
+</body>
+</html>

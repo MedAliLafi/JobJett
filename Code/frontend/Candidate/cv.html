@@ -55,6 +55,7 @@
     </div>
 
     <script>
+        let cvId;
         window.onload = async () => {
             try {
                 // Fetch candidate information
@@ -62,6 +63,7 @@
                 if (candidateInfoResponse.ok) {
                     const candidateInfo = await candidateInfoResponse.json();
                     displayCandidateInfo(candidateInfo);
+                    cvId = candidateInfo.cvId;
                 } else {
                     console.error('Failed to fetch candidate information');
                 }
@@ -170,7 +172,7 @@
                 <p><strong>Phone:</strong> ${candidateInfo.phone}</p>
                 <p><strong>Address:</strong> ${candidateInfo.address}</p>
                 <p><strong>State:</strong> ${candidateInfo.state}</p>
-                <p><strong>Country:</strong> ${candidateInfo.country}</p>
+                <p><strong>Country:</strong> ${candidateInfo.country}</p>  
             `;
         }
 
@@ -297,13 +299,35 @@
 
         async function submitCV() {
             try {
+                // Delete existing education data
+                await fetch('http://localhost:3000/Candidate/cv/deleteEducation', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                // Delete existing work experience data
+                await fetch('http://localhost:3000/Candidate/cv/deleteWorkExperience', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                // Delete existing certificate data
+                await fetch('http://localhost:3000/Candidate/cv/deleteCertificate', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                // Update CV
                 const summary = document.getElementById('summary').value;
                 const skillsDiv = document.getElementById('skillsList');
-                const skills = Array.from(skillsDiv.children).map(skill => skill.textContent).join(';'); // Join skills with a delimiter
-
+                const skills = Array.from(skillsDiv.children).filter(child => child.tagName === 'DIV').map(skill => skill.textContent).join(';'); // Join skills with a delimiter
                 const searchable = document.getElementById('searchable').checked;
-
-                // Add CV
                 const cvResponse = await fetch('http://localhost:3000/Candidate/cv/updateCV', {
                     method: 'POST',
                     headers: {
@@ -315,6 +339,9 @@
                         searchable
                     })
                 });
+                if (!cvResponse.ok) {
+                    throw new Error('Failed to update CV');
+                }
 
                 // Add Certificates
                 const certificatesFormsDiv = document.getElementById('certificationsForm');
@@ -359,9 +386,9 @@
                             },
                             body: JSON.stringify({
                                 cvId,
-                                Level,
-                                FieldOfStudy,
-                                School,
+                                level,
+                                fieldOfStudy,
+                                school,
                                 TimePeriod
                             })
                         });

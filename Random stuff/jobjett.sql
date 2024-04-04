@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 04, 2024 at 02:51 AM
+-- Generation Time: Apr 04, 2024 at 07:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,8 +51,8 @@ CREATE TABLE `candidate` (
   `DateOfBirth` date DEFAULT NULL,
   `Phone` varchar(20) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL,
-  `Country` varchar(100) DEFAULT NULL,
   `State` varchar(100) DEFAULT NULL,
+  `Country` varchar(100) DEFAULT NULL,
   `CV_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -60,9 +60,10 @@ CREATE TABLE `candidate` (
 -- Dumping data for table `candidate`
 --
 
-INSERT INTO `candidate` (`CandidateID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `Phone`, `Address`, `Country`, `State`, `CV_ID`) VALUES
-(9, 10, 'mimi', 'mimi', '2004-05-22', '2837482374', 'uaudfijweoif jqwoeij2o3i4j 2o3i4j asdf ', NULL, NULL, NULL),
-(16, 29, 'ena', 'ena', '2002-10-30', '26782952', 'kfm wqlkemfwfe ', NULL, NULL, 5);
+INSERT INTO `candidate` (`CandidateID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `Phone`, `Address`, `State`, `Country`, `CV_ID`) VALUES
+(16, 29, 'ena', 'ena', '2002-10-30', '26782952', 'kfm wqlkemfwfe ', 'kbira', 'terma', 5),
+(17, 32, 'mimi', 'mimi', '2004-05-22', '26782952', 'iweqjnef ojkqwjkemnf okwqme ', 'kbiiiiiiiira', 'terma', 6),
+(18, 34, 'halaa=', 'hala', '2000-01-22', '9234829', 'qwer wqer ', 'ojweqr o', 'okmewjrokqw ', 7);
 
 -- --------------------------------------------------------
 
@@ -78,13 +79,6 @@ CREATE TABLE `certification` (
   `DateIssued` date DEFAULT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `certification`
---
-
-INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `Certification`, `DateIssued`, `description`) VALUES
-(1, 16, 5, 'oiqwejr oqwejr lkqwmner ', '2024-04-01', 'oqwieher oiwqejr oiqwejr oiwqejr oiwqejr ');
 
 -- --------------------------------------------------------
 
@@ -105,7 +99,9 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`) VALUES
-(5, 16, 'adsf kiwjenf jqwenr kqwjenr qwer ijn', 'asdasdf;asdfasdf;adsf;asdf', 'true');
+(5, 16, 'wa sa7bi', '', 'true'),
+(6, 17, 'oiqwjenroiqwjero qmkwerokmwer', 'bassas;kbir;bouterma', 'true'),
+(7, 18, '', '', 'false');
 
 -- --------------------------------------------------------
 
@@ -128,7 +124,7 @@ CREATE TABLE `education` (
 --
 
 INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldOfStudy`, `School`, `TimePeriod`) VALUES
-(1, 16, 5, 'asdlkfjj', 'ejrlqkwen', 'wewrkqwer', '2222-09_Present');
+(18, 17, 6, 'dddd', 'adsf', 'asdf', '2001-02_Present');
 
 -- --------------------------------------------------------
 
@@ -166,8 +162,8 @@ CREATE TABLE `joboffer` (
   `EmployerID` int(11) DEFAULT NULL,
   `Title` varchar(255) DEFAULT NULL,
   `Description` text DEFAULT NULL,
-  `Requirements` text DEFAULT NULL,
-  `Salary` decimal(10,2) DEFAULT NULL,
+  `Type` varchar(255) DEFAULT NULL,
+  `Salary` varchar(255) DEFAULT NULL,
   `Location` varchar(255) DEFAULT NULL,
   `DatePosted` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -208,11 +204,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`UserID`, `Username`, `Email`, `Password`, `UserType`) VALUES
-(10, 'mimi', 'mimi@mail', '$2b$10$RiUlQKcVzM7e3owP9j6Hl.hVkp3L1k5/kC6N8tzrSIhea1OBVKQUC', 'Candidate'),
 (11, 'mimi', 'mimi2@mail', '$2b$10$2dCjYqWNxW4X8Q4Zw6cEYeyQqfUeuA/fHiKSWXu/ia/.SYEjwaEqO', 'Employer'),
 (19, 'sarra', 'sarra@mail', '$2b$10$PcrbnUgaukT5Q1oy74UmxuovXZWHxISz.DJxMt6lgIlh1fWz3LVDO', 'Employer'),
 (20, 'boumba', 'boumba@mail', '$2b$10$uJrh1zahyUC/MENQ4u7KAuFMAWO3PcBPsWzfFRDkXmKCBIcWEknSK', 'Employer'),
-(29, 'ena', 'ena@mail', '$2b$10$QnVTi/mpdJ9LKmMh0HU9g.q24IwfqbfAn.B.NRUtSUaS9Z9GH8vIy', 'Candidate');
+(29, 'ena', 'ena@mail', '$2b$10$QnVTi/mpdJ9LKmMh0HU9g.q24IwfqbfAn.B.NRUtSUaS9Z9GH8vIy', 'Candidate'),
+(32, 'mimi', 'mimi@mail', '$2b$10$i330XZKFZPlDfdSR9FecCeVawaQA3EtRDDajv9Kf8cVlrFHExSn36', 'Candidate'),
+(34, 'hala', 'hala@mail', '$2b$10$kfR.fuO4vvfYBNuQxF8LouXpN33jDLukQD45YC/kLPJJL29aAaFF2', 'Candidate');
 
 -- --------------------------------------------------------
 
@@ -229,13 +226,6 @@ CREATE TABLE `work_experience` (
   `TimePeriod` varchar(100) DEFAULT NULL,
   `Description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `work_experience`
---
-
-INSERT INTO `work_experience` (`WorkExperienceID`, `CandidateID`, `CV_ID`, `JobTitle`, `Company`, `TimePeriod`, `Description`) VALUES
-(1, 16, 5, 'ads sdaf qwlnker ', 'lqwkermm lqwekrm ', '2222-09_Present', 'qjwiehr iuqwuejr jnkqewr nwqer');
 
 --
 -- Indexes for dumped tables
@@ -326,7 +316,7 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `candidate`
 --
 ALTER TABLE `candidate`
-  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `certification`
@@ -338,25 +328,25 @@ ALTER TABLE `certification`
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
 --
 ALTER TABLE `joboffer`
-  MODIFY `JobOfferID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `JobOfferID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -368,13 +358,13 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `work_experience`
 --
 ALTER TABLE `work_experience`
-  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

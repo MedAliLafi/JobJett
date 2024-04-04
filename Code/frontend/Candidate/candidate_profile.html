@@ -11,6 +11,7 @@
 
     </div>
     <h3>Actions</h3>
+    <button onclick="viewApplications()">Applications</button>
     <button onclick="manageCV()">Manage CV</button>
     <button onclick="changePassword()">Change Password</button>
     <button onclick="changeEmail()">Change Email</button>
@@ -57,10 +58,13 @@
                 <p><strong>Country:</strong> ${candidateInfo.country}</p>
             `;
         }
+        
+        function viewApplications() {
+            window.location.href = 'candidate_applications.html';
+        }
 
         async function manageCV() {
             window.location.href = 'cv.html';
-
         }
 
         async function changePassword() {

@@ -4,10 +4,9 @@ const candidateRoutes = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Function to get candidate information by ID
 function getCandidateInfoById(pool, candidateId) {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address FROM Candidate INNER JOIN User ON Candidate.UserID = User.UserID WHERE CandidateID = ?', [candidateId], (error, results) => {
+        pool.query('SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address, Candidate.State, Candidate.Country, CV.CV_ID FROM Candidate INNER JOIN User ON Candidate.UserID = User.UserID LEFT JOIN CV ON Candidate.CandidateID = CV.CandidateID WHERE Candidate.CandidateID = ?', [candidateId], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -18,7 +17,10 @@ function getCandidateInfoById(pool, candidateId) {
                         dateOfBirth: results[0].DateOfBirth,
                         lastName: results[0].LastName,
                         phone: results[0].Phone,
-                        address: results[0].Address
+                        address: results[0].Address,
+                        state: results[0].State,
+                        country: results[0].Country,
+                        cvId: results[0].CV_ID
                     };
                     resolve(candidateInfo);
                 } else {
@@ -28,6 +30,7 @@ function getCandidateInfoById(pool, candidateId) {
         });
     });
 }
+
 
 function getCandidateIdFromToken(pool, req) {
     const token = req.cookies.token;
@@ -52,7 +55,7 @@ function getCandidateIdFromToken(pool, req) {
 // Route to register a new candidate
 candidateRoutes.post('/registerCandidate', async (req, res) => {
     const pool = req.pool;
-    const { username, email, password, firstName, lastName, dateOfBirth, phone, address } = req.body;
+    const { username, email, password, firstName, lastName, dateOfBirth, phone, address, state, country} = req.body;
 
     try {
         // Hash the password
@@ -66,8 +69,8 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
 
             const userID = result.insertId;
             // Now, register the candidate using the user ID obtained
-            const sql = 'INSERT INTO Candidate (UserID, FirstName, LastName, DateOfBirth, Phone, Address) VALUES (?, ?, ?, ?, ?, ?)';
-            const values = [userID, firstName, lastName, dateOfBirth, phone, address];
+            const sql = 'INSERT INTO Candidate (UserID, FirstName, LastName, DateOfBirth, Phone, Address, State, Country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+            const values = [userID, firstName, lastName, dateOfBirth, phone, address, state, country];
 
             pool.query(sql, values, async (error, candidateResult) => {
                 if (error) {
