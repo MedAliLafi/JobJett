@@ -1,0 +1,7 @@
+.btnBottom {
+  margin-top: 100px;
+}
+#btn:hover {
+  background-color: transparent;
+  color: black;
+}

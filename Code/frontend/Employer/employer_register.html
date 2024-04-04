@@ -1,31 +1,32 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Employer Register</title>
-    </head>
-    <body>
-        <h2>Employer Registration</h2>
-        <form id="employerRegistrationForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br><br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-            <label for="companyName">Company Name:</label>
-            <input type="text" id="companyName" name="companyName" required><br><br>
-            <label for="industry">Industry:</label>
-            <input type="text" id="industry" name="industry" required><br><br>
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone"><br><br>
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address"><br><br>
-            <button type="submit" onclick="registerEmployer()">Register</button>
-        </form>
-        <script>
-            async function checkLoggedIn() {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Register</title>
+</head>
+<body>
+    <h2>Employer Registration</h2>
+    <form id="employerRegistrationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <label for="companyName">Company Name:</label>
+        <input type="text" id="companyName" name="companyName" required><br><br>
+        <label for="industry">Industry:</label>
+        <input type="text" id="industry" name="industry" required><br><br>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone"><br><br>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address"><br><br>
+        <button type="submit">Register</button>
+    </form>
+    <p>Already Registered? <a href="employer_login.html">Login here</a></p>
+    <script>
+        async function checkLoggedIn() {
             try {
                 const response = await fetch('http://localhost:3000/Employer/loginEmployer/checkEmployerAuth', {
                     method: 'GET',
@@ -48,8 +49,6 @@
             }
         }
 
-
-        // Call checkLoggedIn function when the page loads
         window.onload = checkLoggedIn;
 
         async function registerEmployer() {
@@ -75,9 +74,9 @@
                     throw new Error('Registration failed');
                 }
 
-                const data = await response.json();
-                console.log('Registration successful:', data);
-                // After successful registration, call the login function
+                console.log('Registration successful');
+
+                // After successful registration, automatically log in
                 const loginResponse = await fetch('http://localhost:3000/Employer/loginEmployer', {
                     method: 'POST',
                     headers: {
@@ -93,13 +92,20 @@
                     throw new Error('Login failed');
                 }
 
-                const loginData = await loginResponse.json();
-                console.log('Login successful:', loginData);
-                window.location.href = `employer_profile.html`;
+                console.log('Login successful');
+
+                // Redirect to profile page after successful registration and login
+                window.location.href = 'employer_profile.html';
             } catch (error) {
                 console.error('Error registering employer:', error);
             }
         }
-        </script>
-    </body>
-    </html>
+
+        // Call registerEmployer function when the form is submitted
+        document.getElementById('employerRegistrationForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            registerEmployer(); // Call registerEmployer function
+        });
+    </script>
+</body>
+</html>

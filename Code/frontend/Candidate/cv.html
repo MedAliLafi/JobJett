@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Resume</title>
+</head>
+<body>
+    <h2>Candidate Resume</h2>
+    <div id="candidateInfo">
+
+    </div>
+
+    <div>
+        <div>
+            <label for="summary">Summary:</label>
+            <textarea id="summary"></textarea>
+        </div>
+        <div>
+            <h3>Education</h3>
+            <div id="educationForms"></div>
+            <button onclick="addEducationForm()">Add Education</button>
+        </div>
+        <div>
+            <h3>Work Experience</h3>
+            <div id="workExperienceForms"></div>
+            <button onclick="addWorkExperienceForm()">Add Work Experience</button>
+        </div>
+        <div>
+            <label for="skills">Skills:</label>
+            <input type="text" id="skills" onkeydown="addSkill(event)">
+            <div id="skillsList"></div>
+        </div>
+        <div>
+            <h3>Certificate</h3>
+            <div id="certificationsForm"></div>
+            <button onclick="addCertificationsForm()">Add Certifications or Certificates</button>
+        </div>
+        <div>
+            <label for="searchable">Searchable:</label>
+            <input type="checkbox" id="searchable">
+        </div>
+        <div>
+            <button type="submit" onclick="submitCV()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        window.onload = async () => {
+            try {
+                // Fetch candidate information
+                const candidateInfoResponse = await fetchCandidateInfo();
+                if (candidateInfoResponse.ok) {
+                    const candidateInfo = await candidateInfoResponse.json();
+                    displayCandidateInfo(candidateInfo);
+                } else {
+                    console.error('Failed to fetch candidate information');
+                }
+
+                // Fetch existing education data
+                const educationResponse = await fetchExistingData('getEducation');
+                if (educationResponse.ok) {
+                    const educationData = await educationResponse.json();
+                    educationData.forEach(education => {
+                        addEducationForm(
+                            education.level,
+                            education.fieldOfStudy,
+                            education.school,
+                            education.fromDate,
+                            education.toDate,
+                            education.currentlyEnrolled
+                        );
+                    });
+                } else {
+                    console.error('Failed to fetch existing education data');
+                }
+
+                // Fetch existing work experience data
+                const workExperienceResponse = await fetchExistingData('getWorkExperience');
+                if (workExperienceResponse.ok) {
+                    const workExperienceData = await workExperienceResponse.json();
+                    workExperienceData.forEach(addWorkExperienceForm); // Iterate through each work experience item and add a form
+                } else {
+                    console.error('Failed to fetch existing work experience data');
+                }
+
+                // Fetch existing certificate data
+                const certificateResponse = await fetchExistingData('getCertificate');
+                if (certificateResponse.ok) {
+                    const certificateData = await certificateResponse.json();
+                    certificateData.forEach(certificate => {
+                        addCertificateForm(
+                            certificate.certificateName,
+                            certificate.dateIssued,
+                            certificate.description
+                        );
+                    });
+                } else {
+                    console.error('Failed to fetch existing certificate data');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+
+        async function fetchCandidateInfo() {
+            const response = await fetch('http://localhost:3000/Candidate/candidateInfo', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            return response;
+        }
+
+        async function fetchExistingData(endpoint) {
+            const response = await fetch(`http://localhost:3000/Candidate/cv/${endpoint}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            return response;
+        }
+
+        function displayCandidateInfo(candidateInfo) {
+            const candidateInfoDiv = document.getElementById('candidateInfo');
+            candidateInfoDiv.innerHTML = `
+                <p><strong>First Name:</strong> ${candidateInfo.firstName}</p>
+                <p><strong>Last Name:</strong> ${candidateInfo.lastName}</p>
+                <p><strong>Phone:</strong> ${candidateInfo.phone}</p>
+                <p><strong>Address:</strong> ${candidateInfo.address}</p>
+                <p><strong>State:</strong> ${candidateInfo.state}</p>
+                <p><strong>Country:</strong> ${candidateInfo.country}</p>
+            `;
+        }
+
+        function addEducationForm(level = '', fieldOfStudy = '', school = '', fromDate = '', toDate = '', currentlyEnrolled = false) {
+            const educationFormsDiv = document.getElementById('educationForms');
+            const form = document.createElement('div');
+            form.innerHTML = `
+                <input type="text" placeholder="Level of Education" value="${level}">
+                <input type="text" placeholder="Field of Study" value="${fieldOfStudy}">
+                <input type="text" placeholder="School" value="${school}">
+                <label for="educationFrom">From:</label>
+                <input type="month" id="educationFrom" value="${fromDate}">
+                <label for="educationTo">To:</label>
+                <input type="month" id="educationTo" value="${toDate}" ${currentlyEnrolled ? 'disabled' : ''}>
+                <input type="checkbox" id="currentlyEnrolled" ${currentlyEnrolled ? 'checked' : ''}>
+                <label for="currentlyEnrolled">Currently Enrolled</label>
+                <button onclick="removeFormItem(this)">Delete</button>
+            `;
+            educationFormsDiv.appendChild(form);
+
+            // Add event listener to toggle the "To" input field based on the "Currently Enrolled" checkbox
+            const currentlyEnrolledCheckbox = form.querySelector('#currentlyEnrolled');
+            const educationToInput = form.querySelector('#educationTo');
+            currentlyEnrolledCheckbox.addEventListener('change', function() {
+                educationToInput.disabled = this.checked;
+                if (this.checked) {
+                    educationToInput.value = ''; // Clear the value if "Currently Enrolled" is checked
+                }
+            });
+        }
+
+        function addWorkExperienceForm(jobTitle = '', company = '', fromDate = '', toDate = '', currentlyWorkHere = false, description = '') {
+            const workExperienceFormsDiv = document.getElementById('workExperienceForms');
+            const form = document.createElement('div');
+            form.innerHTML = `
+                <input type="text" placeholder="Job Title" value="${jobTitle}">
+                <input type="text" placeholder="Company" value="${company}">
+                <label for="workExperienceFrom">From:</label>
+                <input type="month" id="workExperienceFrom" value="${fromDate}">
+                <label for="workExperienceTo">To:</label>
+                <input type="month" id="workExperienceTo" value="${toDate}" ${currentlyWorkHere ? 'disabled' : ''}>
+                <input type="checkbox" id="currentlyWorkHere" ${currentlyWorkHere ? 'checked' : ''}>
+                <label for="currentlyWorkHere">I Currently Work Here</label>
+                <input type="text" placeholder="Description" value="${description}">
+                <button onclick="removeFormItem(this)">Delete</button>
+            `;
+            workExperienceFormsDiv.appendChild(form);
+
+            // Add event listener to toggle the "To" input field based on the "Currently Work Here" checkbox
+            const currentlyWorkHereCheckbox = form.querySelector('#currentlyWorkHere');
+            const workExperienceToInput = form.querySelector('#workExperienceTo');
+            currentlyWorkHereCheckbox.addEventListener('change', function() {
+                workExperienceToInput.disabled = this.checked;
+                if (this.checked) {
+                    workExperienceToInput.value = ''; // Clear the value if "Currently Work Here" is checked
+                }
+            });
+        }
+
+        function addCertificationsForm(certificationName = '', dateIssued = '', description = '') {
+            const certificationsFormsDiv = document.getElementById('certificationsForm');
+            const form = document.createElement('div');
+            form.innerHTML = `
+                <input type="text" placeholder="Certification" value="${certificationName}">
+                <label for="DateIssued">Date Issued:</label>
+                <input type="month" id="DateIssued" value="${dateIssued}">
+                <input type="text" placeholder="Certification Description" value="${description}">
+                <button onclick="removeFormItem(this)">Delete</button>
+            `;
+            certificationsFormsDiv.appendChild(form);
+        }
+
+
+        function addSkill(event) {
+            if (event.keyCode === 13) { // Check if Enter key is pressed
+                const skillsInput = document.getElementById('skills');
+                const skill = skillsInput.value.trim();
+                if (skill !== '') {
+                    const skillsListDiv = document.getElementById('skillsList');
+                    const skillItem = document.createElement('div');
+                    skillItem.textContent = skill;
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.onclick = function() {
+                        skillsListDiv.removeChild(skillItem);
+                        skillsListDiv.removeChild(this);
+                    };
+                    skillsListDiv.appendChild(skillItem);
+                    skillsListDiv.appendChild(deleteButton);
+                    skillsInput.value = ''; // Clear the input
+                }
+            }
+        }
+
+
+        function removeFormItem(button) {
+            button.parentNode.parentNode.removeChild(button.parentNode);
+        }
+
+        async function submitCV() {
+            try {
+                const summary = document.getElementById('summary').value;
+                const skillsDiv = document.getElementById('skillsList');
+                const skills = Array.from(skillsDiv.children).map(skill => skill.textContent).join(';'); // Join skills with a delimiter
+
+                const searchable = document.getElementById('searchable').checked;
+
+                // Add CV
+                const cvResponse = await fetch('http://localhost:3000/Candidate/cv/updateCV', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        summary,
+                        skills,
+                        searchable
+                    })
+                });
+
+                // Add Certificates
+                const certificatesFormsDiv = document.getElementById('certificationsForm');
+                if (certificatesFormsDiv.children.length > 0) {
+                    await Promise.all(Array.from(certificatesFormsDiv.children).map(async form => {
+                        const certificateName = form.querySelector('input[type="text"]').value;
+                        const dateIssued = form.querySelector('input[type="month"]').value;
+                        const description = form.querySelector('input[type="text"]').value;
+                        await fetch('http://localhost:3000/Candidate/cv/addCertificate', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                cvId,
+                                certificateName,
+                                dateIssued,
+                                description
+                            })
+                        });
+                    }));
+                }
+
+                // Add Education
+                const educationFormsDiv = document.getElementById('educationForms');
+                if (educationFormsDiv.children.length > 0) {
+                    await Promise.all(Array.from(educationFormsDiv.children).map(async form => {
+                        const level = form.querySelector('input[placeholder="Level of Education"]').value;
+                        const fieldOfStudy = form.querySelector('input[placeholder="Field of Study"]').value;
+                        const school = form.querySelector('input[placeholder="School"]').value;
+                        const fromDate = form.querySelector('input[type="month"]').value;
+                        let toDate = form.querySelector('input[type="month"]').value;
+                        const currentlyEnrolled = form.querySelector('input[type="checkbox"]').checked;
+                        if (currentlyEnrolled) {
+                            toDate = 'Present';
+                        }
+                        let TimePeriod = fromDate + '_' + toDate;
+                        await fetch('http://localhost:3000/Candidate/cv/addEducation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                cvId,
+                                level,
+                                fieldOfStudy,
+                                school,
+                                TimePeriod
+                            })
+                        });
+                    }));
+                }
+
+                // Add Work Experience
+                const workExperienceFormsDiv = document.getElementById('workExperienceForms');
+                if (workExperienceFormsDiv.children.length > 0) {
+                    await Promise.all(Array.from(workExperienceFormsDiv.children).map(async form => {
+                        const jobTitle = form.querySelector('input[placeholder="Job Title"]').value;
+                        const company = form.querySelector('input[placeholder="Company"]').value;
+                        const fromDate = form.querySelector('input[type="month"]').value;
+                        let toDate = form.querySelector('input[type="month"]').value;
+                        const currentlyWorkHere = form.querySelector('input[type="checkbox"]').checked;
+                        if (currentlyWorkHere) {
+                            toDate = 'Present';
+                        }
+                        let TimePeriod = fromDate + '_' + toDate;
+                        const description = form.querySelector('input[placeholder="Description"]').value;
+                        await fetch('http://localhost:3000/Candidate/cv/addWorkExperience', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                cvId,
+                                jobTitle,
+                                company,
+                                TimePeriod,
+                                description
+                            })
+                        });
+                    }));
+                }
+
+                alert('CV submitted successfully', cvId);
+            } catch (error) {
+                console.error('Error submitting CV:', error);
+                alert('Failed to submit CV. Please try again later.');
+            }
+        }
+
+</script>
+</body>
+</html>

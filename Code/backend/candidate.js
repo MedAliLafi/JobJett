@@ -1,8 +1,53 @@
 const express = require('express');
-const { userRoutes, registerUser, loginUser } = require('./user.js');
+const { registerUser, loginUser } = require('./user.js');
 const candidateRoutes = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// Function to get candidate information by ID
+function getCandidateInfoById(pool, candidateId) {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address FROM Candidate INNER JOIN User ON Candidate.UserID = User.UserID WHERE CandidateID = ?', [candidateId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    const candidateInfo = {
+                        firstName: results[0].FirstName,
+                        email: results[0].Email,
+                        dateOfBirth: results[0].DateOfBirth,
+                        lastName: results[0].LastName,
+                        phone: results[0].Phone,
+                        address: results[0].Address
+                    };
+                    resolve(candidateInfo);
+                } else {
+                    reject(new Error('Candidate not found for the given ID.'));
+                }
+            }
+        });
+    });
+}
+
+function getCandidateIdFromToken(pool, req) {
+    const token = req.cookies.token;
+    if (!token) return null;
+    const decoded = jwt.verify(token, 'secret_key');
+    const userID = decoded.user.UserID;
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT CandidateID FROM candidate WHERE UserID = ?', [userID], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    resolve(results[0].CandidateID);
+                } else {
+                    reject(new Error('Candidate not found for the given token.'));
+                }
+            }
+        });
+    });
+}
 
 // Route to register a new candidate
 candidateRoutes.post('/registerCandidate', async (req, res) => {
@@ -16,7 +61,6 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
         // First, register the user using the function from user.js module
         registerUser(pool, username, email, hashedPassword, 'Candidate', async (error, result) => {
             if (error) {
-                console.error('Error registering user:', error);
                 return res.status(500).json({ error: 'An error occurred while registering the user.' });
             }
 
@@ -25,13 +69,35 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
             const sql = 'INSERT INTO Candidate (UserID, FirstName, LastName, DateOfBirth, Phone, Address) VALUES (?, ?, ?, ?, ?, ?)';
             const values = [userID, firstName, lastName, dateOfBirth, phone, address];
 
-            pool.query(sql, values, (error, result) => {
+            pool.query(sql, values, async (error, candidateResult) => {
                 if (error) {
                     console.error('Error registering candidate:', error);
                     return res.status(500).json({ error: 'An error occurred while registering the candidate.' });
                 }
-                console.log('Candidate registered successfully');
-                res.status(200).json({ message: 'Candidate registered successfully' });
+                
+                // Insert a new CV record
+                const cvSql = 'INSERT INTO CV (CandidateID, Summary, Skills, Searchable) VALUES (?, ?, ?, ?)';
+                const cvValues = [candidateResult.insertId, '', '', 'false'];
+
+                pool.query(cvSql, cvValues, (cvError, cvResult) => {
+                    if (cvError) {
+                        console.error('Error adding CV:', cvError);
+                        return res.status(500).json({ error: 'An error occurred while adding the CV.' });
+                    }
+                    
+                    // Update the candidate record with the CV_ID
+                    const updateSql = 'UPDATE Candidate SET CV_ID = ? WHERE CandidateID = ?';
+                    const updateValues = [cvResult.insertId, candidateResult.insertId];
+
+                    pool.query(updateSql, updateValues, (updateError, updateResult) => {
+                        if (updateError) {
+                            console.error('Error updating candidate record with CV_ID:', updateError);
+                            return res.status(500).json({ error: 'An error occurred while updating the candidate record.' });
+                        }
+                        console.log('Candidate registered successfully');
+                        res.status(200).json({ message: 'Candidate registered successfully' });
+                    });
+                });
             });
         });
     } catch (error) {
@@ -68,14 +134,21 @@ candidateRoutes.post('/loginCandidate', async (req, res) => {
     }
 });
 
-async function getCandidateIdFromToken(req) {
-    const token = req.cookies.token;
-    if (!token) return null;
-    const decoded = jwt.verify(token, 'secret_key');
-    const userID = decoded.user.UserID;
-    const query = 'SELECT CandidateID FROM candidate WHERE UserID = ?';
-    const [rows] = await pool.query(query, [userID]);
-    return rows.length > 0 ? rows[0].CandidateID : null;
-}
+// Route to get candidate information
+candidateRoutes.get('/candidateInfo', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateId = await getCandidateIdFromToken(pool, req);
+        if (!candidateId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const candidateInfo = await getCandidateInfoById(pool, candidateId);
+        res.status(200).json(candidateInfo);
+    } catch (error) {
+        console.error('Error fetching candidate information:', error);
+        res.status(500).json({ error: 'An error occurred while fetching candidate information' });
+    }
+});
 
-module.exports = { candidateRoutes, getCandidateIdFromToken };
+
+module.exports = { candidateRoutes, getCandidateIdFromToken, getCandidateInfoById };

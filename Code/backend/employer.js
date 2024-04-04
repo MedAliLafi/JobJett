@@ -1,8 +1,52 @@
 const express = require('express');
-const { userRoutes, registerUser, loginUser } = require('./user.js');
+const { registerUser, loginUser } = require('./user.js');
 const employerRoutes = express.Router();
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// Function to get employer information by ID
+function getEmployerInfoById(pool, employerId) {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT Employer.CompanyName, User.Email, Employer.Industry, Employer.Phone, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    const employerInfo = {
+                        companyName: results[0].CompanyName,
+                        email: results[0].Email,
+                        industry: results[0].Industry,
+                        phone: results[0].Phone,
+                        address: results[0].Address
+                    };
+                    resolve(employerInfo);
+                } else {
+                    reject(new Error('Employer not found for the given ID.'));
+                }
+            }
+        });
+    });
+}
+
+function getEmployerIdFromToken(pool, req) {
+    const token = req.cookies.token;
+    if (!token) return null;
+    const decoded = jwt.verify(token, 'secret_key');
+    const userID = decoded.user.UserID;
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT EmployerID FROM employer WHERE UserID = ?', [userID], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    resolve(results[0].EmployerID);
+                } else {
+                    reject(new Error('Employer not found for the given token.'));
+                }
+            }
+        });
+    });
+}
 
 // Route to register a new employer
 employerRoutes.post('/registerEmployer', async (req, res) => {
@@ -67,24 +111,15 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
     }
 });
 
-async function getEmployerIdFromToken(req) {
-    const token = req.cookies.token;
-    if (!token) return null;
-    const decoded = jwt.verify(token, 'secret_key');
-    const userID = decoded.user.UserID;
-    const query = 'SELECT EmployerID FROM employer WHERE UserID = ?';
-    const [rows] = await pool.query(query, [userID]);
-    return rows.length > 0 ? rows[0].EmployerID : null;
-}
-
 // Route to get employer information
-employerRoutes.get('/profile', async (req, res) => {
+employerRoutes.get('/employerInfo', async (req, res) => {
     try {
-        const employerId = await getEmployerIdFromToken(req); // Get employer ID from token
+        const pool = req.pool;
+        const employerId = await getEmployerIdFromToken(pool, req);
         if (!employerId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        const employerInfo = await getEmployerInfoById(req.pool, employerId); // Fetch employer info by ID
+        const employerInfo = await getEmployerInfoById(pool, employerId);
         res.status(200).json(employerInfo);
     } catch (error) {
         console.error('Error fetching employer information:', error);
@@ -92,20 +127,53 @@ employerRoutes.get('/profile', async (req, res) => {
     }
 });
 
-// Function to get employer information by ID
-async function getEmployerInfoById(pool, employerId) {
-    const query = 'SELECT * FROM Employer WHERE EmployerID = ?';
-    const [rows] = await pool.query(query, [employerId]);
-    if (rows.length > 0) {
-        return {
-            companyName: rows[0].CompanyName,
-            email: rows[0].Email,
-            industry: rows[0].Industry,
-            phone: rows[0].Phone,
-            address: rows[0].Address
-        };
-    }
-    return null;
-}
+// Route to add a new job offer
+employerRoutes.post('/addJobOffer', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const employerId = await getEmployerIdFromToken(pool, req);
+        if (!employerId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
 
-module.exports = { employerRoutes, getEmployerIdFromToken };
+        // Extract job offer data from the request body
+        const { jobTitle, jobLocationType, jobType, payType, pay, payFrequency, jobDescription } = req.body;
+        const salary = `${payType}_${pay}_${payFrequency}`;
+
+        // Construct the job offer object
+        const jobOfferData = {
+            EmployerID: employerId,
+            Title: jobTitle,
+            Description: jobDescription,
+            Type: jobType,
+            Salary: salary,
+            Location: jobLocationType,
+            DatePosted: new Date().toISOString().split('T')[0] // Current date as DatePosted
+        };
+
+        // Save the job offer data to the database
+        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const values = [
+            jobOfferData.EmployerID,
+            jobOfferData.Title,
+            jobOfferData.Description,
+            jobOfferData.Type,
+            jobOfferData.Salary,
+            jobOfferData.Location,
+            jobOfferData.DatePosted
+        ];
+        pool.query(sql, values, (error, result) => {
+            if (error) {
+                console.error('Error adding job offer:', error);
+                return res.status(500).json({ error: 'An error occurred while adding the job offer database.' });
+            }
+            console.log('Job offer added successfully');
+            res.status(200).json({ message: 'Job offer added successfully' });
+        });
+    } catch (error) {
+        console.error('Error adding job offer:', error);
+        return res.status(500).json({ error: 'An error occurred while adding the job offer.' });
+    }
+});
+
+module.exports = { employerRoutes, getEmployerIdFromToken, getEmployerInfoById };

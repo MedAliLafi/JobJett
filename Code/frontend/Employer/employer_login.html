@@ -31,6 +31,8 @@
                     if (data.loggedIn) {
                         // Redirect to profile page if employer is already logged in
                         window.location.href = 'employer_profile.html';
+                        sleep(1000);
+                        window.location.reload();
                     }
                 } else {
                     console.error('Failed to check if employer is logged in');
@@ -64,6 +66,8 @@
                 const data = await response.json();
                 console.log('Login successful:', data);
                 window.location.href = `employer_profile.html`;
+                sleep(1000);
+                window.location.reload();
             } catch (error) {
                 console.error('Error logging in employer:', error);
             }
