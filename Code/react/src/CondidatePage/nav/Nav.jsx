@@ -6,9 +6,9 @@ function Nav() {
   return (
     <nav className="navbar">
       <div className="logo">
-        <a href="" to="/">
+        <Link to="/">
           <img src={logo} alt="" className="logo"></img>
-        </a>
+        </Link>
       </div>
       <div className="nav-links">
         <ul className="">

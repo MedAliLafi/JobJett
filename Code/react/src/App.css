@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --blue: #2a68ff;
-  --blue2: #00579b;
+  --blue: #00579b;
   font-family: sans-serif;
 }
