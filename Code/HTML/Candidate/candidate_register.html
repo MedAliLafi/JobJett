@@ -34,7 +34,7 @@
     <script>
         async function checkLoggedIn() {
             try {
-                const response = await fetch('http://localhost:3000/Candidate/loginCandidate/checkCandidateAuth', {
+                const response = await fetch('http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -61,7 +61,7 @@
         async function registerCandidate() {
             const formData = new FormData(document.getElementById('candidateRegistrationForm'));
             try {
-                const response = await fetch('http://localhost:3000/Candidate/registerCandidate', {
+                const response = await fetch('http://localhost:9000/Candidate/registerCandidate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -87,7 +87,7 @@
                 console.log('Registration successful');
 
                 // After successful registration, automatically log in
-                const loginResponse = await fetch('http://localhost:3000/Candidate/loginCandidate', {
+                const loginResponse = await fetch('http://localhost:9000/Candidate/loginCandidate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

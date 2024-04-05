@@ -28,7 +28,7 @@
     <script>
         async function checkLoggedIn() {
             try {
-                const response = await fetch('http://localhost:3000/Employer/loginEmployer/checkEmployerAuth', {
+                const response = await fetch('http://localhost:9000/Employer/loginEmployer/checkEmployerAuth', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@
         async function registerEmployer() {
             const formData = new FormData(document.getElementById('employerRegistrationForm'));
             try {
-                const response = await fetch('http://localhost:3000/Employer/registerEmployer', {
+                const response = await fetch('http://localhost:9000/Employer/registerEmployer', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -78,7 +78,7 @@
                 console.log('Registration successful');
 
                 // After successful registration, automatically log in
-                const loginResponse = await fetch('http://localhost:3000/Employer/loginEmployer', {
+                const loginResponse = await fetch('http://localhost:9000/Employer/loginEmployer', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

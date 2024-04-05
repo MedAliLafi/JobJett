@@ -36,7 +36,7 @@
 
         async function fetchCandidateInfo() {
             // Fetch candidate information from the backend
-            const response = await fetch('http://localhost:3000/Candidate/candidateInfo', {
+            const response = await fetch('http://localhost:9000/Candidate/candidateInfo', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -75,7 +75,7 @@
 
         async function deleteAccount() {
             try {
-                const response = await fetch('http://localhost:3000/user/deleteUser', {
+                const response = await fetch('http://localhost:9000/user/deleteUser', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -95,7 +95,7 @@
         
         async function logout() {
             try {
-                const response = await fetch('http://localhost:3000/logout', {
+                const response = await fetch('http://localhost:9000/logout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

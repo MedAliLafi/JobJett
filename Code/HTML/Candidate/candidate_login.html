@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employer Login</title>
+    <title>Candidate Login</title>
 </head>
 <body>
-    <h2>Employer Login</h2>
-    <form id="employerLoginForm">
+    <h2>Candidate Login</h2>
+    <form id="candidateLoginForm">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
-        <button type="submit" onclick="loginEmployer()">Login</button>
+        <button type="submit" onclick="loginCandidate()">Login</button>
     </form>
-    <p>Don't have an account? <a href="employer_register.html">Register here</a></p>
+    <p>Don't have an account? <a href="candidate_register.html">Register here</a></p>
 
     <script>
         async function checkLoggedIn() {
             try {
-                const response = await fetch('http://localhost:3000/Employer/loginEmployer/checkEmployerAuth', {
+                const response = await fetch('http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -29,15 +29,15 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data.loggedIn) {
-                        // Redirect to profile page if employer is already logged in
-                        window.location.href = 'employer_profile.html';
+                        // Redirect to profile page if candidate is already logged in
+                        window.location.href = 'candidate_profile.html';
                         sleep(1000);
                     }
                 } else {
-                    console.error('Failed to check if employer is logged in');
+                    console.error('Failed to check if candidate is logged in');
                 }
             } catch (error) {
-                console.error('Error checking if employer is logged in:', error);
+                console.error('Error checking if candidate is logged in:', error);
             }
         }
 
@@ -45,10 +45,10 @@
         // Call checkLoggedIn function when the page loads
         window.onload = checkLoggedIn;
 
-        async function loginEmployer() {
-            const formData = new FormData(document.getElementById('employerLoginForm'));
+        async function loginCandidate() {
+            const formData = new FormData(document.getElementById('candidateLoginForm'));
             try {
-                const response = await fetch('http://localhost:3000/Employer/loginEmployer', {
+                const response = await fetch('http://localhost:9000/Candidate/loginCandidate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -64,10 +64,10 @@
                 }
                 const data = await response.json();
                 console.log('Login successful:', data);
-                window.location.href = `employer_profile.html`;
+                window.location.href = `candidate_profile.html`;
                 sleep(1000);
             } catch (error) {
-                console.error('Error logging in employer:', error);
+                console.error('Error logging in candidate:', error);
             }
         }
     </script>

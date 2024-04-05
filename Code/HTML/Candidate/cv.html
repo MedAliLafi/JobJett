@@ -145,7 +145,7 @@
 
 
         async function fetchCandidateInfo() {
-            const response = await fetch('http://localhost:3000/Candidate/candidateInfo', {
+            const response = await fetch('http://localhost:9000/Candidate/candidateInfo', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -155,7 +155,7 @@
         }
 
         async function fetchExistingData(endpoint) {
-            const response = await fetch(`http://localhost:3000/Candidate/cv/${endpoint}`, {
+            const response = await fetch(`http://localhost:9000/Candidate/cv/${endpoint}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -300,27 +300,30 @@
         async function submitCV() {
             try {
                 // Delete existing education data
-                await fetch('http://localhost:3000/Candidate/cv/deleteEducation', {
+                await fetch('http://localhost:9000/Candidate/cv/deleteEducation', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include'
                 });
 
                 // Delete existing work experience data
-                await fetch('http://localhost:3000/Candidate/cv/deleteWorkExperience', {
+                await fetch('http://localhost:9000/Candidate/cv/deleteWorkExperience', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include'
                 });
 
                 // Delete existing certificate data
-                await fetch('http://localhost:3000/Candidate/cv/deleteCertificate', {
+                await fetch('http://localhost:9000/Candidate/cv/deleteCertificate', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include'
                 });
 
                 // Update CV
@@ -328,7 +331,7 @@
                 const skillsDiv = document.getElementById('skillsList');
                 const skills = Array.from(skillsDiv.children).filter(child => child.tagName === 'DIV').map(skill => skill.textContent).join(';'); // Join skills with a delimiter
                 const searchable = document.getElementById('searchable').checked;
-                const cvResponse = await fetch('http://localhost:3000/Candidate/cv/updateCV', {
+                const cvResponse = await fetch('http://localhost:9000/Candidate/cv/updateCV', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -337,7 +340,8 @@
                         summary,
                         skills,
                         searchable
-                    })
+                    }),
+                    credentials: 'include'
                 });
                 if (!cvResponse.ok) {
                     throw new Error('Failed to update CV');
@@ -350,7 +354,7 @@
                         const certificateName = form.querySelector('input[type="text"]').value;
                         const dateIssued = form.querySelector('input[type="month"]').value;
                         const description = form.querySelector('input[type="text"]').value;
-                        await fetch('http://localhost:3000/Candidate/cv/addCertificate', {
+                        await fetch('http://localhost:9000/Candidate/cv/addCertificate', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -360,7 +364,8 @@
                                 certificateName,
                                 dateIssued,
                                 description
-                            })
+                            }),
+                            credentials: 'include'
                         });
                     }));
                 }
@@ -379,7 +384,7 @@
                             toDate = 'Present';
                         }
                         let TimePeriod = fromDate + '_' + toDate;
-                        await fetch('http://localhost:3000/Candidate/cv/addEducation', {
+                        await fetch('http://localhost:9000/Candidate/cv/addEducation', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -390,7 +395,8 @@
                                 fieldOfStudy,
                                 school,
                                 TimePeriod
-                            })
+                            }),
+                            credentials: 'include'
                         });
                     }));
                 }
@@ -409,7 +415,7 @@
                         }
                         let TimePeriod = fromDate + '_' + toDate;
                         const description = form.querySelector('input[placeholder="Description"]').value;
-                        await fetch('http://localhost:3000/Candidate/cv/addWorkExperience', {
+                        await fetch('http://localhost:9000/Candidate/cv/addWorkExperience', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -420,7 +426,8 @@
                                 company,
                                 TimePeriod,
                                 description
-                            })
+                            }),
+                            credentials: 'include'
                         });
                     }));
                 }
