@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 // Function to get employer information by ID
 function getEmployerInfoById(pool, employerId) {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT Employer.CompanyName, User.Email, Employer.Industry, Employer.Phone, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
+        pool.query('SELECT Employer.CompanyName, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -17,6 +17,8 @@ function getEmployerInfoById(pool, employerId) {
                         email: results[0].Email,
                         industry: results[0].Industry,
                         phone: results[0].Phone,
+                        state: results[0].State,
+                        country: results[0].Country,
                         address: results[0].Address
                     };
                     resolve(employerInfo);
@@ -51,7 +53,7 @@ function getEmployerIdFromToken(pool, req) {
 // Route to register a new employer
 employerRoutes.post('/registerEmployer', async (req, res) => {
     const pool = req.pool;
-    const { username, email, password, companyName, industry, phone, address } = req.body;
+    const { username, email, password, companyName, industry, phone, state, country, address } = req.body;
     
     try {
         // Hash the password
@@ -65,8 +67,8 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 
         const userID = userResult.insertId;
         // Now, register the employer using the user ID obtained
-        const sql = 'INSERT INTO Employer (UserID, CompanyName, Industry, Phone, Address) VALUES (?, ?, ?, ?, ?)';
-        const values = [userID, companyName, industry, phone, address];
+        const sql = 'INSERT INTO Employer (UserID, CompanyName, Industry, Phone, State, Country, Address) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const values = [userID, companyName, industry, phone, state, country, address];
 
         pool.query(sql, values, (error, employerResult) => {
             if (error) {

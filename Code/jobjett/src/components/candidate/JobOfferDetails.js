@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const JobOfferDetails = () => {
     const [jobofferDetails, setJobOfferDetails] = useState(null);
     const { jobofferId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchJobOfferDetails();
@@ -26,8 +27,9 @@ const JobOfferDetails = () => {
     };
 
     const redirectToApplication = () => {
-        window.location.href = `/candidate/application?jobofferId=${jobofferId}`;
+        navigate(`/candidate/application?jobofferId=${jobofferId}`);
     };
+    
 
     return (
         <div>

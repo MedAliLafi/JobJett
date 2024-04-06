@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-const CandidateRegister = () => {
+const EmployerRegister = () => {
     const navigate = useNavigate();
 
     const checkLoggedIn = async () => {
         try {
-            const response = await fetch('http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth', {
+            const response = await fetch('http://localhost:9000/Employer/loginEmployer/checkEmployerAuth', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -17,13 +17,13 @@ const CandidateRegister = () => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.loggedIn) {
-                    navigate("/candidate/profile");
+                    navigate("/employer/profile");
                 }
             } else {
-                console.error('Failed to check if candidate is logged in');
+                console.error('Failed to check if employer is logged in');
             }
         } catch (error) {
-            console.error('Error checking if candidate is logged in:', error);
+            console.error('Error checking if employer is logged in:', error);
         }
     };
 
@@ -31,11 +31,11 @@ const CandidateRegister = () => {
         checkLoggedIn();
     }, []);
 
-    const registerCandidate = async (event) => {
+    const registerEmployer = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         try {
-            const response = await fetch('http://localhost:9000/Candidate/registerCandidate', {
+            const response = await fetch('http://localhost:9000/Employer/registerEmployer', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -45,13 +45,12 @@ const CandidateRegister = () => {
                     username: formData.get('username'),
                     email: formData.get('email'),
                     password: formData.get('password'),
-                    firstName: formData.get('firstName'),
-                    lastName: formData.get('lastName'),
-                    dateOfBirth: formData.get('dateOfBirth'),
+                    companyName: formData.get('companyName'),
+                    industry: formData.get('industry'),
                     phone: formData.get('phone'),
-                    address: formData.get('address'),
                     state: formData.get('state'),
-                    country: formData.get('country')
+                    country: formData.get('country'),
+                    address: formData.get('address')
                 })
             });
 
@@ -60,7 +59,7 @@ const CandidateRegister = () => {
             }
 
             console.log('Registration successful');
-            const loginResponse = await fetch('http://localhost:9000/Candidate/loginCandidate', {
+            const loginResponse = await fetch('http://localhost:9000/Employer/loginEmployer', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -77,28 +76,26 @@ const CandidateRegister = () => {
             }
 
             console.log('Login successful');
-            navigate("/candidate/profile");
+            navigate("/employer/profile");
         } catch (error) {
-            console.error('Error registering candidate:', error);
+            console.error('Error registering employer:', error);
         }
     };
 
     return (
         <div>
-            <h2>Candidate Registration</h2>
-            <form onSubmit={registerCandidate} id="candidateRegistrationForm">
+            <h2>Employer Registration</h2>
+            <form onSubmit={registerEmployer} id="employerRegistrationForm">
                 <label htmlFor="username">Username:</label><br />
                 <input type="text" id="username" name="username" required /><br />
                 <label htmlFor="email">Email:</label><br />
                 <input type="email" id="email" name="email" required /><br />
                 <label htmlFor="password">Password:</label><br />
                 <input type="password" id="password" name="password" required /><br />
-                <label htmlFor="firstName">First Name:</label><br />
-                <input type="text" id="firstName" name="firstName" required /><br />
-                <label htmlFor="lastName">Last Name:</label><br />
-                <input type="text" id="lastName" name="lastName" required /><br />
-                <label htmlFor="dateOfBirth">Date of Birth:</label><br />
-                <input type="date" id="dateOfBirth" name="dateOfBirth" required /><br />
+                <label htmlFor="companyName">Company Name:</label><br />
+                <input type="text" id="companyName" name="companyName" required /><br />
+                <label htmlFor="industry">Industry:</label><br />
+                <input type="text" id="industry" name="industry" required /><br />
                 <label htmlFor="phone">Phone:</label><br />
                 <input type="text" id="phone" name="phone" /><br />
                 <label htmlFor="state">State:</label><br />
@@ -109,9 +106,9 @@ const CandidateRegister = () => {
                 <input type="text" id="address" name="address" /><br />
                 <button type="submit">Register</button>
             </form>
-            <p>Already Registered? <Link to="/candidate/login">Login here</Link></p>
+            <p>Already Registered? <Link to="/employer/login">Login here</Link></p>
         </div>
     );
 };
 
-export default CandidateRegister;
+export default EmployerRegister;

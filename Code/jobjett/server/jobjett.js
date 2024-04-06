@@ -19,9 +19,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Serve static files from the 'frontend' directory
-app.use(express.static('frontend'));
-
 // Pool configuration
 const pool = mysql.createPool({
   host: 'localhost',

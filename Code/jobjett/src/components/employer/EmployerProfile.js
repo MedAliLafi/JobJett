@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const CandidateProfile = () => {
+const EmployerProfile = () => {
     const navigate = useNavigate();
-    const [candidateInfo, setCandidateInfo] = useState(null);
+    const [employerInfo, setEmployerInfo] = useState(null);
 
     useEffect(() => {
-        fetchCandidateInfo();
+        fetchEmployerInfo();
     }, []);
 
-    const fetchCandidateInfo = async () => {
+    const fetchEmployerInfo = async () => {
         try {
-            const response = await fetch('http://localhost:9000/Candidate/candidateInfo', {
+            const response = await fetch('http://localhost:9000/Employer/employerInfo', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -20,21 +20,21 @@ const CandidateProfile = () => {
             });
             if (response.ok) {
                 const data = await response.json();
-                setCandidateInfo(data);
+                setEmployerInfo(data);
             } else {
-                console.error('Failed to fetch candidate information');
+                console.error('Failed to fetch employer information');
             }
         } catch (error) {
-            console.error('Error fetching candidate information:', error);
+            console.error('Error fetching employer information:', error);
         }
     };
 
     const handleViewApplications = () => {
-        navigate('/candidate/applications');
+        navigate('/employer/applications');
     };
 
-    const handleManageCV = () => {
-        navigate('/candidate/cv');
+    const handleAddJobOffer = () => {
+        navigate('/employer/addjoboffer');
     };
 
     const handleChangePassword = () => {
@@ -54,6 +54,7 @@ const CandidateProfile = () => {
             });
             if (response.ok) {
                 logout();
+                navigate('/employer/login');
             } else {
                 console.error('Account deletion failed');
             }
@@ -74,7 +75,7 @@ const CandidateProfile = () => {
             if (!response.ok) {
                 console.error('Logout failed');
             }
-            navigate('/candidate/login');
+            navigate('/employer/login');
         } catch (error) {
             console.error('Error during logout:', error);
         }
@@ -82,22 +83,21 @@ const CandidateProfile = () => {
 
     return (
         <div>
-            <h2>Candidate Profile</h2>
-            {candidateInfo && (
+            <h2>Employer Profile</h2>
+            {employerInfo && (
                 <div>
-                    <p><strong>First Name:</strong> {candidateInfo.firstName}</p>
-                    <p><strong>Last Name:</strong> {candidateInfo.lastName}</p>
-                    <p><strong>Email:</strong> {candidateInfo.email}</p>
-                    <p><strong>Date of birth:</strong> {candidateInfo.dateOfBirth}</p>
-                    <p><strong>Phone:</strong> {candidateInfo.phone}</p>
-                    <p><strong>Address:</strong> {candidateInfo.address}</p>
-                    <p><strong>State:</strong> {candidateInfo.state}</p>
-                    <p><strong>Country:</strong> {candidateInfo.country}</p>
+                <p><strong>Company Name:</strong> {employerInfo.companyName}</p>
+                <p><strong>Email:</strong> {employerInfo.email}</p>
+                <p><strong>Industry:</strong> {employerInfo.industry}</p>
+                <p><strong>Phone:</strong> {employerInfo.phone}</p>
+                <p><strong>Address:</strong> {employerInfo.address}</p>
+                <p><strong>State:</strong> {employerInfo.state}</p>
+                <p><strong>Country:</strong> {employerInfo.country}</p>
                 </div>
             )}
             <h3>Actions</h3>
-            <button onClick={handleViewApplications}>Applications</button>
-            <button onClick={handleManageCV}>Manage CV</button>
+            <button onClick={handleViewApplications}>View Applications</button>
+            <button onClick={handleAddJobOffer}>Add Job Offer</button>
             <button onClick={handleChangePassword}>Change Password</button>
             <button onClick={handleChangeEmail}>Change Email</button>
             <button onClick={handleDeleteAccount}>Delete Account</button>
@@ -106,4 +106,4 @@ const CandidateProfile = () => {
     );
 };
 
-export default CandidateProfile;
+export default EmployerProfile;
