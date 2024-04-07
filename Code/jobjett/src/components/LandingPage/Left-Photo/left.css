@@ -1,0 +1,82 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: 0;
+}
+.second-page {
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  padding-top: 200px;
+  /* margin-bottom: 100px; */
+}
+.text-box2 {
+  /* margin-top: 15px; */
+  font-size: 20px;
+  line-height: 1.3em;
+}
+.second-page h1 {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+.btn {
+  text-align: center;
+  font-family: inherit;
+  display: inline-block;
+  width: 8em;
+  height: 2.6em;
+  line-height: 2.5em;
+  margin: 20px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--color);
+  transition: color 0.5s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: var(--color);
+  text-decoration: none;
+}
+.btn:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: var(--color);
+  height: 150px;
+  width: 200px;
+  border-radius: 50%;
+}
+.btn:hover {
+  color: #fff;
+}
+.btn:before {
+  top: 100%;
+  left: 100%;
+  transition: all 0.7s;
+}
+.btn:hover:before {
+  top: -30px;
+  left: -30px;
+}
+
+.btn:active:before {
+  background: #00579b;
+  transition: background 0s;
+}
+.left {
+  margin-right: 100px;
+  height: 150px;
+  width: 300px;
+  float: left;
+}
+.divide {
+  padding: 0 100px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.divide img {
+  margin-top: -60px;
+  height: 300px;
+}
