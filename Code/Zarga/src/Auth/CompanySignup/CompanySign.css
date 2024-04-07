@@ -39,8 +39,8 @@ img {
 .form-box {
   display: flex;
   flex-direction: column;
-
-  border: 8px solid var(--lighter-color);
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  /* border: 3px solid var(--lighter-color); */
   border-radius: 15px;
   /* background-color: #faf9ff; */
   background-color: #00589b0f;
@@ -158,6 +158,9 @@ img {
   display: block;
   -webkit-animation: fadeIn 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   animation: fadeIn 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+.form-box .checkbox {
+  margin-bottom: 20px;
 }
 @keyframes fadeIn {
   0% {

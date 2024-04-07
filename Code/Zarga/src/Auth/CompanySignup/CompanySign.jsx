@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
 import logo from "../../assets/output-onlinetools.png";
 import { Link } from "react-router-dom";
@@ -408,6 +409,49 @@ const CompanySign = () => {
                 ></input>
               </div> */}
               <div>
+                <label>Company's Name</label>
+                <input type="text" placeholder="e.g Microsoft" required></input>
+              </div>
+
+              <div>
+                <label>Company's industry</label>
+                <select name="nb-employees" id="nb-employees" required>
+                  <option value="technology">Technology</option>
+                  <option value="finance">Finance</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="automotive">Automotive</option>
+                  <option value="retail">Retail</option>
+                  <option value="energy">Energy</option>
+                  <option value="telecommunications">Telecommunications</option>
+                  <option value="food-and-beverage">Food and Beverage</option>
+                  <option value="entertainment-and-media">
+                    Entertainment and Media
+                  </option>
+                  <option value="aerospace-and-defense">
+                    Aerospace and Defense
+                  </option>
+                  <option value="pharmaceutical">Pharmaceutical</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="real-estate">Real Estate</option>
+                  <option value="transportation-and-logistics">
+                    Transportation and Logistics
+                  </option>
+                  <option value="utilities">Utilities</option>
+                </select>
+              </div>
+              <div>
+                <label>Number of employees</label>
+                <select name="nb-employees" id="nb-employees" required>
+                  <option>1 to 49</option>
+                  <option>50 to 149</option>
+                  <option>150 to 249</option>
+                  <option>250 to 499</option>
+                  <option>500 to 749</option>
+                  <option>750 to 999</option>
+                  <option>1000+</option>
+                </select>
+              </div>
+              <div>
                 <label>Country</label>
                 <select name="country" id="country" required>
                   <option value="">Please select</option>
@@ -434,19 +478,6 @@ const CompanySign = () => {
                 <label>Address</label>
                 <input type="text" placeholder="Street Address"></input>
               </div>
-
-              <div>
-                <label>Number of employees</label>
-                <select name="nb-employees" id="nb-employees" required>
-                  <option>1 to 49</option>
-                  <option>50 to 149</option>
-                  <option>150 to 249</option>
-                  <option>250 to 499</option>
-                  <option>500 to 749</option>
-                  <option>750 to 999</option>
-                  <option>1000+</option>
-                </select>
-              </div>
             </div>
             <div
               className={`form-three form-step ${active === 3 ? "active" : ""}`}
@@ -462,10 +493,6 @@ const CompanySign = () => {
                 ></input>
               </div>
               <div>
-                <label>Username</label>
-                <input type="text" placeholder="Username" required></input>
-              </div>
-              <div>
                 <label>Password</label>
                 <input type="password" placeholder="Password" required></input>
               </div>
@@ -478,7 +505,7 @@ const CompanySign = () => {
               </div>
               <div className="checkbox">
                 <input type="checkbox"></input>
-                <label>Rec;sdzpaszss</label>
+                <label>Receive mails</label>
               </div>
             </div>
             <div className="btn-group flex justify-between">
@@ -496,7 +523,7 @@ const CompanySign = () => {
                 onClick={nextButtonFunction}
                 disabled={active == 3}
               >
-                Next Step
+                Next
               </button>
               <button type="button" className="btn-submit">
                 Submit
