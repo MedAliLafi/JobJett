@@ -32,13 +32,13 @@ cvRoutes.post('/updateCV', async (req, res) => {
 cvRoutes.post('/addCertificate', async (req, res) => {
     try {
         const pool = req.pool;
-        const { cvId, certificateName, dateIssued, description } = req.body;
+        const { cvId, certification, dateIssued, description } = req.body;
         const candidateId = await getCandidateIdFromToken(pool, req);
         if (!candidateId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        const sql = 'INSERT INTO certification (CandidateID, CV_ID, Certification, DateIssued, description) VALUES (?, ?, ?, ?, ?)';
-        const values = [candidateId, cvId, certificateName, dateIssued, description];
+        const sql = 'INSERT INTO certification (CandidateID, CV_ID, certification, DateIssued, description) VALUES (?, ?, ?, ?, ?)';
+        const values = [candidateId, cvId, certification, dateIssued, description];
         pool.query(sql, values, (error, result) => {
             if (error) {
                 console.error('Error adding certificate:', error);

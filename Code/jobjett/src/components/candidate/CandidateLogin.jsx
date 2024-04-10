@@ -30,9 +30,6 @@ const CandidateLogin = () => {
 
     useEffect(() => {
         checkLoggedIn();
-    }, []);
-
-    useEffect(() => {
         if (isLoggedIn) {
             navigate("/candidate/profile");
         }
