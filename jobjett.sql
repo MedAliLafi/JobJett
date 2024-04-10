@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2024 at 10:18 PM
+-- Generation Time: Apr 10, 2024 at 07:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -80,8 +80,8 @@ CREATE TABLE `certification` (
   `CertificationID` int(11) NOT NULL,
   `CandidateID` int(11) NOT NULL,
   `CV_ID` int(11) DEFAULT NULL,
-  `Certification` varchar(255) DEFAULT NULL,
-  `DateIssued` date DEFAULT NULL,
+  `certification` varchar(255) DEFAULT NULL,
+  `DateIssued` varchar(10) DEFAULT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -89,8 +89,9 @@ CREATE TABLE `certification` (
 -- Dumping data for table `certification`
 --
 
-INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `Certification`, `DateIssued`, `description`) VALUES
-(100, 21, 10, 'qwer qwkjern qwkjern ', '2024-04-01', 'qwkjnejnr xkqwjenr xqwerqwermn n');
+INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `certification`, `DateIssued`, `description`) VALUES
+(165, 21, 10, '1234', '2023-01', 'Description for AWS certification'),
+(166, 21, 10, '12341234', '2023-03', 'Description for Google certification');
 
 -- --------------------------------------------------------
 
@@ -111,7 +112,7 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`) VALUES
-(10, 21, '', '', 'false');
+(10, 21, 'ahla summary', 'qwer;qwer;qwer;werq', 'true');
 
 -- --------------------------------------------------------
 
@@ -128,6 +129,14 @@ CREATE TABLE `education` (
   `School` varchar(255) DEFAULT NULL,
   `TimePeriod` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `education`
+--
+
+INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldOfStudy`, `School`, `TimePeriod`) VALUES
+(88, 21, 10, 'Bachelor', 'Computer Science', 'University of Science', '2018-10_Present'),
+(89, 21, 10, 'Master', 'Data Science', 'University of Technology', '2022-08_Present');
 
 -- --------------------------------------------------------
 
@@ -233,6 +242,13 @@ CREATE TABLE `work_experience` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `work_experience`
+--
+
+INSERT INTO `work_experience` (`WorkExperienceID`, `CandidateID`, `CV_ID`, `JobTitle`, `Company`, `TimePeriod`, `Description`) VALUES
+(69, 21, 10, 'Software Engineer', 'Tech Company X', '2018-10_Present', 'Description for Software Engineer role');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -321,31 +337,31 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `candidate`
 --
 ALTER TABLE `candidate`
-  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `certification`
 --
 ALTER TABLE `certification`
-  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
@@ -363,13 +379,13 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `work_experience`
 --
 ALTER TABLE `work_experience`
-  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- Constraints for dumped tables
