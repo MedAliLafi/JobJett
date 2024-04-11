@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Navbar from "../NavBar/Navbar.jsx";
 
 const JobOfferDetails = () => {
     const [jobofferDetails, setJobOfferDetails] = useState(null);
@@ -32,6 +33,8 @@ const JobOfferDetails = () => {
     
 
     return (
+        <>
+        <Navbar></Navbar>
         <div>
             <h2>Job Offer Details</h2>
             {jobofferDetails && (
@@ -46,6 +49,7 @@ const JobOfferDetails = () => {
             )}
             <button onClick={redirectToApplication}>Apply Now</button>
         </div>
+        </>
     );
 };
 

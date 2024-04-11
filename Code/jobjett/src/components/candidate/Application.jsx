@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../NavBar/Navbar.jsx";
 
 const Application = () => {
     const navigate = useNavigate();
@@ -38,6 +39,8 @@ const Application = () => {
     };
 
     return (
+        <>
+        <Navbar></Navbar>
         <div>
             <h2>Job Application</h2>
             <form onSubmit={handleSubmit}>
@@ -46,6 +49,7 @@ const Application = () => {
                 <button type="submit">Submit Application</button>
             </form>
         </div>
+        </>
     );
 };
 

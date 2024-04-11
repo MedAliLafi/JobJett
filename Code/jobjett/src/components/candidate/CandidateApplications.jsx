@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../NavBar/Navbar.jsx";
 
 const CandidateApplications = () => {
     const [applications, setApplications] = useState([]);
@@ -30,6 +31,8 @@ const CandidateApplications = () => {
     };
 
     return (
+        <>
+        <Navbar></Navbar>
         <div>
             <h2>Candidate Applications</h2>
             <div>
@@ -47,6 +50,7 @@ const CandidateApplications = () => {
                 )}
             </div>
         </div>
+        </>
     );
 };
 

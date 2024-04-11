@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import logo from "../../assets/output-onlinetools.png";
 import "./CandidateRegister.css";
+import Navbar from "../NavBar/Navbar.jsx";
 
 const countryOptions = [
   { value: "Afghanistan", label: "Afghanistan" },
@@ -335,7 +336,7 @@ const CandidateRegister = () => {
             console.error('Password and confirmation do not match');
             return;
         }
-        const day = parseInt(formData.get('day'), 10);
+        const day = parseInt(formData.get('day'), 10) + 1;
         const month = parseInt(formData.get('month'), 10) - 1;
         const year = parseInt(formData.get('year'), 10);
         const dateOfBirth = new Date(year, month, day);
@@ -395,6 +396,8 @@ const CandidateRegister = () => {
       };
 
     return (
+      <>
+      <Navbar></Navbar>
         <div
         id="page"
         className="site flex flex-row min-h-screen justify-center items-center"
@@ -564,11 +567,13 @@ const CandidateRegister = () => {
                 <button type="submit" className="btn-submit">
                   Submit
                 </button>
+                <br></br><p>Already Registered? <Link to="/candidate/login">Login here</Link></p>
               </div>
             </form>
           </div>
         </div>
       </div>
+      </>
     );
 };
 

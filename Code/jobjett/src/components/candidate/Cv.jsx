@@ -1,4 +1,5 @@
     import React, { useState, useEffect } from 'react';
+    import Navbar from "../NavBar/Navbar.jsx";
 
     function CV() {
         const [candidateInfo, setCandidateInfo] = useState({});
@@ -237,23 +238,6 @@
             });
         }
         
-        function handleToDateChange(event, index, formType) {
-            const value = event.target.value;
-            if (formType === 'education') {
-                setEducationForms(prevForms => {
-                    const updatedForms = [...prevForms];
-                    updatedForms[index].toDatePart = value;
-                    return updatedForms;
-                });
-            } else if (formType === 'workExperience') {
-                setWorkExperienceForms(prevForms => {
-                    const updatedForms = [...prevForms];
-                    updatedForms[index].toDatePart = value;
-                    return updatedForms;
-                });
-            }
-        }
-
         function handleFormChange(event, index, fieldName, formType) {
             const { value } = event.target;
             switch (formType) {
@@ -418,6 +402,8 @@
                 
 
         return (
+            <>
+            <Navbar></Navbar>
             <div>
                 <h2>Candidate Resume</h2>
                 <div id="candidateInfo">
@@ -479,6 +465,7 @@
                     </div>
                 </div>
             </div>
+            </>
         );
     }
 

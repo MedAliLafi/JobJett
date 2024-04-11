@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from "../NavBar/Navbar.jsx";
 
 const AddJobOffer = () => {
     const [formData, setFormData] = useState({
@@ -45,6 +46,8 @@ const AddJobOffer = () => {
     };
 
     return (
+        <>
+        <Navbar></Navbar>
         <div>
             <h1>Add Job Offer Page</h1>
             <form id="jobOfferForm">
@@ -110,6 +113,7 @@ const AddJobOffer = () => {
                 <button type="button" onClick={submitJobOffer}>Submit</button>
             </form>
         </div>
+        </>
     );
 };
 

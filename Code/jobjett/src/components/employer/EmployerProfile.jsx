@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../NavBar/Navbar.jsx";
 
 const EmployerProfile = () => {
     const navigate = useNavigate();
@@ -82,6 +83,8 @@ const EmployerProfile = () => {
     };
 
     return (
+        <>
+        <Navbar></Navbar>
         <div>
             <h2>Employer Profile</h2>
             {employerInfo && (
@@ -103,6 +106,7 @@ const EmployerProfile = () => {
             <button onClick={handleDeleteAccount}>Delete Account</button>
             <button onClick={logout}>Logout</button>
         </div>
+        </>
     );
 };
 

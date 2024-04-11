@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Navbar from "../NavBar/Navbar.jsx";
+import logo from "../../assets/output-onlinetools.png";
+import "./EmployerLogin.css";
 
 const EmployerLogin = () => {
     const navigate = useNavigate();
+    const [active, setActive] = useState(1);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const checkLoggedIn = async () => {
@@ -63,19 +67,53 @@ const EmployerLogin = () => {
             console.error('Error logging in employer:', error);
         }
     };
-
+    const nextButtonFunction = () => {
+        setActive((prevActive) => Math.min(prevActive + 1, 3));
+      };
+    
+      const prevButtonFunction = () => {
+        setActive((prevActive) => Math.max(prevActive - 1, 1));
+      };
     return (
-        <div>
-            <h2>Employer Login</h2>
-            <form onSubmit={loginEmployer}>
-                <label htmlFor="email">Email:</label><br />
-                <input type="email" id="email" name="email" required /><br /><br />
-                <label htmlFor="password">Password:</label><br />
-                <input type="password" id="password" name="password" required /><br /><br />
-                <button type="submit">Login</button>
-            </form>
-            <p>Don't have an account? <Link to="/employer/register">Register here</Link></p>
-        </div>
+        <>
+            <Navbar></Navbar>
+            <div id="page" className="site flex flex-row min-h-screen justify-center items-center">
+                <div className="container flex flex-row min-h-screen justify-center items-center ">
+                    <div className="form-box ">
+                        <div className="progress">
+                            <div className="logo">
+                                <img src={logo} alt="Logo"></img>
+                            </div>
+                        </div>
+                        <form onSubmit={loginEmployer}>
+                            <div className={`form-one form-step ${active === 1 ? "active" : ""}`}>
+                                <div className="bg-svg"></div>
+                                <h2>Employer Login</h2>
+                                <div>
+                                    <label>Email</label>
+                                    <input
+                                        type="email"
+                                        placeholder="Your email address"
+                                        id="email" name="email"
+                                        required
+                                    ></input>
+                                </div>
+                                <div>
+                                    <label>Password</label>
+                                    <input type="password" placeholder="Password" id="password" name="password" required></input>
+                                </div>
+                            </div>
+                            <div className="btn-group flex justify-between">
+                                <button type="submit" className="btn-submit">
+                                    Login
+                                </button>
+                                <br></br><p>Don't have an account? <Link to="/employer/register">Register here</Link></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 };
 
