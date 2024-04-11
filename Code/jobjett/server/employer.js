@@ -53,14 +53,14 @@ function getEmployerIdFromToken(pool, req) {
 // Route to register a new employer
 employerRoutes.post('/registerEmployer', async (req, res) => {
     const pool = req.pool;
-    const { username, email, password, companyName, industry, phone, state, country, address } = req.body;
+    const { email, password, companyName, industry, phone, state, country, address } = req.body;
     
     try {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
     // Register the user first using the function from user.js module
-    registerUser(pool, username, email, hashedPassword, 'Employer', (error, userResult) => {
+    registerUser(pool, email, hashedPassword, 'Employer', (error, userResult) => {
         if (error) {
             return res.status(500).json({ error: "Error registering user." });
         }

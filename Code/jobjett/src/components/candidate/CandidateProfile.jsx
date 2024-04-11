@@ -20,6 +20,7 @@ const CandidateProfile = () => {
             });
             if (response.ok) {
                 const data = await response.json();
+                data.dateOfBirth = new Date(data.dateOfBirth).toLocaleDateString('en-GB');
                 setCandidateInfo(data);
             } else {
                 console.error('Failed to fetch candidate information');

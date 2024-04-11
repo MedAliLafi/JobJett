@@ -1,15 +1,15 @@
-import Navbar from "../Navbar/Navbar.jsx";
 import FirstSection from "./FirstSection/First-Section";
 import Left from "./Left-Photo/left";
 import Right from "./Right-Photo/right";
-import image1 from "../assets/HR-careers-01.png";
-import image2 from "../assets/NA_October_10.jpg";
-import image3 from "src\assets\5052521.jpg";
+import image1 from "../../assets/HR-careers-01.png";
+import image2 from "../../assets/NA_October_10.jpg";
+import image3 from "../../assets/5052521.jpg";
+import LandingNavbar from "./Navbar/Navbar";
 
-function LandingPage() {
+function LandingPage2() {
   return (
     <>
-      <Navbar></Navbar>
+      <LandingNavbar></LandingNavbar>
       <FirstSection></FirstSection>
       <Left
         id="GetJob"
@@ -32,4 +32,4 @@ function LandingPage() {
     </>
   );
 }
-export default LandingPage;
+export default LandingPage2;

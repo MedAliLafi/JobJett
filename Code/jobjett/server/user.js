@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // Function to register a new user
-function registerUser(pool, username, email, password, userType, callback) {
+function registerUser(pool, email, password, userType, callback) {
     // Inserting user details into User table
-    const sql = 'INSERT INTO User (Username, Email, Password, UserType) VALUES (?, ?, ?, ?)';
-    const values = [username, email, password, userType];
+    const sql = 'INSERT INTO User (Email, Password, UserType) VALUES (?, ?, ?)';
+    const values = [email, password, userType];
 
     pool.query(sql, values, (error, result) => {
         if (error) {

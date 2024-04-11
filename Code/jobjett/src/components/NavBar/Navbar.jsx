@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import { Link } from "react-router-dom";
 import logo from "../../assets/output-onlinetools.png";
 import profile from "../../assets/profileIcon.png";
 function Nav() {
@@ -12,19 +13,10 @@ function Nav() {
       <div className="nav-links">
         <ul className="">
           <li className="">
-            <a href="" to="#GetJob">
-              Find a Job
-            </a>
+            <a><Link to="/candidate/login" className="btn">Candidates</Link></a>
           </li>
           <li className="">
-            <a href="" to="/#FindJob">
-              Resume
-            </a>
-          </li>
-          <li className="">
-            <a href="" to="/#2">
-              Applications
-            </a>
+            <a><Link to="/employer/login" className="btn">Employers</Link></a>
           </li>
         </ul>
       </div>

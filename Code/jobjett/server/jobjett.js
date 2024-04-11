@@ -67,42 +67,6 @@ function isCandidate(req) {
   });
 }
 
-// Middleware to verify JWT token for candidates
-async function authenticateCandidateToken(req, res, next) {
-  if (req.path === '/loginCandidate' || req.path === '/registerCandidate') {
-    return next(); // Skip authentication for login route
-  }
-
-  try {
-    const isCandidateUser = await isCandidate(req);
-    if (!isCandidateUser) {
-      return res.sendStatus(403); // Forbidden
-    }
-    next();
-  } catch (error) {
-    console.error('Error authenticating candidate token:', error);
-    return res.sendStatus(403); // Forbidden
-  }
-}
-
-// Middleware to verify JWT token for employers
-async function authenticateEmployerToken(req, res, next) {
-  if (req.path === '/loginEmployer' || req.path === '/registerEmployer') {
-    return next(); // Skip authentication for login route
-  }
-  try {
-    const isEmployerUser = await isEmployer(req);
-    if (isEmployerUser) {
-      return next();
-    } else {
-      return res.redirect('/Employer/employer_login.html');
-    }
-  } catch (error) {
-    console.error('Error authenticating employer token:', error);
-    return res.redirect('/Employer/employer_login.html');
-  }
-}
-
 // Route to check employer authentication
 app.get('/Employer/loginEmployer/checkEmployerAuth', async (req, res) => {
   try {
@@ -142,11 +106,11 @@ app.post('/logout', (req, res) => {
 
 // Routes
 app.use('/User', userRoutes);
-app.use('/Candidate', authenticateCandidateToken, candidateRoutes);
-app.use('/Employer', authenticateEmployerToken, employerRoutes);
-app.use('/Candidate/cv', authenticateCandidateToken, cvRoutes);
-app.use('/Employer/JobOffer', authenticateEmployerToken, jobofferRoutes);
-app.use('/Candidate/JobOffer', authenticateCandidateToken, jobofferRoutes);
+app.use('/Candidate', candidateRoutes);
+app.use('/Employer', employerRoutes);
+app.use('/Candidate/cv', cvRoutes);
+app.use('/Employer/JobOffer', jobofferRoutes);
+app.use('/Candidate/JobOffer', jobofferRoutes);
 
 // Starting the server
 const port = 9000;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './components/Home.jsx';
+import LandingPage from './components/LandingPage/LandingPage.jsx';
 import CandidateLogin from './components/candidate/CandidateLogin.jsx';
 import CandidateRegister from './components/candidate/CandidateRegister.jsx';
 import CandidateProfile from './components/candidate/CandidateProfile.jsx';
@@ -14,11 +14,10 @@ import EmployerProfile from './components/employer/EmployerProfile.jsx';
 import EmployerApplications from './components/employer/EmployerApplications.jsx';
 import AddJobOffer from './components/employer/AddJobOffer.jsx';
 
-import './App.css';
-
 function App() {
-  const [isCandidateAuthenticated, setIsCandidateAuthenticated] = useState(false);
-  const [isEmployerAuthenticated, setIsEmployerAuthenticated] = useState(false);
+  // Retrieve authentication status from local storage or default to false
+  const [isCandidateAuthenticated, setIsCandidateAuthenticated] = useState(localStorage.getItem('isCandidateAuthenticated') === 'true' || false);
+  const [isEmployerAuthenticated, setIsEmployerAuthenticated] = useState(localStorage.getItem('isEmployerAuthenticated') === 'true' || false);
 
   // Fetch authentication status for candidate and employer
   useEffect(() => {
@@ -30,6 +29,8 @@ function App() {
         if (response.ok) {
           const data = await response.json();
           setIsCandidateAuthenticated(data.loggedIn);
+          // Store authentication status in local storage
+          localStorage.setItem('isCandidateAuthenticated', data.loggedIn);
         }
       } catch (error) {
         console.error('Error checking candidate authentication:', error);
@@ -44,6 +45,8 @@ function App() {
         if (response.ok) {
           const data = await response.json();
           setIsEmployerAuthenticated(data.loggedIn);
+          // Store authentication status in local storage
+          localStorage.setItem('isEmployerAuthenticated', data.loggedIn);
         }
       } catch (error) {
         console.error('Error checking employer authentication:', error);
@@ -68,7 +71,7 @@ function App() {
     <Router>
       <div>
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route exact path="/" element={<LandingPage />} />
           <Route path="/candidate/login" element={<CandidateLogin />} />
           <Route path="/candidate/register" element={<CandidateRegister />} />
           <Route path="/candidate/profile" element={withCandidateProtection(<CandidateProfile />)} />

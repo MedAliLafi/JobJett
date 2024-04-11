@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import "./Right.css";
 function Right(props) {
@@ -7,7 +8,7 @@ function Right(props) {
         <div className="container">
           <h1>{props.title}</h1>
           <p className="text-box2">{props.parg}</p>
-          <Link to="/SignUp" className="btn">
+          <Link to="/employer/login" className="btn">
             Start now
           </Link>
         </div>

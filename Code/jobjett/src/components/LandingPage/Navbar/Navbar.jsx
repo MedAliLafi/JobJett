@@ -1,39 +1,39 @@
-import "../../CondidatePage/nav/nav.css";
-import logo from "../../assets/output-onlinetools.png";
-import { HashLink } from "react-router-hash-link";
+import logo from "../../../assets/output-onlinetools.png";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 function LandingNavbar() {
   return (
     <>
       <nav className="navbar">
-        <HashLink to="/">
+        <Link to="/">
           <img src={logo} alt="" className="logo"></img>
-        </HashLink>
+        </Link>
         <ul className="nav-links">
           <li className="">
-            <HashLink smooth to="#GetJob">
+            <Link to="/candidate/login" >
               Get job
-            </HashLink>
+            </Link>
           </li>
           <li className="">
-            <HashLink smooth to="/#FindJob">
+            <Link to="/employer/login" >
               Post a job
-            </HashLink>
+            </Link>
           </li>
           <li className="">
-            <HashLink smooth to="/#2">
+            <Link to="/candidate/login" >
               Build your resume
-            </HashLink>
+            </Link>
           </li>
           <li className="">
-            <HashLink smooth to="/SignUp">
+            <Link to="/aboutus">
               About us
-            </HashLink>
+            </Link>
           </li>
           <li className="">
-            <HashLink smooth to="/Contact">
+            <Link to="/contact">
               Contact us
-            </HashLink>
+            </Link>
           </li>
         </ul>
       </nav>

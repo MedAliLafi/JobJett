@@ -1,5 +1,5 @@
 import "./First-Section.css";
-import Background from "../../assets/GettyImages-1464773731-1200x800.jpg";
+import Background from "../../../assets/GettyImages-1464773731-1200x800.jpg";
 function FirstSection() {
   return (
     <section
