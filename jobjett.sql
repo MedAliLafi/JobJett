@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2024 at 05:44 PM
+-- Generation Time: Apr 13, 2024 at 05:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,8 +42,7 @@ CREATE TABLE `application` (
 --
 
 INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`) VALUES
-(6, 21, 10, 4, 'qewrkjn qwerkjn qwkejrn qkwerne', 'Pending', '2024-04-07'),
-(0, 27, 16, 6, 'Today iam going to represent myself i dont speak english very good but i speak 50 50 i want work with you me very good worker', 'Pending', '2024-04-11');
+(6, 21, 10, 4, 'qewrkjn qwerkjn qwkejrn qkwerne', 'Pending', '2024-04-07');
 
 -- --------------------------------------------------------
 
@@ -69,9 +68,7 @@ CREATE TABLE `candidate` (
 --
 
 INSERT INTO `candidate` (`CandidateID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `Phone`, `State`, `Country`, `Address`, `CV_ID`) VALUES
-(21, 39, 'can', 'can', '2002-10-30', '234920834', 'Tunis', 'Tunisia', 'qwejkrnqwerqwkerl', 10),
-(27, 47, 'Fedi', 'Floppa', '2009-03-22', '50357278', 'Manouba', 'Tunisia', 'Hay el chabab, Douar Hicher', 16),
-(29, 49, 'Faten', 'Merteh', '1968-09-25', '96206994', 'Ben Arous', 'Tunisia', 'Residence Soumaya, El mourouj 5', 18);
+(21, 39, 'can', 'can', '2002-10-30', '234920834', 'Tunis', 'Tunisia', 'qwejkrnqwerqwkerl', 10);
 
 -- --------------------------------------------------------
 
@@ -94,8 +91,7 @@ CREATE TABLE `certification` (
 
 INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `certification`, `DateIssued`, `description`) VALUES
 (165, 21, 10, '1234', '2023-01', 'Description for AWS certification'),
-(166, 21, 10, '12341234', '2023-03', 'Description for Google certification'),
-(174, 27, 16, 'Certifie en l3ou9', '2024-01', 'Jai le 3ou9');
+(166, 21, 10, '12341234', '2023-03', 'Description for Google certification');
 
 -- --------------------------------------------------------
 
@@ -116,9 +112,7 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`) VALUES
-(10, 21, 'ahla summary', 'qwer;qwer;qwer;werq', 'true'),
-(16, 27, 'Bonjour je suis l3ou9, jarrive a cette blasa pour cherche travaille', 'Dhkey;Dhhort fel team of the year;99 pace;3andk boost fel basss', ''),
-(18, 29, ' Passionate and\ndetermined, I invest 100% in everything I\nundertake because I enjoy learning, facing\nchallenges, and pushing myself to excel.\n', '', 'true');
+(10, 21, 'ahla summary', 'qwer;qwer;qwer;werq', 'true');
 
 -- --------------------------------------------------------
 
@@ -142,10 +136,7 @@ CREATE TABLE `education` (
 
 INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldOfStudy`, `School`, `TimePeriod`) VALUES
 (88, 21, 10, 'Bachelor', 'Computer Science', 'University of Science', '2018-10_Present'),
-(89, 21, 10, 'Master', 'Data Science', 'University of Technology', '2022-08_Present'),
-(98, 27, 16, 'College', 'General', 'Ibn Sina Oued Ellil', '2021-09_Present'),
-(99, 29, 18, 'Bac', 'Lettres', 'Lycee Kelibia', '1986-09_Present'),
-(100, 29, 18, 'Licence', 'Comptabilite', 'ISC Tunis', '1990-09_1993-05');
+(89, 21, 10, 'Master', 'Data Science', 'University of Technology', '2022-08_Present');
 
 -- --------------------------------------------------------
 
@@ -173,9 +164,7 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `CompanyName`, `Industry`, `NumberOfEmployees`, `Phone`, `State`, `Country`, `Address`) VALUES
-(11, 35, NULL, NULL, NULL, 'test', 'test', NULL, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok '),
-(13, 46, NULL, NULL, NULL, 'Mazz Company', 'Antitechnologie', NULL, '26782952', 'Tunis', 'Tunisia', 'El Mourouj, Tunis'),
-(17, 54, 'mail', 'mail', '2002-12-10', 'qwer', 'technology', 4, '12121212', 'qwer', 'Afghanistan', 'qwer');
+(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ');
 
 -- --------------------------------------------------------
 
@@ -199,8 +188,7 @@ CREATE TABLE `joboffer` (
 --
 
 INSERT INTO `joboffer` (`JobOfferID`, `EmployerID`, `Title`, `Description`, `Type`, `Salary`, `Location`, `DatePosted`) VALUES
-(4, 11, 'qweirj qwelrkj ', 'uh iguvo8v7tlvutyvhgjvkg\n', 'Contract', 'Maximum amount_kugukkj_per week', 'In-person, within a limited area', '2024-04-04'),
-(6, 13, 'RH', 'Bonjour je veut un Rh pour ma company', 'Internship', 'Starting amount_1000_per month', 'Fully remote: no on-site work required', '2024-04-11');
+(4, 11, 'qweirj qwelrkj ', 'uh iguvo8v7tlvutyvhgjvkg\n', 'Contract', 'Maximum amount_kugukkj_per week', 'In-person, within a limited area', '2024-04-04');
 
 -- --------------------------------------------------------
 
@@ -238,11 +226,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`UserID`, `Email`, `Password`, `UserType`) VALUES
 (35, 'test@mail', '$2b$10$6vEoyVZpMjyRFwTHeE9yzugSzWQDqNw/wc5KJzH3SSfQ79cxUtrba', 'Employer'),
-(39, 'can@mail', '$2b$10$dBQhEk8aNGFhdoExgviBP.IQPygCxhFnOlux97kBc33qLyeSPCS7G', 'Candidate'),
-(46, 'mazz@mail.com', '$2b$10$2o9m.ZoQqya3.3fSIGMOE.2M7ue8befQ3S7aDTtqIRG2mALKSTDku', 'Employer'),
-(47, 'fedifloppa@mail.com', '$2b$10$gl48Tmeana69r1.B49hBRudv9kPsGB754hnsIL8i01jazGv19t10W', 'Candidate'),
-(49, 'fatenmerteh@mail.com', '$2b$10$URiIU6ngZJLdMvWmGuGCUuOur2gFdSDD6C3ZFJ2qhWADXD1wkMLKm', 'Candidate'),
-(54, 'qwer@mail', '$2b$10$9Ri9wLik5B6hRD2ZL6yvrOGPovvjUENQ7W08nW3xaxuvvlmVXuAim', 'Employer');
+(39, 'can@mail', '$2b$10$dBQhEk8aNGFhdoExgviBP.IQPygCxhFnOlux97kBc33qLyeSPCS7G', 'Candidate');
 
 -- --------------------------------------------------------
 
@@ -265,10 +249,7 @@ CREATE TABLE `work_experience` (
 --
 
 INSERT INTO `work_experience` (`WorkExperienceID`, `CandidateID`, `CV_ID`, `JobTitle`, `Company`, `TimePeriod`, `Description`) VALUES
-(69, 21, 10, 'Software Engineer', 'Tech Company X', '2018-10_Present', 'Description for Software Engineer role'),
-(77, 27, 16, 'Basssas', 'Dar 5altek houda', '2009-03_2024-01', 'Nboss 3lihom kol lila'),
-(78, 29, 18, 'Teacher', 'Public', '1994-09_1995-06', 'Arab and French teacher'),
-(79, 29, 18, 'Cabinet d\'expert comptable', 'Rue d\'Autriche', '2024-01_Present', NULL);
+(69, 21, 10, 'Software Engineer', 'Tech Company X', '2018-10_Present', 'Description for Software Engineer role');
 
 --
 -- Indexes for dumped tables
