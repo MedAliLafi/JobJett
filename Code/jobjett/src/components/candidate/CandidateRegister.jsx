@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/output-onlinetools.png";
 import "./CandidateRegister.css";
-import Navbar from "../NavBar/Navbar.jsx";
 
 const countryOptions = [
   { value: "Afghanistan", label: "Afghanistan" },
@@ -296,109 +295,116 @@ const countryOptions = [
   { value: "Zimbabwe", label: "Zimbabwe" },
 ];
 
-
 const CandidateRegister = () => {
-    const navigate = useNavigate();
-    const [active, setActive] = useState(1);
-    const [passwordConfirmation, setPasswordConfirmation] = useState('');
-    const checkLoggedIn = async () => {
-        try {
-            const response = await fetch('http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.loggedIn) {
-                    navigate("/candidate/profile");
-                }
-            } else {
-                console.error('Failed to check if candidate is logged in');
-            }
-        } catch (error) {
-            console.error('Error checking if candidate is logged in:', error);
+  const navigate = useNavigate();
+  const [active, setActive] = useState(1);
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const checkLoggedIn = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
         }
-    };
+      );
 
-    useEffect(() => {
-        checkLoggedIn();
-    }, []);
-
-    const registerCandidate = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const password = formData.get('password');
-        if (password !== formData.get('passwordConfirmation')) {
-            console.error('Password and confirmation do not match');
-            return;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.loggedIn) {
+          navigate("/candidate/profile");
         }
-        const day = parseInt(formData.get('day'), 10) + 1;
-        const month = parseInt(formData.get('month'), 10) - 1;
-        const year = parseInt(formData.get('year'), 10);
-        const dateOfBirth = new Date(year, month, day);
-        try {
-            const response = await fetch('http://localhost:9000/Candidate/registerCandidate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    firstName: formData.get('firstName'),
-                    lastName: formData.get('lastName'),
-                    dateOfBirth: dateOfBirth,
-                    phone: formData.get('phone'),
-                    address: formData.get('address'),
-                    state: formData.get('state'),
-                    country: formData.get('country')
-                })
-            });
+      } else {
+        console.error("Failed to check if candidate is logged in");
+      }
+    } catch (error) {
+      console.error("Error checking if candidate is logged in:", error);
+    }
+  };
 
-            if (!response.ok) {
-                throw new Error('Registration failed');
-            }
+  useEffect(() => {
+    checkLoggedIn();
+  }, []);
 
-            console.log('Registration successful');
-            const loginResponse = await fetch('http://localhost:9000/Candidate/loginCandidate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password')
-                })
-            });
-
-            if (!loginResponse.ok) {
-                throw new Error('Login failed');
-            }
-
-            console.log('Login successful');
-            navigate("/candidate/profile");
-        } catch (error) {
-            console.error('Error registering candidate:', error);
+  const registerCandidate = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const password = formData.get("password");
+    if (password !== formData.get("passwordConfirmation")) {
+      console.error("Password and confirmation do not match");
+      return;
+    }
+    const day = parseInt(formData.get("day"), 10) + 1;
+    const month = parseInt(formData.get("month"), 10) - 1;
+    const year = parseInt(formData.get("year"), 10);
+    const dateOfBirth = new Date(year, month, day);
+    try {
+      const response = await fetch(
+        "http://localhost:9000/Candidate/registerCandidate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: formData.get("email"),
+            password: formData.get("password"),
+            firstName: formData.get("firstName"),
+            lastName: formData.get("lastName"),
+            dateOfBirth: dateOfBirth,
+            phone: formData.get("phone"),
+            address: formData.get("address"),
+            state: formData.get("state"),
+            country: formData.get("country"),
+          }),
         }
-    };
-    const nextButtonFunction = () => {
-        setActive((prevActive) => Math.min(prevActive + 1, 3));
-      };
-    
-      const prevButtonFunction = () => {
-        setActive((prevActive) => Math.max(prevActive - 1, 1));
-      };
+      );
 
-    return (
-      <>
-      <Navbar></Navbar>
-        <div
+      if (!response.ok) {
+        throw new Error("Registration failed");
+      }
+
+      console.log("Registration successful");
+      const loginResponse = await fetch(
+        "http://localhost:9000/Candidate/loginCandidate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: formData.get("email"),
+            password: formData.get("password"),
+          }),
+        }
+      );
+
+      if (!loginResponse.ok) {
+        throw new Error("Login failed");
+      }
+
+      console.log("Login successful");
+      navigate("/candidate/profile");
+    } catch (error) {
+      console.error("Error registering candidate:", error);
+    }
+  };
+  const nextButtonFunction = () => {
+    setActive((prevActive) => Math.min(prevActive + 1, 3));
+  };
+
+  const prevButtonFunction = () => {
+    setActive((prevActive) => Math.max(prevActive - 1, 1));
+  };
+
+  return (
+    <>
+      <div
         id="page"
         className="site flex flex-row min-h-screen justify-center items-center"
       >
@@ -406,7 +412,7 @@ const CandidateRegister = () => {
           <div className="form-box ">
             <div className="progress">
               <div className="logo">
-                <Link to="">
+                <Link to="/">
                   <img src={logo} alt="Logo"></img>
                 </Link>
               </div>
@@ -440,11 +446,21 @@ const CandidateRegister = () => {
                 <p>Enter your information correctly</p>
                 <div>
                   <label>First Name</label>
-                  <input type="text" id="firstName" name="firstName" required></input>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                  ></input>
                 </div>
                 <div>
                   <label>Last Name</label>
-                  <input type="text" id="lastName" name="lastName" required></input>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                  ></input>
                 </div>
                 <div className="birth">
                   <label>Date of birth</label>
@@ -514,11 +530,18 @@ const CandidateRegister = () => {
                 </div>
                 <div>
                   <label>Address</label>
-                  <input type="text" placeholder="Street Address" id="address" name="address"></input>
+                  <input
+                    type="text"
+                    placeholder="Street Address"
+                    id="address"
+                    name="address"
+                  ></input>
                 </div>
               </div>
               <div
-                className={`form-three form-step ${active === 3 ? "active" : ""}`}
+                className={`form-three form-step ${
+                  active === 3 ? "active" : ""
+                }`}
               >
                 <div className="bg-svg"></div>
                 <h2>Security</h2>
@@ -527,13 +550,20 @@ const CandidateRegister = () => {
                   <input
                     type="email"
                     placeholder="Your email address"
-                    id="email" name="email"
+                    id="email"
+                    name="email"
                     required
                   ></input>
                 </div>
                 <div>
                   <label>Password</label>
-                  <input type="password" placeholder="Password" id="password" name="password" required></input>
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    id="password"
+                    name="password"
+                    required
+                  ></input>
                 </div>
                 <div>
                   <label>Confirm Password</label>
@@ -567,14 +597,18 @@ const CandidateRegister = () => {
                 <button type="submit" className="btn-submit">
                   Submit
                 </button>
-                <br></br><p>Already Registered? <Link to="/candidate/login">Login here</Link></p>
+                <br></br>
+                <p>
+                  Already Registered?{" "}
+                  <Link to="/candidate/login">Login here</Link>
+                </p>
               </div>
             </form>
           </div>
         </div>
       </div>
-      </>
-    );
+    </>
+  );
 };
 
 export default CandidateRegister;
