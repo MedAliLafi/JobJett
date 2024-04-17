@@ -52,7 +52,7 @@ const AddJobOffer = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            // Handle network errors
+            // Handle netwaaork errors
         }
     };
     
