@@ -1,76 +1,72 @@
-/* eslint-disable react/no-unescaped-entities */
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import logo from "../../assets/output-onlinetools.png";
-import "./CandidateLogin.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import Navbar from "../../NavBar/Navbar.jsx";
+import logo from "../../../assets/output-onlinetools.png";
+import "./CandidateLogin.css"
 
 const CandidateLogin = () => {
-  const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const checkLoggedIn = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
+    const checkLoggedIn = async () => {
+        try {
+            const response = await fetch('http://localhost:9000/Candidate/loginCandidate/checkCandidateAuth', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.loggedIn) {
+                    setIsLoggedIn(true);
+                    navigate("/candidate/profile");
+                }
+            } else {
+                console.error('Failed to check if candidate is logged in');
+            }
+        } catch (error) {
+            console.error('Error checking if candidate is logged in:', error);
         }
-      );
+    };
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.loggedIn) {
-          setIsLoggedIn(true);
-          navigate("/candidate/profile");
+    useEffect(() => {
+        checkLoggedIn();
+    }, []);
+
+    const loginCandidate = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        try {
+            const response = await fetch('http://localhost:9000/Candidate/loginCandidate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: formData.get('email'),
+                    password: formData.get('password')
+                }),
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                setIsLoggedIn(true);
+                navigate("/candidate/profile");
+            } else {
+                throw new Error('Login failed');
+            }
+        } catch (error) {
+            console.error('Error logging in candidate:', error);
         }
-      } else {
-        console.error("Failed to check if candidate is logged in");
-      }
-    } catch (error) {
-      console.error("Error checking if candidate is logged in:", error);
-    }
-  };
+    };
 
-  useEffect(() => {
-    checkLoggedIn();
-  }, []);
-
-  const loginCandidate = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    try {
-      const response = await fetch(
-        "http://localhost:9000/Candidate/loginCandidate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.get("email"),
-            password: formData.get("password"),
-          }),
-          credentials: "include",
-        }
-      );
-
-      if (response.ok) {
-        setIsLoggedIn(true);
-        navigate("/candidate/profile");
-      } else {
-        throw new Error("Login failed");
-      }
-    } catch (error) {
-      console.error("Error logging in candidate:", error);
-    }
-  };
-
-  return (
-    <section className="bg-gray-50">
+    return (
+        <>
+            <Navbar></Navbar>
+            <section className="bg-gray-50">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 min-h-screen">
         <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -134,7 +130,6 @@ const CandidateLogin = () => {
                   </div>
                 </div>
                 <a
-                  href="#"
                   className="text-sm font-medium text-primary-600 hover:underline hover:text-blueColor"
                 >
                   Forgot password?
@@ -150,7 +145,6 @@ const CandidateLogin = () => {
                 Don’t have an account yet?{" "}
                 <Link
                   to="/candidate/register"
-                  href="#"
                   className="font-medium text-primary-600 hover:underline hover:text-blueColor"
                 >
                   Sign up
@@ -161,7 +155,8 @@ const CandidateLogin = () => {
         </div>
       </div>
     </section>
-  );
+        </>
+    );
 };
 
 export default CandidateLogin;

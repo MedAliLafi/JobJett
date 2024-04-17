@@ -1,5 +1,5 @@
     import React, { useState, useEffect } from 'react';
-    import Navbar from "../NavBar/Navbar.jsx";
+    import Navbar from "../NavBar/CandidateNavbar.jsx";
 
     function CV() {
         const [candidateInfo, setCandidateInfo] = useState({});

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Navbar from "../NavBar/Navbar.jsx";
+import Navbar from "../NavBar/CandidateNavbar.jsx";
 
 const JobOfferDetails = () => {
     const [jobofferDetails, setJobOfferDetails] = useState(null);

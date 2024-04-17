@@ -1,21 +1,21 @@
-import Nav from "./nav/Nav";
+import Navbar from "../NavBar/CandidateNavbar.jsx";
 import { useState } from "react";
 import { AiOutlineSearch, AiOutlineCloseCircle } from "react-icons/ai";
 import { BsHouseDoor } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { BiTimeFive } from "react-icons/bi";
-import logo1 from "../assets/MicrosoftLogo.png";
-import logo2 from "../assets/SamsungLogo.png";
-import "./CandidatePage.css";
+import logo1 from "../../../assets/MicrosoftLogo.png";
+import logo2 from "../../../assets/SamsungLogo.png";
+import "./CandidateHomePage.css";
 
 const Data = [
   {
     id: 1,
     image: logo1,
     title: "Web Developer",
-    time: "Now",
+    dateposted: "Now",
     location: "Canada",
-    desc: "anidandpsudbzdiad abdipau bdauidha h  udhadbaubdiabdaduadbba !",
+    description: "anidandpsudbzdiad abdipau bdauidha h  udhadbaubdiabdaduadbba !",
     company: "Microsoft",
   },
   {
@@ -84,14 +84,14 @@ const Data = [
 ];
 
 
-function CandidatePage() {
+function CandidateHomePage() {
   const [jobSearchText, setJobSearchText] = useState("");
   const [companySearchText, setCompanySearchText] = useState("");
   const [locationSearchText, setLocationSearchText] = useState("");
   return (
     <>
       <div>
-        <Nav />
+        <Navbar />
       </div>
       <div className="w-[85%] m-auto bg-white">
       <div className="searchDiv grid gap-10  rounded-[10px] p-3rem">
@@ -225,4 +225,4 @@ function CandidatePage() {
   );
 }
 
-export default CandidatePage;
+export default CandidateHomePage;
