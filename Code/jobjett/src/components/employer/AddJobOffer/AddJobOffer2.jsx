@@ -2,11 +2,32 @@ import "./AddJobOffer.css";
 import image from "../../../assets/NA_October_10.jpg";
 import { useState } from "react";
 
-const AddJobOffer2 = () => {
+const AddJobOffer2 = ({ formData, setFormData }) => {
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [SoftSkills, setSoftSkills] = useState([]);
   const [newSoftSkill, setNewSoftSkill] = useState("");
+  const [reqEducation, setReqEducation] = useState("");
+  const [reqExperience, setReqExperience] = useState("");
+
+  const handleReqEducationChange = (e) => {
+    const value = e.target.value;
+    setReqEducation(value);
+    setFormData(formData => ({
+      ...formData,
+      reqEducation: value,
+    }));
+  };
+
+    const handleReqExperienceChange = (e) => {
+    const value = e.target.value;
+    setReqExperience(value);
+    setFormData(formData => ({
+      ...formData,
+      reqExperience: value,
+    }));
+  };
+
 
   const handleChange = (e) => {
     setNewSkill(e.target.value);
@@ -18,13 +39,17 @@ const AddJobOffer2 = () => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && newSkill.trim() !== "") {
       setSkills([...skills, newSkill.trim()]);
-      setNewSkill(""); // Clear input field after adding skill
+      setNewSkill("");
+      const skillsText = skills.join(';');
+      setFormData({ ...formData, reqSkills: skillsText });
     }
   };
   const handleKeyDown2 = (e) => {
     if (e.key === "Enter" && newSoftSkill.trim() !== "") {
       setSoftSkills([...SoftSkills, newSoftSkill.trim()]);
-      setNewSoftSkill(""); // Clear input field after adding skill
+      setNewSoftSkill("");
+      const softskillsText = SoftSkills.join(';');
+      setFormData({ ...formData, reqSoftSkills: softskillsText });
     }
   };
 
@@ -49,8 +74,11 @@ const AddJobOffer2 = () => {
           <select
             id="reqEducation"
             text="reqEducation"
+            value={reqEducation}
+            onChange={handleReqEducationChange}
             className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blueColor focus:border-blueColor block w-full  p-2.5 "
           >
+            <option value="">Select the minimum education level required</option>
             <option value="High School Diploma or Equivalent">
               High School Diploma or Equivalent
             </option>
@@ -75,8 +103,11 @@ const AddJobOffer2 = () => {
           <select
             id="reqExperience"
             text="reqExperience"
+            value={reqExperience}
+            onChange={handleReqExperienceChange}
             className="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blueColor focus:border-blueColor block w-full  p-2.5 "
           >
+            <option value="">Select the minimum years of experience required</option>
             <option value="Less than 1 year">Less than 1 year</option>
             <option value="1-2 years">1-2 years</option>
             <option value="3-5 years">3-5 years</option>

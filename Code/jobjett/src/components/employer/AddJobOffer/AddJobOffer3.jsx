@@ -6,12 +6,13 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
   const [payFrequency, setPayFrequency] = useState("");
+  const [jobLocationType, setJobLocationType] = useState("");
+
   
   const handleSalaryAmountChange = (e) => {
     const value = e.target.value;
-    // Update formData
-    setFormData(prevFormData => ({
-      ...prevFormData,
+    setFormData(formData => ({
+      ...formData,
       pay: value,
     }));
   };
@@ -19,42 +20,46 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
   const handleMinSalaryChange = (e) => {
     const value = e.target.value;
     setMinSalary(value);
-    // Update formData
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      pay: `${value}-${prevFormData.maxSalary}`,
+    setFormData(formData => ({
+      ...formData,
+      pay: `${value}-${maxSalary}`,
     }));
   };
   
   const handleMaxSalaryChange = (e) => {
     const value = e.target.value;
     setMaxSalary(value);
-    // Update formData
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      pay: `${prevFormData.minSalary}-${value}`,
+    setFormData(formData => ({
+      ...formData,
+      pay: `${minSalary}-${value}`,
     }));
   };
   
   const handlePayTypeChange = (e) => {
     const value = e.target.value;
     setSalary(value);
-    // Clear salary inputs
     setMinSalary("");
     setMaxSalary("");
-    // Update formData
-    setFormData(prevFormData => ({
-      ...prevFormData,
+    setFormData(formData => ({
+      ...formData,
       payType: value,
     }));
   };
   
+  const handleJobLocationTypeChange = (e) => {
+    const value = e.target.value;
+    setJobLocationType(value);
+    setFormData(formData => ({
+      ...formData,
+      jobLocationType: value,
+    }));
+  };
+
   const handlePayFrequencyChange = (e) => {
     const value = e.target.value;
     setPayFrequency(value);
-    // Update formData
-    setFormData(prevFormData => ({
-      ...prevFormData,
+    setFormData(formData => ({
+      ...formData,
       payFrequency: value,
     }));
   };
@@ -196,9 +201,10 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
           <select
             id="jobLocationType"
             name="jobLocationType"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            onChange={(e) => setFormData({ ...formData, jobLocationType: e.target.value })}
-            >
+            value={jobLocationType}
+            onChange={handleJobLocationTypeChange}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"            >
+            <option value="">Select the job location type</option>
             <option value="In-person, precise location">
               In-person, precise location
             </option>
@@ -226,6 +232,7 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
             value={salary}
             onChange={handlePayTypeChange}
           >
+            <option value="">Select the amount type</option>
             <option value="Range">Range</option>
             <option value="Start">Starting amount</option>
             <option value="Max">Maximum amount</option>

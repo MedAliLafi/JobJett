@@ -7,6 +7,7 @@ import "./CandidateLogin.css"
 const CandidateLogin = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
 
     const checkLoggedIn = async () => {
         try {
@@ -47,7 +48,8 @@ const CandidateLogin = () => {
                 },
                 body: JSON.stringify({
                     email: formData.get('email'),
-                    password: formData.get('password')
+                    password: formData.get('password'),
+                    rememberMe: rememberMe
                 }),
                 credentials: 'include'
             });
@@ -120,7 +122,8 @@ const CandidateLogin = () => {
                       aria-describedby="remember"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300"
-                      required
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
                     />
                   </div>
                   <div className="ml-3 text-sm">
