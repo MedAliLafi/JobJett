@@ -64,6 +64,71 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
     }
 });
 
+jobofferRoutes.get('/loadjoboffers', async (req, res) => {
+    try {
+        const pool = req.pool;        
+        const { page = 1, pageSize = 8, jobTitle, companyName, location } = req.query;
+        const offset = (page - 1) * pageSize;
+
+        // Build the WHERE clause for filtering based on search parameters
+        let whereClause = '';
+        const queryParams = [];
+        if (jobTitle) {
+            whereClause += 'Title LIKE ?';
+            queryParams.push(`%${jobTitle}%`);
+        }
+        if (location) {
+            if (whereClause) whereClause += ' AND ';
+            whereClause += 'Location LIKE ?';
+            queryParams.push(`%${location}%`);
+        }
+
+        // Build the JOIN clause to fetch company name from the employer table
+        let joinClause = 'INNER JOIN employer ON joboffer.EmployerID = employer.EmployerID';
+        if (companyName) {
+            if (whereClause) whereClause += ' AND ';
+            whereClause += 'employer.CompanyName LIKE ?';
+            queryParams.push(`%${companyName}%`);
+        }
+
+        // Execute the count query to get the total number of job offers
+        let countQuery = 'SELECT COUNT(*) AS totalCount FROM joboffer';
+        countQuery += ` ${joinClause}`;
+        if (whereClause) {
+            countQuery += ` WHERE ${whereClause}`;
+        }
+        pool.query(countQuery, queryParams, (error, countResults) => {
+            if (error) {
+                console.error('Error fetching job offer count:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching job offer count.' });
+            }
+            const totalCount = countResults[0].totalCount;
+
+            // Execute the select query to fetch paginated job offers
+            let selectQuery = 'SELECT joboffer.*, employer.CompanyName FROM joboffer';
+            selectQuery += ` ${joinClause}`;
+            if (whereClause) {
+                selectQuery += ` WHERE ${whereClause}`;
+            }
+            selectQuery += ' LIMIT ?, ?';
+            queryParams.push(offset, parseInt(pageSize));
+            pool.query(selectQuery, queryParams, (error, selectResults) => {
+                if (error) {
+                    console.error('Error fetching paginated job offers:', error);
+                    return res.status(500).json({ error: 'An error occurred while fetching paginated job offers.' });
+                }
+                res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+                res.setHeader('X-Total-Count', totalCount);
+                res.status(200).json(selectResults);
+            });
+        });
+    } catch (error) {
+        console.error('Error fetching job offers:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching job offers.' });
+    }
+});
+
+
 // Route to get job offers made by the employer
 jobofferRoutes.get('/joboffers', async (req, res) => {
     try {

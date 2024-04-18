@@ -18,6 +18,7 @@ const JobOfferDetails = () => {
             });
             if (response.ok) {
                 const jobofferDetails = await response.json();
+                jobofferDetails.DatePosted = new Date(jobofferDetails.DatePosted).toLocaleDateString('en-GB');
                 setJobOfferDetails(jobofferDetails);
             } else {
                 console.error('Failed to fetch job offer details');
