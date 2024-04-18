@@ -92,7 +92,7 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 // Route to login employer
 employerRoutes.post('/loginEmployer', async (req, res) => {
     const pool = req.pool;
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
     try {
         loginUser(pool, email, password, (error, result) => {
             if (error) {
@@ -104,11 +104,13 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
             }
             const user = result.user;
             if (user.UserType !== 'Employer') {
-                console.log('User is not a employer');
-                return res.status(401).json({ error: 'User is not a employer.' });
+                console.log('User is not an employer');
+                return res.status(401).json({ error: 'User is not an employer.' });
             }
-            const token = jwt.sign({ user: user}, 'secret_key');
-            res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // One month expiration
+            
+            const expiresIn = rememberMe ? '30d' : '1d';
+            const token = jwt.sign({ user: user}, 'secret_key', { expiresIn });            
+            res.cookie('token', token, { httpOnly: true, maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : undefined });
             res.status(200).json({ message: 'Login successful', token: token });
         });
     } catch (error) {

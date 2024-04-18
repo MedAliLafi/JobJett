@@ -1,7 +1,8 @@
 import "./AddJobOffer.css";
 import image from "../../../assets/NA_October_10.jpg";
 import { useState } from "react";
-const AddJobOffer1 = () => {
+
+const AddJobOffer1 = ({ formData, setFormData }) => {
   let jobs = [
     "Software Developer",
     "Data Scientist",
@@ -105,9 +106,9 @@ const AddJobOffer1 = () => {
     "Life Coach",
   ];
   const [newJob, setNewJob] = useState("");
-  const [department, setDepartment] = useState("");
+  const [jobDepartment, setJobDepartment] = useState("");
   const [filteredJobs, setFilteredJobs] = useState([]);
-  const [jobDescription, setJobDescription] = useState(""); // Updated jobDescription state
+  const [jobDescription, setJobDescription] = useState("");
   const [showList, setShowList] = useState(false);
 
   const filterfct = (e) => {
@@ -116,19 +117,37 @@ const AddJobOffer1 = () => {
     const filtered = jobs.filter((job) => job.toLowerCase().includes(input));
     setFilteredJobs(filtered);
     setShowList(true);
+    setFormData(formData => ({
+      ...formData,
+      jobTitle: input,
+    }));
   };
 
   const handleJobClick = (job) => {
     setNewJob(job);
     setShowList(false);
+    setFormData(formData => ({
+      ...formData,
+      jobTitle: job
+    }));
   };
 
-  const handleDepartmentChange = (e) => {
-    setDepartment(e.target.value); // Added department change handler
+  const handleJobDepartmentChange = (e) => {
+    const value = e.target.value;
+    setJobDepartment(value);
+    setFormData(formData => ({
+      ...formData,
+      jobDepartment: value,
+    }));
   };
 
   const handleJobDescriptionChange = (e) => {
-    setJobDescription(e.target.value); // Fixed jobDescription change handler
+    const value = e.target.value;
+    setJobDescription(value);
+    setFormData(formData => ({
+      ...formData,
+      jobDescription: value,
+    }));
   };
 
   return (
@@ -177,19 +196,21 @@ const AddJobOffer1 = () => {
 
         <div className="max max-w-xl mx-auto">
           <label
-            htmlFor="department"
+            htmlFor="jobDepartment"
             className="block mb-2 text-sm font-medium text-gray-900"
           >
-            Select a Department:
+            Select a Job Department:
           </label>
           <select
-            value={department}
-            onChange={handleDepartmentChange}
+            value={jobDepartment}
+            onChange={handleJobDepartmentChange}
             required
             name="jobDepartment"
             id="jobDepartment"
+            text="jobDepartment"
             className="mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blueColor focus:border-blueColor block w-full  p-2.5 "
           >
+            <option value="">Select a job department</option>
             <option value="Human Resources">Human Resources</option>
             <option value="Finance">Finance</option>
             <option value="Marketing">Marketing</option>

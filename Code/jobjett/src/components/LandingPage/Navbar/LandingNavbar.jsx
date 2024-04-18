@@ -11,12 +11,12 @@ function LandingNavbar() {
       <ul className="nav-links">
         <li className="">
           <HashLink smooth to="#get-job">
-            Get a job
+            Find a job
           </HashLink>
         </li>
         <li className="">
           <HashLink smooth to="#post-job">
-            Post a job
+            Find Employees
           </HashLink>
         </li>
         <li className="">

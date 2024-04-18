@@ -15,6 +15,7 @@ const AddJobOffer = () => {
     const handleBack = () => {
       setCurrentForm(currentForm - 1);
     };
+
     const [formData, setFormData] = useState({
         jobTitle: '',
         jobDepartment:'',
@@ -60,8 +61,8 @@ const AddJobOffer = () => {
         <>
         <Navbar></Navbar>
         <div>
-        {currentForm === 1 && <AddJobOffer1 />}
-        {currentForm === 2 && <AddJobOffer2 />}
+        {currentForm === 1 && <AddJobOffer1 formData={formData} setFormData={setFormData} />}
+        {currentForm === 2 && <AddJobOffer2 formData={formData} setFormData={setFormData} />}
         {currentForm === 3 && <AddJobOffer3 formData={formData} setFormData={setFormData} />}
 
         {/* Render buttons based on current form */}
