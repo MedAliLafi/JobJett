@@ -7,20 +7,23 @@ import { BsHouseDoor } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { BiTimeFive } from "react-icons/bi";
 import logo1 from "../../../assets/MicrosoftLogo.png";
-import logo2 from "../../../assets/SamsungLogo.png";
 import "./CandidateHomePage.css";
+import JobOfferDetails from '../JobOfferDetails/JobOfferDetails';
+
 
 function CandidateHomePage() {
-  const [jobSearchText, setJobSearchText] = useState("");
-  const [companySearchText, setCompanySearchText] = useState("");
-  const [locationSearchText, setLocationSearchText] = useState("");
+  const [jobSearchText, setJobSearchText] = useState('');
+  const [companySearchText, setCompanySearchText] = useState('');
+  const [locationSearchText, setLocationSearchText] = useState('');
   const [jobOffers, setJobOffers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchClicked, setSearchClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedJobOfferID, setSelectedJobOfferID] = useState(null);
 
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     if (searchClicked) {
       fetchJobOffers();
@@ -37,7 +40,7 @@ function CandidateHomePage() {
         {
           params: {
             page: currentPage,
-            pageSize: 8,
+            pageSize: 9,
             jobTitle: jobSearchText,
             companyName: companySearchText,
             location: locationSearchText,
@@ -54,7 +57,7 @@ function CandidateHomePage() {
 
       const totalCountHeader = response.headers["x-total-count"];
       const totalCount = parseInt(totalCountHeader);
-      const total = Math.ceil(totalCount / 8);
+      const total = Math.ceil(totalCount / 9);
       setTotalPages(total);
     } catch (error) {
       console.error("Error fetching job offers:", error);
@@ -69,6 +72,15 @@ function CandidateHomePage() {
     event.preventDefault();
     setSearchClicked(true);
     setCurrentPage(1);
+  };
+
+  
+  const openModal = (jobOfferID) => {
+    setSelectedJobOfferID(jobOfferID);
+  };
+
+  const closeModal = () => {
+    setSelectedJobOfferID(null);
   };
 
   const isLastPage = currentPage >= totalPages;
@@ -153,7 +165,7 @@ function CandidateHomePage() {
                 htmlFor="relevance"
                 className="text-[#808080] font-semibold"
               >
-                sort by:
+                Sort by:
               </label>
               <select
                 name=""
@@ -206,14 +218,21 @@ function CandidateHomePage() {
                 <div className="jobContent">{/* Job offer details */}</div>
                 {/* Buttons */}
                 <div className="jobButtons">
-                  <button
-                    className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white"
-                    onClick={() =>
-                      navigate(`/candidate/joboffer/${JobOfferID}`)
-                    }
-                  >
-                    See Details
-                  </button>
+                <div>
+                <button
+                  className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white"
+                  onClick={() => openModal(JobOfferID)}
+                >
+                  See Details
+                </button>
+                {/* Render modal only for the selected job offer */}
+                {selectedJobOfferID === JobOfferID && (
+                  <div className="modal-wrapper">
+                    <div className="modal-backdrop" onClick={closeModal}></div>
+                    <JobOfferDetails JobOfferID={JobOfferID} closeModal={closeModal} />
+                  </div>
+                  )}
+              </div>
                   <button
                     className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white "
                     onClick={() =>

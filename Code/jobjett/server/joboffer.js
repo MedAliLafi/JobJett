@@ -69,7 +69,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
 jobofferRoutes.get('/loadjoboffers', async (req, res) => {
     try {
         const pool = req.pool;        
-        const { page = 1, pageSize = 8, jobTitle, companyName, location } = req.query;
+        const { page = 1, pageSize = 9, jobTitle, companyName, location } = req.query;
         const offset = (page - 1) * pageSize;
 
         // Build the WHERE clause for filtering based on search parameters
@@ -175,6 +175,55 @@ jobofferRoutes.get('/candidate_applications', async (req, res) => {
     } catch (error) {
         console.error('Error fetching candidate applications:', error);
         return res.status(500).json({ error: 'An error occurred while fetching candidate applications.' });
+    }
+});
+
+// Route to update application status to "Denied"
+jobofferRoutes.post('/:jobofferId/deny/:candidateId', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const jobOfferId = req.params.jobofferId;
+        const candidateId = req.params.candidateId;
+
+        // Update application status to "Denied"
+        const sql = 'UPDATE application SET Status = ? WHERE JobOfferID = ? AND CandidateID = ?';
+        const values = ['Denied', jobOfferId, candidateId];
+        pool.query(sql, values, (error, result) => {
+            if (error) {
+                console.error('Error denying application:', error);
+                return res.status(500).json({ error: 'An error occurred while denying the application.' });
+            }
+            console.log('Application denied successfully');
+            res.status(200).json({ message: 'Application denied successfully' });
+        });
+    } catch (error) {
+        console.error('Error denying application:', error);
+        return res.status(500).json({ error: 'An error occurred while denying the application.' });
+    }
+});
+
+// Route to update application status to "Interview Scheduled"
+jobofferRoutes.post('/:jobofferId/schedule-interview/:candidateId', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const jobOfferId = req.params.jobofferId;
+        const candidateId = req.params.candidateId;
+        const { dateTime } = req.body;
+
+        // Update application status to "Interview Scheduled"
+        const sql = 'UPDATE application SET Status = ?, InterviewDateTime = ? WHERE JobOfferID = ? AND CandidateID = ?';
+        const values = ['Interview Scheduled', dateTime, jobOfferId, candidateId];
+        pool.query(sql, values, (error, result) => {
+            if (error) {
+                console.error('Error scheduling interview:', error);
+                return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
+            }
+            console.log('Interview scheduled successfully');
+            res.status(200).json({ message: 'Interview scheduled successfully' });
+        });
+    } catch (error) {
+        console.error('Error scheduling interview:', error);
+        return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
     }
 });
 

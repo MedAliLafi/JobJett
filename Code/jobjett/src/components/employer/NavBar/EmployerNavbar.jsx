@@ -23,6 +23,9 @@ function EmployerNavbar() {
           <li>
             <Link to="/employer/applications">Applications</Link>
           </li>
+          <li>
+            <Link to="/employer/interviews">Interviews</Link>
+          </li>
         </ul>
       </div>
       <Link to="/employer/profile">
