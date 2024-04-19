@@ -256,12 +256,6 @@ function CV() {
             >
               Delete this education
             </button>
-            <button
-              className="text-white bg-blueColor hover:bg-blueColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5  next-button"
-              onClick={handleAddEducation}
-            >
-              Add another education
-            </button>
           </div>
         </div>
       </div>
@@ -389,12 +383,12 @@ function CV() {
           >
             Delete this work experience
           </button>
-          <button
+          {/* <button
             className="text-white bg-blueColor hover:bg-blueColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 "
             onClick={handleAddWorkExperience}
           >
             Add another work experience
-          </button>
+          </button> */}
         </div>
       </div>
     ));
@@ -403,32 +397,66 @@ function CV() {
   function renderCertificatesForms() {
     return certificatesForm.map((certificate, index) => (
       <div key={index}>
-        <input
-          type="text"
-          placeholder="Certification Name"
-          value={certificate.certification}
-          onChange={(e) =>
-            handleFormChange(e, index, "certification", "certificate")
-          }
-        />
-        <input
-          type="month"
-          placeholder="Date Issued"
-          value={certificate.DateIssued}
-          onChange={(e) =>
-            handleFormChange(e, index, "DateIssued", "certificate")
-          }
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={certificate.description}
-          onChange={(e) =>
-            handleFormChange(e, index, "description", "certificate")
-          }
-        />
-        <button onClick={() => removeFormItem("certificate", index)}>
-          Delete
+        <div className="flex space-x-4 mb-4">
+          <div className="flex-grow">
+            <label
+              htmlFor={`certificate${index}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Certificate's name:
+            </label>
+            <input
+              type="text"
+              placeholder="Certification Name"
+              id={`certificate${index}`}
+              value={certificate.certification}
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              onChange={(e) =>
+                handleFormChange(e, index, "certification", "certificate")
+              }
+            />
+          </div>
+          <div className="flex-grow">
+            <label
+              htmlFor={`certificate${index}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Date:
+            </label>
+            <input
+              type="month"
+              placeholder="Date Issued"
+              value={certificate.DateIssued}
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              onChange={(e) =>
+                handleFormChange(e, index, "DateIssued", "certificate")
+              }
+            />
+          </div>
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="Certificate-description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Certificate's description:
+          </label>
+          <input
+            type="text"
+            id="Certificate-description"
+            placeholder="Description"
+            value={certificate.description}
+            className="mb-4 shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            onChange={(e) =>
+              handleFormChange(e, index, "description", "certificate")
+            }
+          />
+        </div>
+        <button
+          className="mb-5 text-white bg-blueColor hover:bg-blueColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 "
+          onClick={() => removeFormItem("certificate", index)}
+        >
+          Delete this Certificate
         </button>
       </div>
     ));
@@ -445,6 +473,8 @@ function CV() {
   function addSkill(event) {
     if (event.keyCode === 13) {
       const skillInput = event.target.value.trim();
+      setNewSkill("");
+
       if (skillInput !== "") {
         setSkills((prevSkills) => [...prevSkills, skillInput]);
         event.target.value = "";
@@ -736,7 +766,7 @@ function CV() {
           <div>
             <label
               htmlFor="summary"
-              className="block mb-2 text-lg font-bold text-blueColor"
+              className="block mb-2 text-lg font-bold text-blueColor "
             >
               Summary:
             </label>
@@ -751,11 +781,19 @@ function CV() {
           <fieldset>
             <label
               htmlFor="Education"
-              className="block mb-2 text-lg font-bold text-blueColor"
+              className="block mb-2 text-lg font-bold text-blueColor "
             >
               Education:
             </label>
             {renderEducationForms()}
+            <div className="flex justify-center">
+              <button
+                className="text-gray-500 hover:underline hover:text-blueColor  "
+                onClick={handleAddEducation}
+              >
+                Add an education
+              </button>
+            </div>
           </fieldset>
 
           <fieldset>
@@ -766,13 +804,21 @@ function CV() {
               Work Experience:
             </label>
             {renderWorkExperienceForms()}
+            <div className="flex justify-center">
+              <button
+                className=" text-gray-500 hover:underline hover:text-blueColor  "
+                onClick={handleAddWorkExperience}
+              >
+                Add a work experience
+              </button>
+            </div>
           </fieldset>
 
           <fieldset>
             <div className="mb-2">
               <label
                 htmlFor="Skills"
-                className="block mb-2 text-sm font-medium text-gray-900"
+                className="block mb-2 text-lg font-bold text-blueColor"
               >
                 Skills:
               </label>
@@ -786,7 +832,7 @@ function CV() {
                 placeholder="Enter skills and press Enter"
               />
             </div>
-            <ul className="flex flex-wrap mt-2">
+            <ul className="mb-5 flex flex-wrap mt-2">
               {skills.map((skill, index) => (
                 <li
                   key={index}
@@ -817,9 +863,21 @@ function CV() {
           </fieldset>
 
           <fieldset>
-            <legend>Certificates</legend>
+            <label
+              htmlFor="certificates"
+              className="block mb-2 text-lg font-bold text-blueColor"
+            >
+              Certificates:
+            </label>
             {renderCertificatesForms()}
-            <button onClick={handleAddCertificate}>Add Certificates</button>
+            <div className="flex justify-center">
+              <button
+                className=" text-gray-500 hover:underline hover:text-blueColor  "
+                onClick={handleAddCertificate}
+              >
+                Add Certificates
+              </button>
+            </div>
           </fieldset>
 
           <div>
@@ -833,7 +891,11 @@ function CV() {
           </div>
 
           <div>
-            <button type="submit" onClick={submitCV}>
+            <button
+              className="text-white bg-blueColor hover:bg-blueColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-2xl text-sm px-7 py-3.5  w-full mt-4 mb-10"
+              type="submit"
+              onClick={submitCV}
+            >
               Submit
             </button>
           </div>
