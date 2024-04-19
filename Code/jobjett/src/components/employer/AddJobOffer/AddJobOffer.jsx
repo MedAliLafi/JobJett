@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Navbar from "../NavBar/EmployerNavbar.jsx";
+import { useNavigate, Link } from 'react-router-dom';
 import AddJobOffer1 from "./AddJobOffer1";
 import AddJobOffer2 from "./AddJobOffer2";
 import AddJobOffer3 from "./AddJobOffer3";
 import "./AddJobOffer.css";
 
 const AddJobOffer = () => {
+    const navigate = useNavigate();
     const [currentForm, setCurrentForm] = useState(1);
 
     const handleNext = () => {
@@ -30,6 +32,7 @@ const AddJobOffer = () => {
         reqExperience:'',
         reqSkills:'',
         reqSoftSkills:'',
+        additionalQuestions:'',
     });
     
     const submitJobOffer = async () => {
@@ -46,7 +49,7 @@ const AddJobOffer = () => {
             const result = await response.json();
             if (response.ok) {
                 console.log(result.message);
-                // Optionally, redirect or display a success message
+                navigate("/employer/applications");
             } else {
                 console.error(result.error);
                 // Handle error response

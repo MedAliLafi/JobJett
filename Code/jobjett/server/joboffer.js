@@ -13,7 +13,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         }
 
         // Extract job offer data from the request body
-        const { jobTitle, jobDepartment, jobSchedule, reqEducation, reqExperience, reqSkills, reqSoftSkills, jobLocationType, jobType, payType, pay, payFrequency, jobDescription } = req.body;
+        const { jobTitle, jobDepartment, jobSchedule, reqEducation, reqExperience, reqSkills, reqSoftSkills, additionalQuestions, jobLocationType, jobType, payType, pay, payFrequency, jobDescription } = req.body;
         const salary = `${payType}_${pay}_${payFrequency}`;
 
         // Construct the job offer object
@@ -26,6 +26,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
             ReqExperience: reqExperience,
             ReqSkills: reqSkills,
             ReqSoftSkills: reqSoftSkills,
+            AdditionalQuestions: additionalQuestions, // New field
             Description: jobDescription,
             Type: jobType,
             Salary: salary,
@@ -34,7 +35,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         };
 
         // Save the job offer data to the database
-        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted, Department, Schedule, ReqEducation, ReqExperience, ReqSkills, ReqSoftSkills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted, Department, Schedule, ReqEducation, ReqExperience, ReqSkills, ReqSoftSkills, AdditionalQuestions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const values = [
             jobOfferData.EmployerID,
             jobOfferData.Title,
@@ -48,7 +49,8 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
             jobOfferData.ReqEducation,
             jobOfferData.ReqExperience,
             jobOfferData.ReqSkills,
-            jobOfferData.ReqSoftSkills
+            jobOfferData.ReqSoftSkills,
+            jobOfferData.AdditionalQuestions // New field
         ];
         pool.query(sql, values, (error, result) => {
             if (error) {

@@ -7,6 +7,8 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
   const [newSkill, setNewSkill] = useState("");
   const [SoftSkills, setSoftSkills] = useState([]);
   const [newSoftSkill, setNewSoftSkill] = useState("");
+  const [Questions, setQuestions] = useState([]);
+  const [newQuestion, setNewQuestion] = useState("");
   const [reqEducation, setReqEducation] = useState("");
   const [reqExperience, setReqExperience] = useState("");
   const [additionalQuestions, setAdditionalQuestions] = useState("No");
@@ -36,6 +38,9 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
   const handleChange2 = (e) => {
     setNewSoftSkill(e.target.value);
   };
+  const handleChange3 = (e) => {
+    setNewQuestion(e.target.value);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && newSkill.trim() !== "") {
@@ -53,12 +58,23 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
       setFormData({ ...formData, reqSoftSkills: softskillsText });
     }
   };
+  const handleKeyDown3 = (e) => {
+    if (e.key === "Enter" && newQuestion.trim() !== "") {
+      setQuestions([...Questions, newQuestion.trim()]);
+      setNewQuestion("");
+      const questionsText = Questions.join(';');
+      setFormData({ ...formData, additionalQuestions: questionsText });
+    }
+  };
 
   const handleRemoveSkill = (index) => {
     setSkills(skills.filter((_, i) => i !== index));
   };
   const handleRemoveSkill2 = (index) => {
     setSoftSkills(SoftSkills.filter((_, i) => i !== index));
+  };
+  const handleRemoveSkill3 = (index) => {
+    setQuestions(Questions.filter((_, i) => i !== index));
   };
 
   const handleAdditionalQuestionsChange = (e) => {
@@ -257,9 +273,42 @@ Enter your additional questions:            </label>
             <input
               type="text"
               id="additionalQuestionsInput"
+              text="additionalQuestionsInput"
+              value={newQuestion}
+              onChange={handleChange3}
+              onKeyDown={handleKeyDown3}
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="Enter additional questions"
+              placeholder="Enter your additional questions"
+              required
             />
+          <ul className="flex flex-wrap mt-2">
+            {Questions.map((question, index) => (
+              <li
+                key={index}
+                className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full m-1 flex items-center"
+              >
+                {question}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveSkill3(index)}
+                  className="ml-2 focus:outline-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 text-red-600"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.42-9.88l2.12-2.12a1 1 0 011.42 1.42l-2.12 2.12 2.12 2.12a1 1 0 01-1.42 1.42L10 11.42l-2.12 2.12a1 1 0 01-1.42-1.42l2.12-2.12-2.12-2.12a1 1 0 011.42-1.42l2.12 2.12z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
           </div>
         )}
       </form>
