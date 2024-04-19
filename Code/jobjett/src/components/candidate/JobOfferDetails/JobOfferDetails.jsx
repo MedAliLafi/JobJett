@@ -46,6 +46,12 @@ const JobOfferDetails = () => {
                     <p><strong>Salary:</strong> {jobofferDetails.Salary}</p>
                     <p><strong>Location:</strong> {jobofferDetails.Location}</p>
                     <p><strong>Date Posted:</strong> {jobofferDetails.DatePosted}</p>
+                    <p><strong>Department:</strong> {jobofferDetails.Department}</p>
+                    <p><strong>Schedule:</strong> {jobofferDetails.Schedule}</p>
+                    <p><strong>Required Education:</strong> {jobofferDetails.ReqEducation}</p>
+                    <p><strong>Required Experience:</strong> {jobofferDetails.ReqExperience}</p>
+                    <p><strong>Required Skills:</strong> {jobofferDetails.ReqSkills}</p>
+                    <p><strong>Required Soft Skills:</strong> {jobofferDetails.ReqSoftSkills}</p>
                 </div>
             )}
             <button onClick={redirectToApplication}>Apply Now</button>

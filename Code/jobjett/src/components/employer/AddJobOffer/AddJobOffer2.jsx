@@ -9,6 +9,7 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
   const [newSoftSkill, setNewSoftSkill] = useState("");
   const [reqEducation, setReqEducation] = useState("");
   const [reqExperience, setReqExperience] = useState("");
+  const [additionalQuestions, setAdditionalQuestions] = useState("No");
 
   const handleReqEducationChange = (e) => {
     const value = e.target.value;
@@ -58,6 +59,15 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
   };
   const handleRemoveSkill2 = (index) => {
     setSoftSkills(SoftSkills.filter((_, i) => i !== index));
+  };
+
+  const handleAdditionalQuestionsChange = (e) => {
+    const value = e.target.value;
+    setAdditionalQuestions(value);
+    setFormData(formData => ({
+      ...formData,
+      additionalQuestions: value,
+    }));
   };
 
   return (
@@ -167,7 +177,7 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
             htmlFor="SoftSkills"
             className="block mb-2 text-sm font-medium text-gray-900"
           >
-            Soft Skills:
+            Required Soft Skills:
           </label>
           <input
             type="text"
@@ -209,6 +219,49 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
             ))}
           </ul>
         </div>
+        <div className="mb-4">
+          <label
+            htmlFor="additionalQuestions"
+            className="block mb-2 text-sm font-medium text-gray-900"
+          >
+            Additional Questions:
+          </label>
+          <div>
+            <label>
+              <input
+                type="radio"
+                value="Yes"
+                checked={additionalQuestions === "Yes"}
+                onChange={handleAdditionalQuestionsChange}
+              />
+              Yes
+            </label>
+            <label className="ml-4">
+              <input
+                type="radio"
+                value="No"
+                checked={additionalQuestions === "No"}
+                onChange={handleAdditionalQuestionsChange}
+              />
+              No
+            </label>
+          </div>
+        </div>
+        {additionalQuestions === "Yes" && (
+          <div className="mb-4">
+            <label
+              htmlFor="additionalQuestionsInput"
+              className="block mb-2 text-sm font-medium text-gray-900"
+            >
+Enter your additional questions:            </label>
+            <input
+              type="text"
+              id="additionalQuestionsInput"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              placeholder="Enter additional questions"
+            />
+          </div>
+        )}
       </form>
     </div>
   );
