@@ -235,19 +235,22 @@ function CV() {
             </div>
             <div className="flex items-center"></div>
           </div>
-          <input
-            type="checkbox"
-            id={`currentlyEnrolled_${index}`}
-            checked={education.currentlyEnrolled}
-            onChange={(e) => handleCurrentlyEnrolledChange(e, index)}
-            className="mr-2"
-          />
-          <label
-            htmlFor={`currentlyEnrolled_${index}`}
-            className="text-sm text-gray-700"
-          >
-            Currently Enrolled
-          </label>
+
+          <div className="mt-3 flex items-center mb-5">
+            <input
+              type="checkbox"
+              id={`currentlyEnrolled_${index}`}
+              checked={education.currentlyEnrolled}
+              onChange={(e) => handleCurrentlyEnrolledChange(e, index)}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label
+              htmlFor={`currentlyEnrolled_${index}`}
+              className="ms-2 text-sm font-medium text-gray-500 "
+            >
+              Currently Enrolled
+            </label>
+          </div>
           <div className="mb-4"></div>
           <div className="mb-4 flex space-x-4">
             <button
@@ -341,19 +344,19 @@ function CV() {
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             />
           </div>
-          <div className="flex items-center"></div>
         </div>
-        <div className="mb-4">
+
+        <div className="mt-3 flex items-center mb-5">
           <input
             id={`currentlyWorkHere_${index}`}
             type="checkbox"
             checked={workExperience.currentlyWorkHere}
             onChange={(e) => handleCurrentlyWorkHereChange(e, index)}
-            className="mr-2"
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
             htmlFor={`currentlyWorkHere_${index}`}
-            className="text-sm text-gray-700"
+            className="ms-2 text-sm font-medium text-gray-500 "
           >
             I Currently Work Here
           </label>
@@ -880,16 +883,22 @@ function CV() {
             </div>
           </fieldset>
 
-          <div>
-            <label htmlFor="searchable">Searchable:</label>
+          <div className="flex items-center">
             <input
               type="checkbox"
               id="searchable"
               checked={searchable}
               onChange={handleChangeSearchable}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
-          </div>
 
+            <label
+              htmlFor="searchable"
+              className="ms-2 text-sm font-medium text-gray-600"
+            >
+              Searchable
+            </label>
+          </div>
           <div>
             <button
               className="text-white bg-blueColor hover:bg-blueColor focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-2xl text-sm px-7 py-3.5  w-full mt-4 mb-10"

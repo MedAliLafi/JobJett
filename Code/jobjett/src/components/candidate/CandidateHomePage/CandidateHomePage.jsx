@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import Navbar from "../NavBar/CandidateNavbar.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -18,7 +19,11 @@ function CandidateHomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchClicked, setSearchClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const [showModal, setShowModal] = useState(false);
 
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,13 +70,20 @@ function CandidateHomePage() {
     setCurrentPage(page);
   };
 
-  const handleSearchClick = () => {
+  const handleSearchClick = (event) => {
     event.preventDefault();
     setSearchClicked(true);
     setCurrentPage(1);
   };
 
   const isLastPage = currentPage >= totalPages;
+  function truncateDescription(description) {
+    if (description.length <= 200) {
+      return description;
+    } else {
+      return description.slice(0, 200) + "...";
+    }
+  }
 
   return (
     <>
@@ -192,10 +204,8 @@ function CandidateHomePage() {
                   </span>
                 </span>
                 <h6 className="text-[#ccc]">{Location}</h6>
-                <div className="center-content">
-                  <p className="text-[13px] text-[#959595] pt-[20px] border-t-[2px] mt-[20px] group-hover:text-white overflow-hidden">
-                    {Description}
-                  </p>
+                <div className=" text-[13px] text-[#959595] pt-[20px] border-t-[2px] mt-[20px] group-hover:text-white overflow-hidden">
+                  {truncateDescription(Description)}
                   <div className="CompanyName flex items-center gap-2">
                     <img src={logo1} alt="Company Logo" className="w-[10%]" />
                     <span className="text-[14px] py-[1rem] block group-hover:text-white">
@@ -207,13 +217,84 @@ function CandidateHomePage() {
                 {/* Buttons */}
                 <div className="jobButtons">
                   <button
+                    data-modal-target="popup-modal"
                     className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white"
-                    onClick={() =>
-                      navigate(`/candidate/joboffer/${JobOfferID}`)
-                    }
+                    onClick={toggleModal}
                   >
                     See Details
                   </button>
+                  {showModal && (
+                    <div
+                      id="popup-modal"
+                      tabIndex="-1"
+                      className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
+                      onClick={toggleModal}
+                    >
+                      <div className="relative p-4 w-full max-w-md max-h-full">
+                        <div className="relative bg-white rounded-lg shadow">
+                          <button
+                            type="button"
+                            className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                            data-modal-hide="popup-modal"
+                            onClick={toggleModal}
+                          >
+                            <svg
+                              className="w-3 h-3"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 14 14"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                              />
+                            </svg>
+                            <span className="sr-only">Close modal</span>
+                          </button>
+                          <div className="p-4 md:p-5 text-center">
+                            <svg
+                              className="mx-auto mb-4 text-gray-400 w-12 h-12"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                              />
+                            </svg>
+                            <h3 className="mb-5 text-lg font-normal text-gray-500">
+                              Are you sure you want to delete this product?
+                            </h3>
+                            <button
+                              data-modal-hide="popup-modal"
+                              type="button"
+                              className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                              onClick={toggleModal}
+                            >
+                              Yes, I'm sure
+                            </button>
+                            <button
+                              data-modal-hide="popup-modal"
+                              type="button"
+                              className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
+                              onClick={toggleModal}
+                            >
+                              No, cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <button
                     className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white "
                     onClick={() =>
@@ -230,7 +311,7 @@ function CandidateHomePage() {
           )}
         </div>
         {/* Pagination buttons */}
-        <div className="paginationButtons flex justify-center items-center ">
+        <div className="paginationButtons flex justify-center items-center mt-5 ">
           <button
             className=" paginationButton mr-2 "
             onClick={() => goToPage(currentPage - 1)}
