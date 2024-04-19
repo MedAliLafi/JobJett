@@ -8,10 +8,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
   const [payFrequency, setPayFrequency] = useState("");
   const [jobLocationType, setJobLocationType] = useState("");
 
-  
   const handleSalaryAmountChange = (e) => {
     const value = e.target.value;
-    setFormData(formData => ({
+    setFormData((formData) => ({
       ...formData,
       pay: value,
     }));
@@ -20,36 +19,36 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
   const handleMinSalaryChange = (e) => {
     const value = e.target.value;
     setMinSalary(value);
-    setFormData(formData => ({
+    setFormData((formData) => ({
       ...formData,
       pay: `${value}-${maxSalary}`,
     }));
   };
-  
+
   const handleMaxSalaryChange = (e) => {
     const value = e.target.value;
     setMaxSalary(value);
-    setFormData(formData => ({
+    setFormData((formData) => ({
       ...formData,
       pay: `${minSalary}-${value}`,
     }));
   };
-  
+
   const handlePayTypeChange = (e) => {
     const value = e.target.value;
     setSalary(value);
     setMinSalary("");
     setMaxSalary("");
-    setFormData(formData => ({
+    setFormData((formData) => ({
       ...formData,
       payType: value,
     }));
   };
-  
+
   const handleJobLocationTypeChange = (e) => {
     const value = e.target.value;
     setJobLocationType(value);
-    setFormData(formData => ({
+    setFormData((formData) => ({
       ...formData,
       jobLocationType: value,
     }));
@@ -58,12 +57,12 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
   const handlePayFrequencyChange = (e) => {
     const value = e.target.value;
     setPayFrequency(value);
-    setFormData(formData => ({
+    setFormData((formData) => ({
       ...formData,
       payFrequency: value,
     }));
   };
-  
+
   return (
     <div className="">
       <img src={image} className=" max-w-xl mx-auto add-job-image"></img>
@@ -81,7 +80,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
                   value="Full-time"
                   name="Job-Type"
                   className="w-4 h-4   "
-                  onChange={(e) => setFormData({ ...formData, jobType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobType: e.target.value })
+                  }
                 />
                 <label
                   htmlFor="fullTime"
@@ -99,7 +100,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
                   type="radio"
                   value="Part-time"
                   className="w-4 h-4"
-                  onChange={(e) => setFormData({ ...formData, jobType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobType: e.target.value })
+                  }
                 />
                 <label
                   htmlFor="partTime"
@@ -117,7 +120,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
                   name="Job-Type"
                   value="Temporary"
                   className="w-4 h-4"
-                  onChange={(e) => setFormData({ ...formData, jobType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobType: e.target.value })
+                  }
                 />
                 <label
                   htmlFor="temporary"
@@ -142,8 +147,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
                   type="radio"
                   value="4 hour shift"
                   className="w-4 h-4"
-                  onChange={(e) => setFormData({ ...formData, jobSchedule: e.target.value })}
-
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobSchedule: e.target.value })
+                  }
                 />
                 <label
                   htmlFor="fourHourShift"
@@ -161,7 +167,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
                   name="Schedule"
                   value="8 hour shift"
                   className="w-4 h-4"
-                  onChange={(e) => setFormData({ ...formData, jobSchedule: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobSchedule: e.target.value })
+                  }
                 />
                 <label
                   htmlFor="eightHourShift"
@@ -179,7 +187,9 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
                   name="Schedule"
                   value="10 hour shift"
                   className="w-4 h-4"
-                  onChange={(e) => setFormData({ ...formData, jobSchedule: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, jobSchedule: e.target.value })
+                  }
                 />
                 <label
                   htmlFor="tenHourShift"
@@ -203,7 +213,8 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
             name="jobLocationType"
             value={jobLocationType}
             onChange={handleJobLocationTypeChange}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"            >
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          >
             <option value="">Select the job location type</option>
             <option value="In-person, precise location">
               In-person, precise location
@@ -222,7 +233,10 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
         </div>
         {/* Salary Type */}
         <div className="mb-4 max-w-xl max-w-sm mx-auto">
-          <label htmlFor="payType" className="block mb-2 text-sm font-medium text-gray-900">
+          <label
+            htmlFor="payType"
+            className="block mb-2 text-sm font-medium text-gray-900"
+          >
             Salary Type:
           </label>
           <select
@@ -242,33 +256,36 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
 
         {/* Pay Frequency field */}
         <div className="mb-4 max-w-xl max-w-sm mx-auto">
-              <label
-                  htmlFor="payFrequency"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                  Pay Frequency:
-              </label>
-              <select
-                  id="payFrequency"
-                  name="payFrequency"
-                  value={payFrequency}
-                  onChange={handlePayFrequencyChange}
-                  required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              >
-                  <option value="">Select Pay Frequency</option>
-                  <option value="per year">per year</option>
-                  <option value="per month">per month</option>
-                  <option value="per week">per week</option>
-                  <option value="per day">per day</option>
-                  <option value="per hour">per hour</option>
-              </select>
-          </div>
+          <label
+            htmlFor="payFrequency"
+            className="block mb-2 text-sm font-medium text-gray-900"
+          >
+            Pay Frequency:
+          </label>
+          <select
+            id="payFrequency"
+            name="payFrequency"
+            value={payFrequency}
+            onChange={handlePayFrequencyChange}
+            required
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          >
+            <option value="">Select Pay Frequency</option>
+            <option value="per year">per year</option>
+            <option value="per month">per month</option>
+            <option value="per week">per week</option>
+            <option value="per day">per day</option>
+            <option value="per hour">per hour</option>
+          </select>
+        </div>
 
         {/* Salary Input fields */}
         {salary === "Range" && (
           <div className="mb-4 max-w-xl max-w-sm mx-auto flex justify-around items-baseline">
-            <label htmlFor="MinSalaryRange" className="mb-2 text-base font-medium text-gray-900">
+            <label
+              htmlFor="MinSalaryRange"
+              className="mb-2 text-base font-medium text-gray-900"
+            >
               From
             </label>
             <input
@@ -280,7 +297,10 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
               onChange={handleMinSalaryChange}
               required
             />
-            <label htmlFor="MaxSalaryRange" className="mb-2 text-base font-medium text-gray-900">
+            <label
+              htmlFor="MaxSalaryRange"
+              className="mb-2 text-base font-medium text-gray-900"
+            >
               To
             </label>
             <input
@@ -298,7 +318,10 @@ const AddJobOffer3 = ({ formData, setFormData }) => {
         {/* Other salary input fields */}
         {salary !== "Range" && (
           <div className="mb-4 max-w-xl mx-auto">
-            <label htmlFor={salary} className="block mb-2 text-sm font-medium text-gray-900">
+            <label
+              htmlFor={salary}
+              className="block mb-2 text-sm font-medium text-gray-900"
+            >
               {salary === "Start"
                 ? "Starting amount"
                 : salary === "Max"

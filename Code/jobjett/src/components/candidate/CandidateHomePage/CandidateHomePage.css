@@ -1,45 +1,57 @@
 #btn:hover {
-    background-color: white;
-    color: black;
-  }
-  #btn {
-    margin-top: 15px;
-  }
-  .singleJob {
-    width: 280px; /* Increase the width */
-    height: 350px; /* Increase the height */
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease-in-out;
-  }
-  .time span {
-    width: 50px; /* Adjust the width as needed */
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Add ellipsis for long text */
-    white-space: nowrap; /* Prevent text from wrapping */
-  }
+  background-color: white;
+  color: black;
+}
+#btn {
+  margin-top: 15px;
+}
+.singleJob {
+  position: relative;
+  width: 300px; /* Set the width */
+  height: 375px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease-in-out;
+}
+.time span {
+  width: 50px; /* Adjust the width as needed */
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  white-space: nowrap; /* Prevent text from wrapping */
+}
 
-  .icon {
-    cursor: pointer;
-    font-size: 23px;
-  }
-  .searchDiv {
-    margin-top: 40px;
-  }
-  /* #searchbtn:hover {
+.icon {
+  cursor: pointer;
+  font-size: 23px;
+}
+.searchDiv {
+  margin-top: 40px;
+}
+/* #searchbtn:hover {
     background-color: white;
     color: black;
     outline: 2.5px solid#00579b;
     outline-offset: 4.5px;
     outline-offset: 1px;
   } */
-  #searchbtn:hover {
-    background-color: #0a77c4;
-  }
-  .clearAllButton {
-    text-decoration: underline;
-  }
-  
+#searchbtn:hover {
+  background-color: #0a77c4;
+}
+.clearAllButton {
+  text-decoration: underline;
+}
+.jobButtons {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+}
+.jobButtons button {
+  margin-bottom: 7px; /* Add margin between buttons */
+}

@@ -180,7 +180,7 @@ function CandidateHomePage() {
             }) => (
               <div
                 key={JobOfferID}
-                className="group group-items singleJob p-[20px] bg-white rounded-[10px] hover:bg-blueColor shadow-lg shadow-greyIsh-400/700 hover:shadow-lg"
+                className="singleJob p-[20px] bg-white rounded-[10px] hover:bg-blueColor shadow-lg shadow-greyIsh-400/700 hover:shadow-lg"
               >
                 <span className="flex justify-between items-center gap-4">
                   <h1 className="text-[16px] font-semibold text-black group-hover:text-white">
@@ -203,32 +203,36 @@ function CandidateHomePage() {
                     </span>
                   </div>
                 </div>
-
-                <button
-                  id="btn"
-                  className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white"
-                  onClick={() => navigate(`/candidate/joboffer/${JobOfferID}`)}
-                >
-                  See Details
-                </button>
-
-                <button
-                  id="btn"
-                  className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white "
-                  onClick={() =>
-                    navigate(`/candidate/application?jobofferId=${JobOfferID}`)
-                  }
-                >
-                  Apply Now
-                </button>
+                <div className="jobContent">{/* Job offer details */}</div>
+                {/* Buttons */}
+                <div className="jobButtons">
+                  <button
+                    className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white"
+                    onClick={() =>
+                      navigate(`/candidate/joboffer/${JobOfferID}`)
+                    }
+                  >
+                    See Details
+                  </button>
+                  <button
+                    className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white "
+                    onClick={() =>
+                      navigate(
+                        `/candidate/application?jobofferId=${JobOfferID}`
+                      )
+                    }
+                  >
+                    Apply Now
+                  </button>
+                </div>
               </div>
             )
           )}
         </div>
         {/* Pagination buttons */}
-        <div className="paginationButtons flex justify-center items-center mt-5">
+        <div className="paginationButtons flex justify-center items-center ">
           <button
-            className="paginationButton mr-2"
+            className=" paginationButton mr-2 "
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
           >
