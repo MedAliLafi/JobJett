@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./Right.css";
 function Right(props) {
   return (
-    <div className="third-page" id={props.id}>
+    <div className="third-page" id="post-job">
       <div className="divide">
         <div className="container">
           <h1>{props.title}</h1>

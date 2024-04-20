@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2024 at 05:49 PM
+-- Generation Time: Apr 11, 2024 at 02:10 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -68,7 +68,7 @@ CREATE TABLE `candidate` (
 --
 
 INSERT INTO `candidate` (`CandidateID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `Phone`, `State`, `Country`, `Address`, `CV_ID`) VALUES
-(21, 39, 'can', 'can', '2002-10-30', '234920834', 'Tunis', 'Tunisia', 'qwejkrnqwerqwkerl', 10);
+(21, 39, 'can', 'can', '2002-10-30', '234920834', 'ijqwnerojqw ', 'qowjiern w', 'qwejkrnqwerqwkerl', 10);
 
 -- --------------------------------------------------------
 
@@ -147,12 +147,8 @@ INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldO
 CREATE TABLE `employer` (
   `EmployerID` int(11) NOT NULL,
   `UserID` int(11) DEFAULT NULL,
-  `FirstName` varchar(100) DEFAULT NULL,
-  `LastName` varchar(100) DEFAULT NULL,
-  `DateOfBirth` date DEFAULT NULL,
   `CompanyName` varchar(255) DEFAULT NULL,
   `Industry` varchar(100) DEFAULT NULL,
-  `NumberOfEmployees` int(11) DEFAULT NULL,
   `Phone` varchar(20) DEFAULT NULL,
   `State` varchar(100) DEFAULT NULL,
   `Country` varchar(100) DEFAULT NULL,
@@ -163,8 +159,8 @@ CREATE TABLE `employer` (
 -- Dumping data for table `employer`
 --
 
-INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `CompanyName`, `Industry`, `NumberOfEmployees`, `Phone`, `State`, `Country`, `Address`) VALUES
-(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ');
+INSERT INTO `employer` (`EmployerID`, `UserID`, `CompanyName`, `Industry`, `Phone`, `State`, `Country`, `Address`) VALUES
+(11, 35, 'test', 'test', '324234', NULL, NULL, 'wqwerwqerpok ');
 
 -- --------------------------------------------------------
 
@@ -340,37 +336,37 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `candidate`
 --
 ALTER TABLE `candidate`
-  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `certification`
 --
 ALTER TABLE `certification`
-  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
 --
 ALTER TABLE `joboffer`
-  MODIFY `JobOfferID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `JobOfferID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -382,13 +378,13 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `work_experience`
 --
 ALTER TABLE `work_experience`
-  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- Constraints for dumped tables

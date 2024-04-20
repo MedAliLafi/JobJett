@@ -6,10 +6,8 @@ function Nav() {
   return (
     <nav className="navbar">
       <div className="logo">
-        <a>
-        <Link to="/">
+        <a href="" to="/">
           <img src={logo} alt="" className="logo"></img>
-          </Link>
         </a>
       </div>
       <div className="nav-links">
@@ -22,6 +20,9 @@ function Nav() {
           </li>
         </ul>
       </div>
+      <a href="" to="/Contact">
+        <img src={profile} className="profileIcon" />
+      </a>
     </nav>
   );
 }

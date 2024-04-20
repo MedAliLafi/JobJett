@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import logo from "../../../assets/output-onlinetools.png";
+import logo from "../../assets/output-onlinetools.png";
 import "./CandidateRegister.css";
-import Navbar from "../../NavBar/Navbar.jsx";
+import Navbar from "../NavBar/Navbar.jsx";
 
 const countryOptions = [
   { value: "Afghanistan", label: "Afghanistan" },
@@ -398,7 +398,7 @@ const CandidateRegister = () => {
     return (
       <>
       <Navbar></Navbar>
-      <div
+        <div
         id="page"
         className="site flex flex-row min-h-screen justify-center items-center"
       >
@@ -406,7 +406,7 @@ const CandidateRegister = () => {
           <div className="form-box ">
             <div className="progress">
               <div className="logo">
-                <Link to="/">
+                <Link to="">
                   <img src={logo} alt="Logo"></img>
                 </Link>
               </div>
@@ -440,21 +440,11 @@ const CandidateRegister = () => {
                 <p>Enter your information correctly</p>
                 <div>
                   <label>First Name</label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    required
-                  ></input>
+                  <input type="text" id="firstName" name="firstName" required></input>
                 </div>
                 <div>
                   <label>Last Name</label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    required
-                  ></input>
+                  <input type="text" id="lastName" name="lastName" required></input>
                 </div>
                 <div className="birth">
                   <label>Date of birth</label>
@@ -524,18 +514,11 @@ const CandidateRegister = () => {
                 </div>
                 <div>
                   <label>Address</label>
-                  <input
-                    type="text"
-                    placeholder="Street Address"
-                    id="address"
-                    name="address"
-                  ></input>
+                  <input type="text" placeholder="Street Address" id="address" name="address"></input>
                 </div>
               </div>
               <div
-                className={`form-three form-step ${
-                  active === 3 ? "active" : ""
-                }`}
+                className={`form-three form-step ${active === 3 ? "active" : ""}`}
               >
                 <div className="bg-svg"></div>
                 <h2>Security</h2>
@@ -544,20 +527,13 @@ const CandidateRegister = () => {
                   <input
                     type="email"
                     placeholder="Your email address"
-                    id="email"
-                    name="email"
+                    id="email" name="email"
                     required
                   ></input>
                 </div>
                 <div>
                   <label>Password</label>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    id="password"
-                    name="password"
-                    required
-                  ></input>
+                  <input type="password" placeholder="Password" id="password" name="password" required></input>
                 </div>
                 <div>
                   <label>Confirm Password</label>
@@ -591,11 +567,7 @@ const CandidateRegister = () => {
                 <button type="submit" className="btn-submit">
                   Submit
                 </button>
-                <br></br>
-                <p>
-                  Already Registered?{" "}
-                  <Link to="/candidate/login">Login here</Link>
-                </p>
+                <br></br><p>Already Registered? <Link to="/candidate/login">Login here</Link></p>
               </div>
             </form>
           </div>

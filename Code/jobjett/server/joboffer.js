@@ -13,20 +13,13 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         }
 
         // Extract job offer data from the request body
-        const { jobTitle, jobDepartment, jobSchedule, reqEducation, reqExperience, reqSkills, reqSoftSkills, additionalQuestions, jobLocationType, jobType, payType, pay, payFrequency, jobDescription } = req.body;
+        const { jobTitle, jobLocationType, jobType, payType, pay, payFrequency, jobDescription } = req.body;
         const salary = `${payType}_${pay}_${payFrequency}`;
 
         // Construct the job offer object
         const jobOfferData = {
             EmployerID: employerId,
             Title: jobTitle,
-            Department: jobDepartment,
-            Schedule: jobSchedule,
-            ReqEducation: reqEducation,
-            ReqExperience: reqExperience,
-            ReqSkills: reqSkills,
-            ReqSoftSkills: reqSoftSkills,
-            AdditionalQuestions: additionalQuestions, // New field
             Description: jobDescription,
             Type: jobType,
             Salary: salary,
@@ -35,7 +28,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         };
 
         // Save the job offer data to the database
-        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted, Department, Schedule, ReqEducation, ReqExperience, ReqSkills, ReqSoftSkills, AdditionalQuestions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted) VALUES (?, ?, ?, ?, ?, ?, ?)';
         const values = [
             jobOfferData.EmployerID,
             jobOfferData.Title,
@@ -43,14 +36,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
             jobOfferData.Type,
             jobOfferData.Salary,
             jobOfferData.Location,
-            jobOfferData.DatePosted,
-            jobOfferData.Department,
-            jobOfferData.Schedule,
-            jobOfferData.ReqEducation,
-            jobOfferData.ReqExperience,
-            jobOfferData.ReqSkills,
-            jobOfferData.ReqSoftSkills,
-            jobOfferData.AdditionalQuestions // New field
+            jobOfferData.DatePosted
         ];
         pool.query(sql, values, (error, result) => {
             if (error) {
@@ -65,71 +51,6 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while adding the job offer.' });
     }
 });
-
-jobofferRoutes.get('/loadjoboffers', async (req, res) => {
-    try {
-        const pool = req.pool;        
-        const { page = 1, pageSize = 9, jobTitle, companyName, location } = req.query;
-        const offset = (page - 1) * pageSize;
-
-        // Build the WHERE clause for filtering based on search parameters
-        let whereClause = '';
-        const queryParams = [];
-        if (jobTitle) {
-            whereClause += 'Title LIKE ?';
-            queryParams.push(`%${jobTitle}%`);
-        }
-        if (location) {
-            if (whereClause) whereClause += ' AND ';
-            whereClause += 'Location LIKE ?';
-            queryParams.push(`%${location}%`);
-        }
-
-        // Build the JOIN clause to fetch company name from the employer table
-        let joinClause = 'INNER JOIN employer ON joboffer.EmployerID = employer.EmployerID';
-        if (companyName) {
-            if (whereClause) whereClause += ' AND ';
-            whereClause += 'employer.CompanyName LIKE ?';
-            queryParams.push(`%${companyName}%`);
-        }
-
-        // Execute the count query to get the total number of job offers
-        let countQuery = 'SELECT COUNT(*) AS totalCount FROM joboffer';
-        countQuery += ` ${joinClause}`;
-        if (whereClause) {
-            countQuery += ` WHERE ${whereClause}`;
-        }
-        pool.query(countQuery, queryParams, (error, countResults) => {
-            if (error) {
-                console.error('Error fetching job offer count:', error);
-                return res.status(500).json({ error: 'An error occurred while fetching job offer count.' });
-            }
-            const totalCount = countResults[0].totalCount;
-
-            // Execute the select query to fetch paginated job offers
-            let selectQuery = 'SELECT joboffer.*, employer.CompanyName FROM joboffer';
-            selectQuery += ` ${joinClause}`;
-            if (whereClause) {
-                selectQuery += ` WHERE ${whereClause}`;
-            }
-            selectQuery += ' LIMIT ?, ?';
-            queryParams.push(offset, parseInt(pageSize));
-            pool.query(selectQuery, queryParams, (error, selectResults) => {
-                if (error) {
-                    console.error('Error fetching paginated job offers:', error);
-                    return res.status(500).json({ error: 'An error occurred while fetching paginated job offers.' });
-                }
-                res.header('Access-Control-Expose-Headers', 'X-Total-Count');
-                res.setHeader('X-Total-Count', totalCount);
-                res.status(200).json(selectResults);
-            });
-        });
-    } catch (error) {
-        console.error('Error fetching job offers:', error);
-        return res.status(500).json({ error: 'An error occurred while fetching job offers.' });
-    }
-});
-
 
 // Route to get job offers made by the employer
 jobofferRoutes.get('/joboffers', async (req, res) => {
@@ -175,55 +96,6 @@ jobofferRoutes.get('/candidate_applications', async (req, res) => {
     } catch (error) {
         console.error('Error fetching candidate applications:', error);
         return res.status(500).json({ error: 'An error occurred while fetching candidate applications.' });
-    }
-});
-
-// Route to update application status to "Denied"
-jobofferRoutes.post('/:jobofferId/deny/:candidateId', async (req, res) => {
-    try {
-        const pool = req.pool;
-        const jobOfferId = req.params.jobofferId;
-        const candidateId = req.params.candidateId;
-
-        // Update application status to "Denied"
-        const sql = 'UPDATE application SET Status = ? WHERE JobOfferID = ? AND CandidateID = ?';
-        const values = ['Denied', jobOfferId, candidateId];
-        pool.query(sql, values, (error, result) => {
-            if (error) {
-                console.error('Error denying application:', error);
-                return res.status(500).json({ error: 'An error occurred while denying the application.' });
-            }
-            console.log('Application denied successfully');
-            res.status(200).json({ message: 'Application denied successfully' });
-        });
-    } catch (error) {
-        console.error('Error denying application:', error);
-        return res.status(500).json({ error: 'An error occurred while denying the application.' });
-    }
-});
-
-// Route to update application status to "Interview Scheduled"
-jobofferRoutes.post('/:jobofferId/schedule-interview/:candidateId', async (req, res) => {
-    try {
-        const pool = req.pool;
-        const jobOfferId = req.params.jobofferId;
-        const candidateId = req.params.candidateId;
-        const { dateTime } = req.body;
-
-        // Update application status to "Interview Scheduled"
-        const sql = 'UPDATE application SET Status = ?, InterviewDateTime = ? WHERE JobOfferID = ? AND CandidateID = ?';
-        const values = ['Interview Scheduled', dateTime, jobOfferId, candidateId];
-        pool.query(sql, values, (error, result) => {
-            if (error) {
-                console.error('Error scheduling interview:', error);
-                return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
-            }
-            console.log('Interview scheduled successfully');
-            res.status(200).json({ message: 'Interview scheduled successfully' });
-        });
-    } catch (error) {
-        console.error('Error scheduling interview:', error);
-        return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
     }
 });
 

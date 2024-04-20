@@ -112,7 +112,7 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
 // Route to login candidate
 candidateRoutes.post('/loginCandidate', async (req, res) => {
     const pool = req.pool;
-    const { email, password, rememberMe } = req.body;
+    const { email, password } = req.body;
     try {
         loginUser(pool, email, password, (error, result) => {
             if (error) {
@@ -127,10 +127,8 @@ candidateRoutes.post('/loginCandidate', async (req, res) => {
                 console.log('User is not a candidate');
                 return res.status(401).json({ error: 'User is not a candidate.' });
             }
-
-            const expiresIn = rememberMe ? '30d' : '1d';
-            const token = jwt.sign({ user: user}, 'secret_key', { expiresIn });            
-            res.cookie('token', token, { httpOnly: true, maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : undefined });
+            const token = jwt.sign({ user: user}, 'secret_key');
+            res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // One month expiration
             res.status(200).json({ message: 'Login successful', token: token });
         });
     } catch (error) {
