@@ -7,13 +7,17 @@ const jwt = require('jsonwebtoken');
 // Function to get employer information by ID
 function getEmployerInfoById(pool, employerId) {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT Employer.CompanyName, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
+        pool.query('SELECT Employer.FirstName, Employer.LastName, Employer.DateOfBirth, Employer.CompanyName, Employer.NumberOfEmployees, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
             if (error) {
                 reject(error);
             } else {
                 if (results.length > 0) {
                     const employerInfo = {
+                        firstname: results[0].firstname,
+                        lastname: results[0].lastname,
+                        dateOfBirth: results[0].dateOfBirth,
                         companyName: results[0].CompanyName,
+                        numberOfEmployees: results[0].numberOfEmployees,
                         email: results[0].Email,
                         industry: results[0].Industry,
                         phone: results[0].Phone,
@@ -53,7 +57,7 @@ function getEmployerIdFromToken(pool, req) {
 // Route to register a new employer
 employerRoutes.post('/registerEmployer', async (req, res) => {
     const pool = req.pool;
-    const { email, password, companyName, industry, phone, state, country, address } = req.body;
+    const { email, password, firstname, lastname, dateOfBirth, companyName, industry, numberOfEmployees, phone, state, country, address } = req.body;
     
     try {
         // Hash the password
@@ -67,8 +71,8 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 
         const userID = userResult.insertId;
         // Now, register the employer using the user ID obtained
-        const sql = 'INSERT INTO Employer (UserID, CompanyName, Industry, Phone, State, Country, Address) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const values = [userID, companyName, industry, phone, state, country, address];
+        const sql = 'INSERT INTO Employer (UserID, FirstName, LastName, DateOfBirth, CompanyName, Industry, NumberOfEmployees, Phone, State, Country, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const values = [userID, firstname, lastname, dateOfBirth, companyName, industry, numberOfEmployees, phone, state, country, address ];
 
         pool.query(sql, values, (error, employerResult) => {
             if (error) {
@@ -88,7 +92,7 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 // Route to login employer
 employerRoutes.post('/loginEmployer', async (req, res) => {
     const pool = req.pool;
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
     try {
         loginUser(pool, email, password, (error, result) => {
             if (error) {
@@ -100,11 +104,13 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
             }
             const user = result.user;
             if (user.UserType !== 'Employer') {
-                console.log('User is not a employer');
-                return res.status(401).json({ error: 'User is not a employer.' });
+                console.log('User is not an employer');
+                return res.status(401).json({ error: 'User is not an employer.' });
             }
-            const token = jwt.sign({ user: user}, 'secret_key');
-            res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // One month expiration
+            
+            const expiresIn = rememberMe ? '30d' : '1d';
+            const token = jwt.sign({ user: user}, 'secret_key', { expiresIn });            
+            res.cookie('token', token, { httpOnly: true, maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : undefined });
             res.status(200).json({ message: 'Login successful', token: token });
         });
     } catch (error) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from "../NavBar/Navbar.jsx";
+import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const EmployerProfile = () => {
     const navigate = useNavigate();

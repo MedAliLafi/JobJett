@@ -5,7 +5,7 @@ import "./left.css";
 
 function Left(props) {
   return (
-    <div className="second-page" id="get-job">
+    <div className="second-page" id={props.id}>
       <div className="divide">
         <img src={props.image} className="left" alt="" />
         <div className="container">
