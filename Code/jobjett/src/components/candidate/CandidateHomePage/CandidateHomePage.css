@@ -5,6 +5,7 @@
 #btn {
   margin-top: 15px;
 }
+
 .singleJob {
   position: relative;
   width: 298px; /* Set the width */
@@ -15,6 +16,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease-in-out;
 }
+
 .time span {
   width: 50px; /* Adjust the width as needed */
   display: inline-block;

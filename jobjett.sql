@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 13, 2024 at 05:49 PM
+-- Generation Time: Apr 20, 2024 at 12:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,8 +90,7 @@ CREATE TABLE `certification` (
 --
 
 INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `certification`, `DateIssued`, `description`) VALUES
-(165, 21, 10, '1234', '2023-01', 'Description for AWS certification'),
-(166, 21, 10, '12341234', '2023-03', 'Description for Google certification');
+(175, 21, 10, 'qewjnr', '2024-07', 'qwerqwe');
 
 -- --------------------------------------------------------
 
@@ -112,7 +111,7 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`) VALUES
-(10, 21, 'ahla summary', 'qwer;qwer;qwer;werq', 'true');
+(10, 21, 'ahla summary', 'qwer;qwer;qwer;werq;asdfjoisadj', '');
 
 -- --------------------------------------------------------
 
@@ -129,14 +128,6 @@ CREATE TABLE `education` (
   `School` varchar(255) DEFAULT NULL,
   `TimePeriod` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `education`
---
-
-INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldOfStudy`, `School`, `TimePeriod`) VALUES
-(88, 21, 10, 'Bachelor', 'Computer Science', 'University of Science', '2018-10_Present'),
-(89, 21, 10, 'Master', 'Data Science', 'University of Technology', '2022-08_Present');
 
 -- --------------------------------------------------------
 
@@ -164,7 +155,8 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `CompanyName`, `Industry`, `NumberOfEmployees`, `Phone`, `State`, `Country`, `Address`) VALUES
-(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ');
+(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok '),
+(18, 56, 'ahmed', 'ahmedd', '2002-10-10', 'oiqwejroi', 'technology', 1, '20626262', 'qweqwioerjqwoer', 'Afghanistan', 'iquwehroiewqjr');
 
 -- --------------------------------------------------------
 
@@ -180,15 +172,58 @@ CREATE TABLE `joboffer` (
   `Type` varchar(255) DEFAULT NULL,
   `Salary` varchar(255) DEFAULT NULL,
   `Location` varchar(255) DEFAULT NULL,
-  `DatePosted` date DEFAULT NULL
+  `DatePosted` date DEFAULT NULL,
+  `Department` varchar(255) DEFAULT NULL,
+  `Schedule` varchar(255) DEFAULT NULL,
+  `ReqEducation` varchar(255) DEFAULT NULL,
+  `ReqExperience` varchar(255) DEFAULT NULL,
+  `ReqSkills` text DEFAULT NULL,
+  `ReqSoftSkills` text DEFAULT NULL,
+  `additionalQuestions` text DEFAULT NULL,
+  `Status` varchar(50) DEFAULT 'Active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `joboffer`
 --
 
-INSERT INTO `joboffer` (`JobOfferID`, `EmployerID`, `Title`, `Description`, `Type`, `Salary`, `Location`, `DatePosted`) VALUES
-(4, 11, 'qweirj qwelrkj ', 'uh iguvo8v7tlvutyvhgjvkg\n', 'Contract', 'Maximum amount_kugukkj_per week', 'In-person, within a limited area', '2024-04-04');
+INSERT INTO `joboffer` (`JobOfferID`, `EmployerID`, `Title`, `Description`, `Type`, `Salary`, `Location`, `DatePosted`, `Department`, `Schedule`, `ReqEducation`, `ReqExperience`, `ReqSkills`, `ReqSoftSkills`, `additionalQuestions`, `Status`) VALUES
+(4, 11, 'qweirj qwelrkj ', 'uh iguvo8v7tlvutyvhgjvk\r\ng\r\nd\r\ndf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\ndsf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\n', 'Temporary', 'Maximum amount_kugukkj_per week', 'In-person, within a limited area', '2024-04-04', 'Administration', '4 hour shift', 'Associate\'s Degree', '3-5 years', 'qwer;qwer;wqer', 'wqerioiwer;wenr weior', NULL, 'Active'),
+(38, 11, 'Software Engineer', 'We are seeking a highly skilled software engineer to join our dynamic team.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Engineering', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3+ years of experience in software development', 'JavaScript, React, Node.js', 'Strong problem-solving skills, teamwork', NULL, 'Active'),
+(39, 11, 'Marketing Specialist', 'Join our marketing team and help us promote our products to a wider audience.', 'Part-time', 'Hourly rate', 'New York City', '2024-04-18', 'Marketing', 'Part-time', 'Bachelor\'s Degree in Marketing or related field', '2+ years of experience in marketing', 'Social media marketing, SEO, Google Analytics', 'Excellent communication skills, creativity', NULL, 'Active'),
+(40, 11, 'Customer Service Representative', 'Provide exceptional customer service to our clients and assist them with their inquiries.', 'Full-time', 'Annual salary', 'Los Angeles', '2024-04-18', 'Customer Service', 'Rotating shifts', 'High School Diploma or equivalent', '1-2 years of experience in customer service', 'Communication skills, problem-solving', 'Patience, empathy', NULL, 'Active'),
+(41, 11, 'Data Analyst', 'Analyze data and provide insights to drive business decisions.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Analytics', 'Full-time', 'Bachelor\'s Degree in Statistics, Mathematics, or related field', '2-3 years of experience in data analysis', 'SQL, Python, Excel', 'Analytical mindset, attention to detail', NULL, 'Active'),
+(42, 11, 'Graphic Designer', 'Create visually appealing designs for marketing materials and websites.', 'Part-time', 'Hourly rate', 'Chicago', '2024-04-18', 'Design', 'Part-time', 'Bachelor\'s Degree in Graphic Design or related field', '1-2 years of experience in graphic design', 'Adobe Creative Suite, Photoshop, Illustrator', 'Creativity, attention to detail', NULL, 'Active'),
+(43, 11, 'Financial Analyst', 'Analyze financial data and prepare reports to support decision-making processes.', 'Full-time', 'Annual salary', 'San Francisco', '2024-04-18', 'Finance', 'Full-time', 'Bachelor\'s Degree in Finance, Accounting, or related field', '3-5 years of experience in financial analysis', 'Financial modeling, Excel, PowerPoint', 'Analytical skills, attention to detail', NULL, 'Active'),
+(44, 11, 'Content Writer', 'Create engaging and informative content for websites, blogs, and social media.', 'Freelance', 'Per project basis', 'Remote', '2024-04-18', 'Content', 'Flexible', 'Bachelor\'s Degree in English, Journalism, or related field', '2+ years of experience in content writing', 'SEO, Copywriting', 'Excellent writing skills, creativity', NULL, 'Active'),
+(45, 11, 'Human Resources Manager', 'Manage HR functions including recruitment, employee relations, and performance management.', 'Full-time', 'Competitive salary', 'New York City', '2024-04-18', 'Human Resources', 'Full-time', 'Bachelor\'s Degree in Human Resources Management or related field', '5+ years of experience in HR management', 'Recruitment, Employee Relations', 'Leadership skills, interpersonal skills', NULL, 'Active'),
+(46, 11, 'Sales Representative', 'Promote and sell company products or services to potential customers.', 'Commission-based', 'Commission-based', 'Remote', '2024-04-18', 'Sales', 'Flexible', 'High School Diploma or equivalent', '1-2 years of experience in sales', 'Sales techniques, Communication skills', 'Negotiation skills, Persuasion', NULL, 'Active'),
+(47, 11, 'Project Manager', 'Plan, execute, and oversee projects to ensure they are completed on time and within budget.', 'Full-time', 'Competitive salary', 'Los Angeles', '2024-04-18', 'Project Management', 'Full-time', 'Bachelor\'s Degree in Project Management or related field', '3-5 years of experience in project management', 'Project management tools, Leadership', 'Organizational skills, Time management', NULL, 'Active'),
+(48, 11, 'Software Developer', 'Design, develop, and test software applications to meet business requirements.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Engineering', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3+ years of experience in software development', 'Java, Spring Boot, MySQL', 'Problem-solving skills, Teamwork', NULL, 'Active'),
+(49, 11, 'Marketing Manager', 'Develop and implement marketing strategies to promote products or services.', 'Full-time', 'Competitive salary', 'San Francisco', '2024-04-18', 'Marketing', 'Full-time', 'Bachelor\'s Degree in Marketing or related field', '5+ years of experience in marketing', 'Digital marketing, Social media', 'Strategic thinking, Leadership', NULL, 'Active'),
+(50, 11, 'Customer Support Specialist', 'Assist customers with inquiries, complaints, and issues regarding products or services.', 'Full-time', 'Hourly rate', 'Chicago', '2024-04-18', 'Customer Service', 'Full-time', 'High School Diploma or equivalent', '1-2 years of experience in customer service', 'Communication skills, Problem-solving', 'Patience, Empathy', NULL, 'Active'),
+(51, 11, 'Quality Assurance Analyst', 'Test software applications to ensure they meet quality standards and requirements.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Quality Assurance', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '2-3 years of experience in QA testing', 'Automated testing tools, Bug tracking systems', 'Attention to detail, Analytical skills', NULL, 'Active'),
+(52, 11, 'UX/UI Designer', 'Design user interfaces and experiences for digital products and websites.', 'Full-time', 'Competitive salary', 'New York City', '2024-04-18', 'Design', 'Full-time', 'Bachelor\'s Degree in Design or related field', '3-5 years of experience in UX/UI design', 'Sketch, Figma, Adobe XD', 'User-centric design, Problem-solving', NULL, 'Active'),
+(53, 11, 'Business Analyst', 'Analyze business processes and requirements to identify opportunities for improvement.', 'Full-time', 'Competitive salary', 'San Francisco', '2024-04-18', 'Business Analysis', 'Full-time', 'Bachelor\'s Degree in Business Administration or related field', '3-5 years of experience in business analysis', 'Business process modeling, Requirements gathering', 'Analytical skills, Communication skills', NULL, 'Active'),
+(54, 11, 'Network Engineer', 'Design, implement, and maintain network infrastructure to ensure smooth operations.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Engineering', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3+ years of experience in network engineering', 'Cisco, Routing, Switching', 'Problem-solving skills, Attention to detail', NULL, 'Active'),
+(55, 11, 'Digital Marketing Specialist', 'Plan and execute digital marketing campaigns to drive online traffic and conversions.', 'Full-time', 'Competitive salary', 'Chicago', '2024-04-18', 'Marketing', 'Full-time', 'Bachelor\'s Degree in Marketing or related field', '2-3 years of experience in digital marketing', 'SEO, SEM, Social media advertising', 'Analytical skills, Creativity', NULL, 'Active'),
+(56, 11, 'Operations Manager', 'Oversee day-to-day operations to ensure efficiency and productivity.', 'Full-time', 'Competitive salary', 'Los Angeles', '2024-04-18', 'Operations', 'Full-time', 'Bachelor\'s Degree in Business Administration or related field', '5+ years of experience in operations management', 'Process improvement, Budget management', 'Leadership skills, Problem-solving', NULL, 'Active'),
+(57, 11, 'Technical Support Engineer', 'Provide technical assistance and support to customers experiencing software or hardware issues.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Technical Support', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '2-3 years of experience in technical support', 'Troubleshooting, Customer service', 'Communication skills, Problem-solving', NULL, 'Active'),
+(58, 11, 'Accountant', 'Prepare and maintain financial records and reports for the organization.', 'Full-time', 'Competitive salary', 'New York City', '2024-04-18', 'Finance', 'Full-time', 'Bachelor\'s Degree in Accounting or related field', '3-5 years of experience in accounting', 'GAAP, Financial analysis', 'Attention to detail, Analytical skills', NULL, 'Active'),
+(59, 11, 'Social Media Manager', 'Manage social media accounts and content to engage audiences and increase brand awareness.', 'Full-time', 'Competitive salary', 'San Francisco', '2024-04-18', 'Marketing', 'Full-time', 'Bachelor\'s Degree in Marketing or related field', '2-3 years of experience in social media management', 'Social media platforms, Content creation', 'Creativity, Communication skills', NULL, 'Active'),
+(60, 11, 'IT Support Specialist', 'Provide technical support and troubleshooting for hardware and software issues.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Technical Support', 'Full-time', 'Bachelor\'s Degree in Information Technology or related field', '2-3 years of experience in IT support', 'Hardware troubleshooting, Software installation', 'Problem-solving skills, Customer service', NULL, 'Active'),
+(61, 11, 'Legal Assistant', 'Assist lawyers and legal professionals with administrative tasks and research.', 'Full-time', 'Competitive salary', 'Chicago', '2024-04-18', 'Legal', 'Full-time', 'Bachelor\'s Degree in Legal Studies or related field', '1-2 years of experience in legal assistance', 'Legal research, Document drafting', 'Attention to detail, Organizational skills', NULL, 'Active'),
+(62, 11, 'Web Developer', 'Design and develop websites and web applications to meet client specifications.', 'Full-time', 'Competitive salary', 'Los Angeles', '2024-04-18', 'Engineering', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3+ years of experience in web development', 'HTML, CSS, JavaScript', 'Problem-solving skills, Teamwork', NULL, 'Active'),
+(63, 11, 'Customer Success Manager', 'Build and maintain strong relationships with customers to ensure satisfaction and retention.', 'Full-time', 'Competitive salary', 'New York City', '2024-04-18', 'Customer Success', 'Full-time', 'Bachelor\'s Degree in Business Administration or related field', '2-3 years of experience in customer success', 'Account management, Customer service', 'Communication skills, Problem-solving', NULL, 'Active'),
+(64, 11, 'Database Administrator', 'Manage and maintain databases to ensure data integrity, security, and availability.', 'Full-time', 'Competitive salary', 'San Francisco', '2024-04-18', 'Database Administration', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3-5 years of experience in database administration', 'SQL, Database management systems', 'Analytical skills, Attention to detail', NULL, 'Active'),
+(65, 11, 'Public Relations Specialist', 'Develop and execute public relations campaigns to enhance brand reputation and awareness.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Public Relations', 'Full-time', 'Bachelor\'s Degree in Public Relations or related field', '2-3 years of experience in public relations', 'Media relations, Press releases', 'Communication skills, Creativity', NULL, 'Active'),
+(66, 11, 'Systems Analyst', 'Analyze business requirements and design information systems to meet organizational needs.', 'Full-time', 'Competitive salary', 'Chicago', '2024-04-18', 'Systems Analysis', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3-5 years of experience in systems analysis', 'System design, Requirements gathering', 'Analytical skills, Problem-solving', NULL, 'Active'),
+(67, 11, 'Technical Writer', 'Create technical documentation and user manuals for software products and systems.', 'Full-time', 'Competitive salary', 'Los Angeles', '2024-04-18', 'Technical Writing', 'Full-time', 'Bachelor\'s Degree in Technical Writing or related field', '2-3 years of experience in technical writing', 'Technical writing tools, Documentation standards', 'Writing skills, Attention to detail', NULL, 'Active'),
+(68, 11, 'Healthcare Administrator', 'Oversee administrative functions in healthcare facilities to ensure efficient operations.', 'Full-time', 'Competitive salary', 'New York City', '2024-04-18', 'Healthcare Administration', 'Full-time', 'Bachelor\'s Degree in Healthcare Administration or related field', '3-5 years of experience in healthcare administration', 'Healthcare regulations, Budget management', 'Leadership skills, Problem-solving', NULL, 'Active'),
+(69, 11, 'UI Designer', 'Design user interfaces for digital products and applications to enhance user experience.', 'Full-time', 'Competitive salary', 'San Francisco', '2024-04-18', 'Design', 'Full-time', 'Bachelor\'s Degree in Design or related field', '3+ years of experience in UI design', 'Sketch, Adobe XD', 'User-centric design, Problem-solving', NULL, 'Active'),
+(70, 11, 'ahmed hajjem', 'QWOEJIRIJQW', 'Full-time', 'Start_1000_per week', 'Fully remote: no on-site work required', '2024-04-18', 'Supply Chain/Logistics', '4 hour shift', 'Master\'s Degree or Higher', '3-5 years', 'qwerqwer;qwerqwer', 'asdfkljjn;welerjnjww', NULL, 'Active'),
+(71, 11, 'bonjour ', 'bonjour', 'Full-time', '_100-1000_per week', 'In-person, within a limited area', '2024-04-19', 'Public Relations', '4 hour shift', 'Bachelor\'s Degree', '5-10 years', 'qwer;.qewr', 'qwer;qwer', 'qoweirj;qewrqwer', 'Active'),
+(72, 18, 'Data Scientist', 'qew9jrioqwerwqermk', 'Full-time', 'Start_1000_per week', 'Fully remote: no on-site work required', '2024-04-19', 'Public Relations', '4 hour shift', 'Bachelor\'s Degree', '3-5 years', 'qewrqwer', 'qwewrqwer', '', 'Active');
 
 -- --------------------------------------------------------
 
@@ -226,7 +261,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`UserID`, `Email`, `Password`, `UserType`) VALUES
 (35, 'test@mail', '$2b$10$6vEoyVZpMjyRFwTHeE9yzugSzWQDqNw/wc5KJzH3SSfQ79cxUtrba', 'Employer'),
-(39, 'can@mail', '$2b$10$dBQhEk8aNGFhdoExgviBP.IQPygCxhFnOlux97kBc33qLyeSPCS7G', 'Candidate');
+(39, 'can@mail', '$2b$10$dBQhEk8aNGFhdoExgviBP.IQPygCxhFnOlux97kBc33qLyeSPCS7G', 'Candidate'),
+(56, 'ahmed2@mail', '$2b$10$RL0YKiN0cMjU9Bj84z9Q7.C39Se8KxM1I9j30BvLPenBnWSQcceQm', 'Employer');
 
 -- --------------------------------------------------------
 
@@ -249,7 +285,7 @@ CREATE TABLE `work_experience` (
 --
 
 INSERT INTO `work_experience` (`WorkExperienceID`, `CandidateID`, `CV_ID`, `JobTitle`, `Company`, `TimePeriod`, `Description`) VALUES
-(69, 21, 10, 'Software Engineer', 'Tech Company X', '2018-10_Present', 'Description for Software Engineer role');
+(84, 21, 10, 'Software Engineer', 'Tech Company X', '2018-10_2024-06', 'Description for Software Engineer role');
 
 --
 -- Indexes for dumped tables
@@ -340,37 +376,37 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `candidate`
 --
 ALTER TABLE `candidate`
-  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `certification`
 --
 ALTER TABLE `certification`
-  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
 
 --
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
 --
 ALTER TABLE `joboffer`
-  MODIFY `JobOfferID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `JobOfferID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -382,13 +418,13 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `work_experience`
 --
 ALTER TABLE `work_experience`
-  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- Constraints for dumped tables
