@@ -21,9 +21,6 @@ function CandidateHomePage() {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedJobOfferID, setSelectedJobOfferID] = useState(null);
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
   const navigate = useNavigate();
 
   useEffect(() => {

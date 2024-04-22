@@ -1,6 +1,5 @@
-/* eslint-disable react/no-unescaped-entities */
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import logo from "../../../assets/output-onlinetools.png";
 import "./EmployerRegister.css";
 import Navbar from "../../NavBar/Navbar.jsx";
@@ -298,7 +297,7 @@ const countryOptions = [
 ];
 const EmployerRegister = () => {
   const navigate = useNavigate();
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [active, setActive] = useState(1);
 
   const nextButtonFunction = () => {
@@ -352,37 +351,33 @@ const EmployerRegister = () => {
     const year = parseInt(formData.get("year"), 10);
     const dateOfBirth = new Date(year, month, day);
     try {
-      const response = await fetch(
-        "http://localhost:9000/Employer/registerEmployer",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            email: formData.get("email"),
-            password: formData.get("password"),
-            firstname: formData.get("firstname"),
-            lastname: formData.get("lastname"),
-            dateOfBirth: dateOfBirth,
-            companyName: formData.get("companyName"),
-            industry: formData.get("industry"),
-            numberOfEmployees: formData.get("numberOfEmployees"),
-            phone: formData.get("phone"),
-            state: formData.get("state"),
-            country: formData.get("country"),
-            address: formData.get("address"),
-          }),
-        }
-      );
+        const response = await fetch('http://localhost:9000/Employer/registerEmployer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email: formData.get('email'),
+                password: formData.get('password'),
+                firstname: formData.get("firstname"),
+                lastname: formData.get("lastname"),
+                dateOfBirth: dateOfBirth,
+                companyName: formData.get('companyName'),
+                industry: formData.get('industry'),
+                numberOfEmployees: formData.get("numberOfEmployees"),
+                phone: formData.get('phone'),
+                state: formData.get('state'),
+                country: formData.get('country'),
+                address: formData.get('address')
+            })
+        });
       if (!response.ok) {
         throw new Error("Registration failed");
       }
 
       console.log("Registration successful");
-      const loginResponse = await fetch(
-        "http://localhost:9000/Employer/loginEmployer",
+      const loginResponse = await fetch("http://localhost:9000/Employer/loginEmployer",
         {
           method: "POST",
           headers: {
@@ -409,262 +404,254 @@ const EmployerRegister = () => {
 
   return (
     <>
-      <Navbar></Navbar>
-      <div
-        id="page"
-        className="site flex flex-row min-h-screen justify-center items-center"
-      >
-        <div className="container flex flex-row min-h-screen justify-center items-center ">
-          <div className="form-box ">
-            <div className="progress">
-              <div className="logo">
-                <a>
-                  <img src={logo} alt="Logo"></img>
-                </a>
-              </div>
-              <ul className="progress-steps">
-                <li className={`step ${active === 1 ? "active" : ""}`}>
-                  <span>1</span>
-                  <p>
-                    Personal<br></br>
-                  </p>
-                </li>
-                <li className={`step ${active === 2 ? "active" : ""}`}>
-                  <span>2</span>
-                  <p>
-                    Company<br></br>
-                  </p>
-                </li>
-                <li className={`step ${active === 3 ? "active" : ""}`}>
-                  <span>3</span>
-                  <p>
-                    Security<br></br>
-                  </p>
-                </li>
-              </ul>
+    <Navbar></Navbar>
+    <div
+      id="page"
+      className="site flex flex-row min-h-screen justify-center items-center"
+    >
+      <div className="container flex flex-row min-h-screen justify-center items-center ">
+        <div className="form-box ">
+          <div className="progress">
+            <div className="logo">
+              <a>
+                <img src={logo} alt="Logo"></img>
+              </a>
             </div>
-            <form onSubmit={registerEmployer}>
-              <div
-                className={`form-one form-step ${active === 1 ? "active" : ""}`}
-              >
-                <div className="bg-svg"></div>
-                <h2>Personal Information</h2>
-                <p>Enter your personal information correctly</p>
-                <div>
-                  <label>First Name</label>
-                  <input
-                    type="text"
-                    name="firstname"
-                    placeholder="e.g John"
-                    required
-                  ></input>
-                </div>
-                <div>
-                  <label>Last Name</label>
-                  <input
-                    type="text"
-                    name="lastname"
-                    placeholder="e.g Paul"
-                    required
-                  ></input>
-                </div>
-                <div className="birth">
-                  <label>Date of birth</label>
-                  <div className="grouping">
-                    <input
-                      type="number"
-                      pattern="[0-9]"
-                      name="day"
-                      min="1"
-                      max="31"
-                      maxLength="2"
-                      placeholder="DD"
-                      required
-                    ></input>
-                    <input
-                      type="number"
-                      pattern="[0-9]"
-                      name="month"
-                      min="1"
-                      max="12"
-                      maxLength="2"
-                      placeholder="MM"
-                      required
-                    ></input>
-                    <input
-                      type="number"
-                      pattern="[0-9]"
-                      name="year"
-                      min="1900"
-                      max="2050"
-                      maxLength="4"
-                      placeholder="YYYY"
-                      required
-                    ></input>
-                  </div>
-                </div>
-              </div>
-              <div
-                className={`form-two form-step ${active === 2 ? "active" : ""}`}
-              >
-                <div className="bg-svg"></div>
-                <h2>Company</h2>
-                <div>
-                  <label>Company's Name</label>
-                  <input
-                    type="text"
-                    name="companyName"
-                    placeholder="e.g Microsoft"
-                    required
-                  ></input>
-                </div>
-                <div>
-                  <label>Company's industry</label>
-                  <select name="industry" id="industry" required>
-                    <option value="technology">Technology</option>
-                    <option value="finance">Finance</option>
-                    <option value="healthcare">Healthcare</option>
-                    <option value="automotive">Automotive</option>
-                    <option value="retail">Retail</option>
-                    <option value="energy">Energy</option>
-                    <option value="telecommunications">
-                      Telecommunications
-                    </option>
-                    <option value="food-and-beverage">Food and Beverage</option>
-                    <option value="entertainment-and-media">
-                      Entertainment and Media
-                    </option>
-                    <option value="aerospace-and-defense">
-                      Aerospace and Defense
-                    </option>
-                    <option value="pharmaceutical">Pharmaceutical</option>
-                    <option value="manufacturing">Manufacturing</option>
-                    <option value="real-estate">Real Estate</option>
-                    <option value="transportation-and-logistics">
-                      Transportation and Logistics
-                    </option>
-                    <option value="utilities">Utilities</option>
-                  </select>
-                </div>
-                <div>
-                  <label>Number of Employees</label>
-                  <select
-                    name="numberOfEmployees"
-                    id="numberOfEmployees"
-                    required
-                  >
-                    <option value="1">1 to 49</option>
-                    <option value="2">50 to 149</option>
-                    <option value="3">150 to 249</option>
-                    <option value="4">250 to 499</option>
-                    <option value="5">500 to 749</option>
-                    <option value="6">750 to 999</option>
-                    <option value="7">1000+</option>
-                  </select>
-                </div>
-                <div>
-                  <label>Country</label>
-                  <select name="country" id="country" required>
-                    {countryOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label>State</label>
-                  <input
-                    type="text"
-                    name="state"
-                    placeholder="e.g California"
-                    required
-                  ></input>
-                </div>
-                <div>
-                  <label>Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    placeholder="e.g 123 Main St"
-                    required
-                  ></input>
-                </div>
-                <div>
-                  <label>Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    placeholder="e.g +123456789"
-                    required
-                  ></input>
-                </div>
-              </div>
-              <div
-                className={`form-three form-step ${
-                  active === 3 ? "active" : ""
-                }`}
-              >
-                <div className="bg-svg"></div>
-                <h2>Security</h2>
-                <div>
-                  <label>Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="e.g john@example.com"
-                    required
-                  ></input>
-                </div>
-                <div>
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                  ></input>
-                </div>
-                <div>
-                  <label>Confirm Password</label>
-                  <input
-                    type="password"
-                    name="passwordConfirmation"
-                    placeholder="Re-enter your password"
-                    required
-                  ></input>
-                </div>
-              </div>
-              <div className="btn-group flex justify-between">
-                <button
-                  type="button"
-                  className="btn-prev"
-                  disabled={active === 1}
-                  onClick={prevButtonFunction}
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  className="btn-next"
-                  onClick={nextButtonFunction}
-                  disabled={active == 3}
-                >
-                  Next
-                </button>
-                <button type="submit" className="btn-submit">
-                  Submit
-                </button>
-                <br></br>
+            <ul className="progress-steps">
+              <li className={`step ${active === 1 ? "active" : ""}`}>
+                <span>1</span>
                 <p>
-                  Already Registered?{" "}
-                  <Link to="/employer/login">Login here</Link>
+                  Personal<br></br>
                 </p>
-              </div>
-            </form>
+              </li>
+              <li className={`step ${active === 2 ? "active" : ""}`}>
+                <span>2</span>
+                <p>
+                  Company<br></br>
+                </p>
+              </li>
+              <li className={`step ${active === 3 ? "active" : ""}`}>
+                <span>3</span>
+                <p>
+                  Security<br></br>
+                </p>
+              </li>
+            </ul>
           </div>
+          <form onSubmit={registerEmployer}>
+            <div
+              className={`form-one form-step ${active === 1 ? "active" : ""}`}
+            >
+              <div className="bg-svg"></div>
+              <h2>Personal Information</h2>
+              <p>Enter your personal information correctly</p>
+              <div>
+                <label>First Name</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  placeholder="e.g John"
+                  required
+                ></input>
+              </div>
+              <div>
+                <label>Last Name</label>
+                <input
+                  type="text"
+                  name="lastname"
+                  placeholder="e.g Paul"
+                  required
+                ></input>
+              </div>
+              <div className="birth">
+                <label>Date of birth</label>
+                <div className="grouping">
+                  <input
+                    type="number"
+                    pattern="[0-9]"
+                    name="day"
+                    min="1"
+                    max="31"
+                    maxLength="2"
+                    placeholder="DD"
+                    required
+                  ></input>
+                  <input
+                    type="number"
+                    pattern="[0-9]"
+                    name="month"
+                    min="1"
+                    max="12"
+                    maxLength="2"
+                    placeholder="MM"
+                    required
+                  ></input>
+                  <input
+                    type="number"
+                    pattern="[0-9]"
+                    name="year"
+                    min="1900"
+                    max="2050"
+                    maxLength="4"
+                    placeholder="YYYY"
+                    required
+                  ></input>
+                </div>
+              </div>
+            </div>
+            <div
+              className={`form-two form-step ${active === 2 ? "active" : ""}`}
+            >
+              <div className="bg-svg"></div>
+              <h2>Company</h2>
+              <div>
+                <label>Company's Name</label>
+                <input
+                  type="text"
+                  name="companyName"
+                  placeholder="e.g Microsoft"
+                  required
+                ></input>
+              </div>
+              <div>
+                <label>Company's industry</label>
+                <select name="industry" id="industry" required>
+                  <option value="technology">Technology</option>
+                  <option value="finance">Finance</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="automotive">Automotive</option>
+                  <option value="retail">Retail</option>
+                  <option value="energy">Energy</option>
+                  <option value="telecommunications">Telecommunications</option>
+                  <option value="food-and-beverage">Food and Beverage</option>
+                  <option value="entertainment-and-media">
+                    Entertainment and Media
+                  </option>
+                  <option value="aerospace-and-defense">
+                    Aerospace and Defense
+                  </option>
+                  <option value="pharmaceutical">Pharmaceutical</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="real-estate">Real Estate</option>
+                  <option value="transportation-and-logistics">
+                    Transportation and Logistics
+                  </option>
+                  <option value="utilities">Utilities</option>
+                </select>
+              </div>
+              <div>
+                <label>Number of Employees</label>
+                <select name="numberOfEmployees" id="numberOfEmployees" required>
+                  <option value="1">1 to 49</option>
+                  <option value="2">50 to 149</option>
+                  <option value="3">150 to 249</option>
+                  <option value="4">250 to 499</option>
+                  <option value="5">500 to 749</option>
+                  <option value="6">750 to 999</option>
+                  <option value="7">1000+</option>
+                </select>
+              </div>
+              <div>
+                <label>Country</label>
+                <select name="country" id="country" required>
+                  {countryOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label>State</label>
+                <input
+                  type="text"
+                  name="state"
+                  placeholder="e.g California"
+                  required
+                ></input>
+              </div>
+              <div>
+                <label>Address</label>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="e.g 123 Main St"
+                  required
+                ></input>
+              </div>
+              <div>
+                <label>Phone Number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="e.g +123456789"
+                  required
+                ></input>
+              </div>
+            </div>
+            <div
+              className={`form-three form-step ${active === 3 ? "active" : ""}`}
+            >
+              <div className="bg-svg"></div>
+              <h2>Security</h2>
+              <div>
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="e.g john@example.com"
+                  required
+                ></input>
+              </div>
+              <div>
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  required
+                ></input>
+              </div>
+              <div>
+                <label>Confirm Password</label>
+                <input
+                  type="password"
+                  name="passwordConfirmation"
+                  placeholder="Re-enter your password"
+                  required
+                ></input>
+              </div>
+            </div>
+            <div className="btn-group flex justify-between">
+              <button
+                type="button"
+                className="btn-prev"
+                disabled={active === 1}
+                onClick={prevButtonFunction}
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                className="btn-next"
+                onClick={nextButtonFunction}
+                disabled={active == 3}
+              >
+                Next
+              </button>
+              <button type="submit" className="btn-submit">
+                Submit
+              </button>
+              <br></br>
+              <p>
+                Already Registered?{" "}
+                <Link to="/employer/login">Login here</Link>
+              </p>
+            </div>
+          </form>
         </div>
       </div>
+    </div>
     </>
   );
 };
