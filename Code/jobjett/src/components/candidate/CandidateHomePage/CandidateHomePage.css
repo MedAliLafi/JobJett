@@ -60,3 +60,22 @@
   overflow: hidden;
   white-space: nowrap;
 }
+#singleJob {
+  transition: background-color 0.5s ease;
+}
+#singleJob:hover {
+  color: white;
+}
+#singleJob:hover > * {
+  color: white;
+}
+#singleJob:hover button {
+  color: white;
+}
+#singleJob:hover h1 {
+  color: white;
+}
+#singleJob:hover button:hover {
+  background-color: white;
+  color: black;
+}
