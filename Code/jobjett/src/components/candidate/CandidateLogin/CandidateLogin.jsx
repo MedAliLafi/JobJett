@@ -57,6 +57,7 @@ const CandidateLogin = () => {
             if (response.ok) {
                 setIsLoggedIn(true);
                 navigate("/candidate/profile");
+                window.location.reload();
             } else {
                 throw new Error('Login failed');
             }

@@ -32,7 +32,7 @@ const EmployerApplications = () => {
     }, []);
 
     const viewApplications = (jobOfferID) => {
-        navigate(`/employer/application/${jobOfferID}`);
+        navigate(`/employer/applications/${jobOfferID}`);
     };
 
     return (

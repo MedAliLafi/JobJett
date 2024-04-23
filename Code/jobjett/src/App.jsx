@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate,} from "react-router-dom";
 import LandingPage from "./components/LandingPage/LandingPage.jsx";
 import CandidateHomePage from "./components/candidate/CandidateHomePage/CandidateHomePage.jsx";
 import CandidateLogin from "./components/candidate/CandidateLogin/CandidateLogin.jsx";
@@ -19,9 +14,9 @@ import EmployerRegister from "./components/employer/EmployerRegister/EmployerReg
 import EmployerProfile from "./components/employer/EmployerProfile/EmployerProfile.jsx";
 import EmployerApplications from "./components/employer/EmployerApplications/EmployerApplications.jsx";
 import EmployerInterviews from "./components/employer/EmployerInterviews/EmployerInterviews.jsx";
+import JobApplications from "./components/employer/EmployerApplications/JobApplications.jsx"
+import JobApplication from "./components/employer/EmployerApplications/JobApplication.jsx";
 import AddJobOffer from "./components/employer/AddJobOffer/AddJobOffer.jsx";
-import EmployerApplication from "./components/employer/Application/Application.jsx";
-
 
 function App() {
   // Retrieve authentication status from local storage or default to false
@@ -136,12 +131,20 @@ function App() {
             element={withEmployerProtection(<AddJobOffer />)}
           />
           <Route
+            path="/employer/interviews"
+            element={withEmployerProtection(<EmployerInterviews />)}
+          />
+          <Route
             path="/employer/applications"
             element={withEmployerProtection(<EmployerApplications />)}
           />
           <Route
-            path="/employer/application/:jobOfferID"
-            element={withEmployerProtection(<EmployerApplication />)}
+            path="/employer/applications/:jobOfferID"
+            element={withEmployerProtection(<JobApplications />)}
+          />
+          <Route
+            path="/employer/applications/:jobOfferID/:applicationID"
+            element={withEmployerProtection(<JobApplication />)}
           />
         </Routes>
       </div>

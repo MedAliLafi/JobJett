@@ -178,29 +178,24 @@ jobofferRoutes.get('/candidate_applications', async (req, res) => {
     }
 });
 
-// Route to update application status to "Denied"
-jobofferRoutes.post('/:jobofferId/deny/:candidateId', async (req, res) => {
+jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
     try {
         const pool = req.pool;
-        const jobOfferId = req.params.jobofferId;
-        const candidateId = req.params.candidateId;
-
-        // Update application status to "Denied"
-        const sql = 'UPDATE application SET Status = ? WHERE JobOfferID = ? AND CandidateID = ?';
-        const values = ['Denied', jobOfferId, candidateId];
-        pool.query(sql, values, (error, result) => {
+        const applicationID = req.params.applicationID;
+        const sql = `UPDATE application SET Status = 'Rejected' WHERE applicationID = ?`;
+        pool.query(sql, [applicationID], (error, results) => {
             if (error) {
-                console.error('Error denying application:', error);
-                return res.status(500).json({ error: 'An error occurred while denying the application.' });
+                console.error('Error updating application status:', error);
+                return res.status(500).json({ error: 'An error occurred while updating application status.' });
             }
-            console.log('Application denied successfully');
-            res.status(200).json({ message: 'Application denied successfully' });
+            res.status(200).json({ message: 'Application status updated successfully.' });
         });
     } catch (error) {
-        console.error('Error denying application:', error);
-        return res.status(500).json({ error: 'An error occurred while denying the application.' });
+        console.error('Error updating application status:', error);
+        return res.status(500).json({ error: 'An error occurred while updating application status.' });
     }
 });
+
 
 // Route to update application status to "Interview Scheduled"
 jobofferRoutes.post('/:jobofferId/schedule-interview/:candidateId', async (req, res) => {
@@ -255,14 +250,61 @@ jobofferRoutes.get('/:jobofferId', async (req, res) => {
     }
 });
 
-// Route to get applications submitted for a specific job offer
 jobofferRoutes.get('/:jobofferId/applications', async (req, res) => {
     try {
         const pool = req.pool;
         const jobofferId = req.params.jobofferId;
-        // Fetch applications from the database using Job Offer ID
-        const sql = 'SELECT * FROM application WHERE JobOfferID = ?';
+        const sql = `
+        SELECT 
+        application.*, 
+        candidate.firstname, 
+        candidate.lastname, 
+        candidate.state, 
+        candidate.country
+    FROM 
+        application
+    INNER JOIN 
+        candidate ON application.CandidateID = candidate.CandidateID
+    WHERE 
+        application.JobOfferID = ?;
+        `;
         pool.query(sql, [jobofferId], (error, results) => {
+            if (error) {
+                console.error('Error fetching applications:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching applications.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching applications:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching applications.' });
+    }
+});
+
+jobofferRoutes.get('/:applicationID/application', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const applicationID = req.params.applicationID;
+        const sql = `
+            SELECT 
+                application.*,
+                candidate.firstname, 
+                candidate.lastname, 
+                candidate.phone, 
+                candidate.state, 
+                candidate.country, 
+                candidate.address,
+                cv.summary,
+                cv.skills
+            FROM 
+                application
+            INNER JOIN 
+                candidate ON application.CandidateID = candidate.CandidateID
+            LEFT JOIN 
+                cv ON application.CV_ID = cv.CV_ID
+            WHERE 
+                application.applicationID = ?;`;
+        pool.query(sql, [applicationID], (error, results) => {
             if (error) {
                 console.error('Error fetching applications:', error);
                 return res.status(500).json({ error: 'An error occurred while fetching applications.' });
@@ -309,5 +351,97 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
     }
 });
 
+jobofferRoutes.get('/:applicationID/work_experience', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const applicationID = req.params.applicationID;
+        const sql = `
+            SELECT * FROM work_experience
+            WHERE CandidateID = (
+                SELECT CandidateID FROM application
+                WHERE applicationID = ?
+            );`;
+        pool.query(sql, [applicationID], (error, results) => {
+            if (error) {
+                console.error('Error fetching work experience:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching work experience.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching work experience:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching work experience.' });
+    }
+});
+
+jobofferRoutes.get('/:applicationID/certificates', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const applicationID = req.params.applicationID;
+        const sql = `
+            SELECT * FROM certification
+            WHERE CandidateID = (
+                SELECT CandidateID FROM application
+                WHERE applicationID = ?
+            );`;
+        pool.query(sql, [applicationID], (error, results) => {
+            if (error) {
+                console.error('Error fetching certificates:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching certificates.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching certificates:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching certificates.' });
+    }
+});
+
+jobofferRoutes.get('/:applicationID/education', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const applicationID = req.params.applicationID;
+        const sql = `
+            SELECT * FROM education
+            WHERE CandidateID = (
+                SELECT CandidateID FROM application
+                WHERE applicationID = ?
+            );`;
+        pool.query(sql, [applicationID], (error, results) => {
+            if (error) {
+                console.error('Error fetching education:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching education.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching education:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching education.' });
+    }
+});
+
+jobofferRoutes.post('/:applicationID/interview', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const applicationID = req.params.applicationID;
+        const { interviewDateTime } = req.body; // Assuming you're sending interview date and time from the client
+
+        // Update the application status and set the interview date and time
+        const sql = `
+            UPDATE application
+            SET Status = ?
+            WHERE applicationID = ?`;
+        pool.query(sql, [interviewDateTime, applicationID], (error, results) => {
+            if (error) {
+                console.error('Error updating application status:', error);
+                return res.status(500).json({ error: 'An error occurred while updating application status.' });
+            }
+            res.status(200).json({ message: 'Interview scheduled successfully.' });
+        });
+    } catch (error) {
+        console.error('Error scheduling interview:', error);
+        return res.status(500).json({ error: 'An error occurred while scheduling interview.' });
+    }
+});
 
 module.exports = jobofferRoutes;

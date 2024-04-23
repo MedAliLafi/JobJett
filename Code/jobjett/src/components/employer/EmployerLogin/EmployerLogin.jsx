@@ -57,6 +57,7 @@ const EmployerLogin = () => {
             if (response.ok) {
                 setIsLoggedIn(true);
                 navigate("/employer/profile");
+                window.location.reload();
             } else {
                 throw new Error('Login failed');
             }

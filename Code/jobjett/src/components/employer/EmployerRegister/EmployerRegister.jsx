@@ -397,6 +397,7 @@ const EmployerRegister = () => {
 
       console.log("Login successful");
       navigate("/employer/profile");
+      window.location.reload();
     } catch (error) {
       console.error("Error registering employer:", error);
     }
