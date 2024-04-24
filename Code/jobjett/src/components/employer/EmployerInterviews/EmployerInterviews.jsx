@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const EmployerInterviews = () => {
-    const { jobOfferID } = useParams();
     const [interviews, setInterviews] = useState([]);
 
     useEffect(() => {
         const fetchInterviews = async () => {
             try {
-                const response = await fetch(`http://localhost:9000/Employer/JobOffer/${jobOfferID}/interviews`, {
+                const response = await fetch('http://localhost:9000/Employer/Interview/getinterviews', {
                     credentials: 'include'
                 });
                 if (response.ok) {
                     const data = await response.json();
+                    // Map over interviews and format the date
                     const formattedInterviews = data.map(interview => ({
                         ...interview,
-                        Date: new Date(interview.Date).toLocaleDateString('en-GB'),
-                        Status: interview.Status === 'Pending' ? 'Pending' : new Date(interview.Status).toLocaleString('en-GB')
-                    }));
+                        CandidateName: `${interview.FirstName} ${interview.LastName}`,
+                        InterviewDateTime: new Date(interview.InterviewDateTime).toLocaleString('en-GB', { 
+                            timeZone: 'UTC',
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })                    }));
                     setInterviews(formattedInterviews);
                 } else {
-                    console.error(`Failed to fetch interviews for job offer ${jobOfferID}`);
+                    console.error('Failed to fetch interviews');
                 }
             } catch (error) {
                 console.error('Error fetching interviews:', error);
@@ -29,29 +34,55 @@ const EmployerInterviews = () => {
         };
 
         fetchInterviews();
-    }, [jobOfferID]);
+    }, []);
+
+    const cancelInterview = async (interviewID) => {
+        try {
+            const response = await fetch(`http://localhost:9000/Employer/Interview/cancel`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ interviewID }),
+                credentials: 'include'
+            });
+            if (response.ok) {
+                console.log(`Interview canceled successfully.`);
+            } else {
+                console.error(`Failed to cancel interview`);
+            }
+        } catch (error) {
+            console.error('Error canceling interview:', error);
+        }
+    };
 
     return (
         <>
-            <Navbar></Navbar>
+            <Navbar />
             <div>
-                <h2>Interviews for Job Offer ID: {jobOfferID}</h2>
+                <h2>Employer Interviews</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Candidate ID</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Date</th>
+                            <th>Interview ID</th>
+                            <th>Job Title</th>
+                            <th>Candidate Name</th>
+                            <th>Interview Date & Time</th>
+                            <th>Note</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {interviews.map((interview) => (
-                            <tr key={interview.CandidateID}>
-                                <td>{interview.CandidateID}</td>
-                                <td>{interview.Description}</td>
-                                <td>{interview.Status}</td>
-                                <td>{interview.Date}</td>
+                            <tr key={interview.InterviewID}>
+                                <td>{interview.InterviewID}</td>
+                                <td>{interview.Title}</td>
+                                <td>{interview.CandidateName}</td>
+                                <td>{interview.InterviewDateTime}</td>
+                                <td>{interview.Note}</td>
+                                <td>
+                                    <button onClick={() => cancelInterview(interview.InterviewID)}>Cancel</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
