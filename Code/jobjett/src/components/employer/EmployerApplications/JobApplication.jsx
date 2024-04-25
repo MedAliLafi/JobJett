@@ -18,6 +18,8 @@ const JobApplication = () => {
     const [education, setEducation] = useState([]);
     const [interviewDateTime, setInterviewDateTime] = useState('');
     const [showDateTimeInput, setShowDateTimeInput] = useState(false);
+    const [message, setMessage] = useState('');
+    const [showMessageInput, setShowMessageInput] = useState(false);
 
     useEffect(() => {
         const fetchApplication = async () => {
@@ -108,24 +110,28 @@ const JobApplication = () => {
     };
 
     const handleSetInterview = () => {
-        // Toggle the visibility of the datetime-local input field
+        setShowMessageInput(true);
         setShowDateTimeInput(true);
     };
 
     const handleAddInterview = async () => {
         try {
-            const response = await fetch(`http://localhost:9000/Employer/JobOffer/${applicationID}/interview`, {
+            const response = await fetch(`http://localhost:9000/Employer/Interview/${applicationID}/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    interviewDateTime: interviewDateTime
+                    interviewDateTime: interviewDateTime,
+                    message: message,
+                    CandidateID: application.CandidateID
                 }),
                 credentials: 'include'
             });
             if (response.ok) {
-                // Interview scheduled successfully, update UI or perform any necessary actions
+                const data = await response.json();
+                const { interviewID } = data;
+                setApplication(prevState => ({ ...prevState, Status: `Interview Scheduled` }));
                 console.log('Interview scheduled successfully');
             } else {
                 console.error('Failed to schedule interview');
@@ -135,23 +141,25 @@ const JobApplication = () => {
         }
     };
     
+    
 
     return (
         <>
             <Navbar />
             <div>
-            {application && (
-                <>
-                    <h2>Application: {applicationID}</h2>
-                    <p>Candidate ID: {application.CandidateID}</p>
-                    <p>First Name: {application.firstname}</p>
-                    <p>Last Name: {application.lastname}</p>
-                    <p>State: {application.state}</p>
-                    <p>Country: {application.country}</p>
-                    <p>Date Applied: {new Date(application.DateApplied).toLocaleDateString('en-GB')}</p>
-                    <p>Status: {application.Status}</p>
-                </>
-            )}
+                {application && (
+                    <>
+                        <h2>Application: {applicationID}</h2>
+                        <p>Candidate ID: {application.CandidateID}</p>
+                        <p>First Name: {application.firstname}</p>
+                        <p>Last Name: {application.lastname}</p>
+                        <p>State: {application.state}</p>
+                        <p>Country: {application.country}</p>
+                        <p>Date Applied: {new Date(application.DateApplied).toLocaleDateString('en-GB')}</p>
+                        {/* Modify the status display */}
+                        <p>Status: {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}</p>
+                    </>
+                )}
                 {/* Display work experiences */}
                 <h3>Work Experience</h3>
                 <ul>
@@ -188,13 +196,15 @@ const JobApplication = () => {
                     ))}
                 </ul>
                 <button onClick={handleDeleteCandidate}>Delete Candidate</button>
-                {application.Status !== 'Interview Scheduled' && (
+                {/* Modify the condition for displaying the "Set up interview" button */}
+                {application.Status && !application.Status.includes('Interview Scheduled') && (
                     <button onClick={handleSetInterview}>Set up interview</button>
                 )}
                 {/* Add interview section */}
-                {showDateTimeInput && (
+                {showDateTimeInput && showMessageInput && (
                     <div>
                         <input type="datetime-local" value={interviewDateTime} onChange={(e) => setInterviewDateTime(e.target.value)} />
+                        <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Enter Message" />
                         <button onClick={handleAddInterview}>Add Interview</button>
                     </div>
                 )}

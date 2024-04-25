@@ -8,6 +8,7 @@ const { candidateRoutes, getCandidateIdFromToken } = require('./candidate.js');
 const { employerRoutes, getEmployerIdFromToken } = require('./employer.js');
 const cvRoutes = require('./cv.js');
 const jobofferRoutes = require('./joboffer.js');
+const interviewRoutes = require('./interview.js');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -110,6 +111,7 @@ app.use('/Candidate', candidateRoutes);
 app.use('/Employer', employerRoutes);
 app.use('/Candidate/cv', cvRoutes);
 app.use('/Employer/JobOffer', jobofferRoutes);
+app.use('/Employer/Interview', interviewRoutes);
 app.use('/Candidate/JobOffer', jobofferRoutes);
 
 // Starting the server

@@ -420,28 +420,5 @@ jobofferRoutes.get('/:applicationID/education', async (req, res) => {
     }
 });
 
-jobofferRoutes.post('/:applicationID/interview', async (req, res) => {
-    try {
-        const pool = req.pool;
-        const applicationID = req.params.applicationID;
-        const { interviewDateTime } = req.body; // Assuming you're sending interview date and time from the client
-
-        // Update the application status and set the interview date and time
-        const sql = `
-            UPDATE application
-            SET Status = ?
-            WHERE applicationID = ?`;
-        pool.query(sql, [interviewDateTime, applicationID], (error, results) => {
-            if (error) {
-                console.error('Error updating application status:', error);
-                return res.status(500).json({ error: 'An error occurred while updating application status.' });
-            }
-            res.status(200).json({ message: 'Interview scheduled successfully.' });
-        });
-    } catch (error) {
-        console.error('Error scheduling interview:', error);
-        return res.status(500).json({ error: 'An error occurred while scheduling interview.' });
-    }
-});
 
 module.exports = jobofferRoutes;
