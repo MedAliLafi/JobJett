@@ -39,9 +39,12 @@ const EmployerProfile = () => {
     };
 
     const handleChangePassword = () => {
+        navigate('/employer/profile/changepassword');
     };
 
     const handleChangeEmail = () => {
+        navigate('/employer/profile/changeemail');
+
     };
 
     const handleDeleteAccount = async () => {

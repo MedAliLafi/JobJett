@@ -162,21 +162,48 @@ jobofferRoutes.get('/candidate_applications', async (req, res) => {
         if (!candidateId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        // Fetch applications from the database using Candidate ID
-        const sql = 'SELECT * FROM application WHERE CandidateID = ?';
-        pool.query(sql, [candidateId], (error, results) => {
+        const sql = `
+            SELECT 
+                application.*, 
+                joboffer.Title AS JobOfferTitle, 
+                employer.CompanyName AS CompanyName 
+            FROM 
+                application 
+            INNER JOIN 
+                joboffer ON application.JobOfferID = joboffer.JobOfferID 
+            INNER JOIN 
+                employer ON joboffer.EmployerID = employer.EmployerID 
+            WHERE 
+                application.CandidateID = ?`;
+        pool.query(sql, [candidateId], async (error, results) => {
             if (error) {
                 console.error('Error fetching candidate applications:', error);
                 return res.status(500).json({ error: 'An error occurred while fetching candidate applications.' });
             }
-
-            res.status(200).json(results);
+            // Array to store all the promises
+            const promises = results.map(async (application) => {
+                if (application.Status.includes('Interview Scheduled')) {
+                    const interviewId = parseInt(application.Status.split('_')[2]); // Extract interview ID
+                    const interviewSql = 'SELECT InterviewDateTime FROM interview WHERE InterviewID = ?';
+                    // Fetch interview date and time
+                    const interviewRows = await pool.query(interviewSql, [interviewId]);
+                    if (interviewRows.length > 0) {
+                        const interviewDateTime = interviewRows[0].InterviewDateTime;
+                        application.Status = `Interview scheduled for ${interviewDateTime}`;
+                    }
+                }
+                return application;
+            });
+            // Wait for all promises to resolve
+            const updatedResults = await Promise.all(promises);
+            res.status(200).json(updatedResults);
         });
     } catch (error) {
         console.error('Error fetching candidate applications:', error);
         return res.status(500).json({ error: 'An error occurred while fetching candidate applications.' });
     }
 });
+
 
 jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
     try {

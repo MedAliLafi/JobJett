@@ -2,6 +2,7 @@ import "./CandidateNavbar.css";
 import logo from "../../../assets/output-onlinetools.png";
 import profile from "../../../assets/profileIcon.png";
 import { Link } from "react-router-dom";
+import Noty from "./Notification.jsx";
 function candidateNavbar() {
   return (
     <nav className="navbar">
@@ -25,6 +26,7 @@ function candidateNavbar() {
           </li>
         </ul>
       </div>
+      <Noty width={"33px"} color={"#00579e"} count={10} className="notyIcon"/>
       <Link to="/candidate/profile">
         <img src={profile} className="profileIcon" />
       </Link>

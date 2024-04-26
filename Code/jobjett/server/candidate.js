@@ -155,5 +155,74 @@ candidateRoutes.get('/candidateInfo', async (req, res) => {
     }
 });
 
+candidateRoutes.put("/updateProfile", async (req, res) => {
+    try {
+      const pool = req.pool;
+      const token = req.cookies.token;
+      if (!token) return null;
+      const decoded = jwt.verify(token, 'secret_key');
+      const userId = decoded.user.UserID;
+      const candidateId = await getCandidateIdFromToken(pool, req);
+      if (!candidateId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+  
+      const {
+        firstName,
+        lastName,
+        email,
+        dateOfBirth,
+        phone,
+        address,
+        state,
+        country,
+      } = req.body;
+      const updateQuery = `
+      UPDATE Candidate AS c
+      JOIN User AS u ON c.UserID = u.UserID
+      SET 
+          c.FirstName = ?,
+          c.LastName = ?,
+          u.Email = ?,
+          c.DateOfBirth = ?,
+          c.Phone = ?,
+          c.Address = ?,
+          c.State = ?,
+          c.Country = ?
+      WHERE 
+          c.CandidateID = ?
+  `;
+  
+      const updateValues = [
+        firstName,
+        lastName,
+        email,
+        dateOfBirth,
+        phone,
+        address,
+        state,
+        country,
+        candidateId,
+      ];
+  
+      pool.query(updateQuery, updateValues, (error, results) => {
+        if (error) {
+          console.error("Error updating candidate profile:", error);
+          return res.status(500).json({
+            error: "An error occurred while updating candidate profile.",
+          });
+        }
+        console.log("Candidate profile updated successfully");
+        res
+          .status(200)
+          .json({ message: "Candidate profile updated successfully" });
+      });
+    } catch (error) {
+      console.error("Error updating candidate profile:", error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while updating candidate profile." });
+    }
+  });
 
 module.exports = { candidateRoutes, getCandidateIdFromToken, getCandidateInfoById };

@@ -43,7 +43,13 @@ const CandidateApplications = () => {
                         <h3>Applications</h3>
                         <ul>
                             {applications.map(application => (
-                                <li key={application.ApplicationID}>{application.Description} - Status: {application.Status}</li>
+                                <li key={application.ApplicationID}>
+                                    - Job Title: {application.JobOfferTitle}
+                                    - Company Name: {application.CompanyName}
+                                    - Description: {application.Description} 
+                                    - Status: {application.Status}
+
+                                </li>
                             ))}
                         </ul>
                     </div>

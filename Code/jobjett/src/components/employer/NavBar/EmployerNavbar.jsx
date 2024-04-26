@@ -2,6 +2,7 @@ import "./EmployerNavbar.css";
 import logo from "../../../assets/output-onlinetools.png";
 import profile from "../../../assets/profileIcon.png";
 import { Link } from "react-router-dom";
+import Noty from "./Notification.jsx";
 function EmployerNavbar() {
   return (
     <nav className="navbar">
@@ -28,6 +29,7 @@ function EmployerNavbar() {
           </li>
         </ul>
       </div>
+      <Noty width={"33px"} color={"#00579e"} count={10} />
       <Link to="/employer/profile">
         <img src={profile} className="profileIcon" />
       </Link>
