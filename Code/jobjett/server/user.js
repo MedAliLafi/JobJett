@@ -52,8 +52,10 @@ userRoutes.post('/changePassword', async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
     try {
-        const userId = req.user.user.UserId;
-        // Check if the current password matches the one in the database
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
             if (error) {
@@ -93,14 +95,16 @@ userRoutes.post('/changePassword', async (req, res) => {
     }
 });
 
-// Route to change email
+// In your user.js file where you define routes
 userRoutes.post('/changeEmail', async (req, res) => {
     const pool = req.pool;
-    const newEmail = req.body;
+    const { newEmail, password } = req.body;
 
     try {
-        const userId = req.user.user.UserId;
-        // Check if the user exists
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
             if (error) {
@@ -111,6 +115,13 @@ userRoutes.post('/changeEmail', async (req, res) => {
             if (results.length === 0) {
                 // User not found
                 return res.status(404).json({ error: 'User not found.' });
+            }
+
+            const user = results[0];
+            const passwordMatch = await bcrypt.compare(password, user.Password);
+            if (!passwordMatch) {
+                // Current password is incorrect
+                return res.status(401).json({ error: 'Incorrect password.' });
             }
 
             // Update the user's email in the database
@@ -129,6 +140,7 @@ userRoutes.post('/changeEmail', async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while changing email.' });
     }
 });
+
 
 // Route to delete user
 userRoutes.delete('/deleteUser', async (req, res) => {

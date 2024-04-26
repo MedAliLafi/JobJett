@@ -5,6 +5,8 @@ import CandidateHomePage from "./components/candidate/CandidateHomePage/Candidat
 import CandidateLogin from "./components/candidate/CandidateLogin/CandidateLogin.jsx";
 import CandidateRegister from "./components/candidate/CandidateRegister/CandidateRegister.jsx";
 import CandidateProfile from "./components/candidate/CandidateProfile/CandidateProfile.jsx";
+import ChangePasswordC from "./components/candidate/CandidateProfile/ChangePassword.jsx";
+import ChangeEmailC from "./components/candidate/CandidateProfile/ChangeEmail.jsx";
 import CandidateApplications from "./components/candidate/CandidateApplications/CandidateApplications.jsx";
 import Cv from "./components/candidate/Cv/Cv.jsx";
 import JobOfferDetails from "./components/candidate/JobOfferDetails/JobOfferDetails.jsx";
@@ -12,6 +14,8 @@ import CandidateApplication from "./components/candidate/Application/Application
 import EmployerLogin from "./components/employer/EmployerLogin/EmployerLogin.jsx";
 import EmployerRegister from "./components/employer/EmployerRegister/EmployerRegister.jsx";
 import EmployerProfile from "./components/employer/EmployerProfile/EmployerProfile.jsx";
+import ChangePasswordE from "./components/employer/EmployerProfile/ChangePassword.jsx";
+import ChangeEmailE from "./components/employer/EmployerProfile/ChangeEmail.jsx";
 import EmployerApplications from "./components/employer/EmployerApplications/EmployerApplications.jsx";
 import EmployerInterviews from "./components/employer/EmployerInterviews/EmployerInterviews.jsx";
 import JobApplications from "./components/employer/EmployerApplications/JobApplications.jsx"
@@ -105,6 +109,14 @@ function App() {
             element={withCandidateProtection(<CandidateProfile />)}
           />
           <Route
+            path="/candidate/profile/changepassword"
+            element={withCandidateProtection(<ChangePasswordC />)}
+          />
+          <Route
+            path="/candidate/profile/changeemail"
+            element={withCandidateProtection(<ChangeEmailC />)}
+          />
+          <Route
             path="/candidate/cv"
             element={withCandidateProtection(<Cv />)}
           />
@@ -125,6 +137,14 @@ function App() {
           <Route
             path="/employer/profile"
             element={withEmployerProtection(<EmployerProfile />)}
+          />
+          <Route
+            path="/employer/profile/changepassword"
+            element={withEmployerProtection(<ChangePasswordE />)}
+          />
+          <Route
+            path="/employer/profile/changeemail"
+            element={withEmployerProtection(<ChangeEmailE />)}
           />
           <Route
             path="/employer/addjoboffer"

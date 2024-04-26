@@ -5,7 +5,7 @@ import Navbar from "../NavBar/CandidateNavbar.jsx";
 const CandidateProfile = () => {
   const navigate = useNavigate();
   const [candidateInfo, setCandidateInfo] = useState(null);
-  const [editMode, setEditMode] = useState(false); // State to track edit mode
+  const [editMode, setEditMode] = useState(false);
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,9 +69,13 @@ const CandidateProfile = () => {
     navigate("/candidate/cv");
   };
 
-  const handleChangePassword = () => {};
+  const handleChangePassword = () => {
+    navigate("/candidate/profile/changepassword");
+  };
 
-  const handleChangeEmail = () => {};
+  const handleChangeEmail = () => {
+    navigate("/candidate/profile/changeemail");
+  };
 
   const handleDeleteAccount = async () => {
     try {
@@ -111,7 +115,7 @@ const CandidateProfile = () => {
   };
 
   const handleEditProfile = () => {
-    setEditMode(true); // Enable edit mode
+    setEditMode(true);
   };
   const handleSaveProfile = async () => {
     try {
@@ -126,6 +130,7 @@ const CandidateProfile = () => {
           body: JSON.stringify({
             firstName: FirstName,
             lastName: LastName,
+            email: email,
             dateOfBirth: DOB,
             phone: phone,
             address: address,
@@ -136,7 +141,7 @@ const CandidateProfile = () => {
       );
       if (response.ok) {
         console.log("Profile updated successfully");
-        setEditMode(false); // Disable edit mode after saving
+        setEditMode(false);
       } else {
         console.error("Failed to update profile");
       }
@@ -176,6 +181,7 @@ const CandidateProfile = () => {
                     type="text"
                     placeholder="First Name"
                     value={FirstName}
+                    disabled
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                 )}
@@ -202,6 +208,7 @@ const CandidateProfile = () => {
                     type="text"
                     placeholder="Last Name"
                     value={LastName}
+                    disabled
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                 )}
@@ -229,6 +236,7 @@ const CandidateProfile = () => {
                   type="text"
                   placeholder="Email"
                   value={email}
+                  disabled
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               )}
@@ -255,6 +263,7 @@ const CandidateProfile = () => {
                   type="date"
                   placeholder="Date of Birth"
                   value={DOB}
+                  disabled
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               )}
@@ -281,6 +290,7 @@ const CandidateProfile = () => {
                   type="tel"
                   placeholder="Phone"
                   value={phone}
+                  disabled
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               )}
@@ -307,6 +317,7 @@ const CandidateProfile = () => {
                   type="text"
                   placeholder="Address"
                   value={address}
+                  disabled
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               )}
@@ -333,6 +344,7 @@ const CandidateProfile = () => {
                   type="text"
                   placeholder="State"
                   value={state}
+                  disabled
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               )}
@@ -359,6 +371,7 @@ const CandidateProfile = () => {
                   type="text"
                   placeholder="Country"
                   value={country}
+                  disabled
                   className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               )}

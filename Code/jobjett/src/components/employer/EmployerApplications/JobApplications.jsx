@@ -53,7 +53,7 @@ const JobApplications = () => {
                                 <td>{application.state}</td>
                                 <td>{application.country}</td>
                                 <td>{new Date(application.DateApplied).toLocaleDateString('en-GB')}</td>
-                                <td>{application.Status}</td>
+                                <td>{application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}</td>
                                 {/* Add additional fields for CV info */}
                                 <td>
                                     <Link to={`/employer/applications/${jobOfferID}/${application.ApplicationID}`}>

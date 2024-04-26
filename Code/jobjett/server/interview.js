@@ -68,34 +68,52 @@ interviewRoutes.get('/getinterviews', async (req, res) => {
     }
 });
 
-// Add a PUT endpoint to cancel an interview by ID
-interviewRoutes.put('/cancel', async (req, res) => {
+// Add a DELETE endpoint to cancel interviews
+interviewRoutes.delete('/cancel', async (req, res) => {
     try {
         const pool = req.pool;
-        const { interviewID } = req.body; // Retrieve interviewID from the request body
-        console.log("Received interviewID:", interviewID);
+        const employerId = await getEmployerIdFromToken(pool, req);
+        const { interviewID } = req.body;
 
-        // Update the status in the application table using a subquery
-        const updateSql = `
-            UPDATE application
-            SET Status = 'Pending'
-            WHERE ApplicationID = (
-                SELECT ApplicationID
-                FROM interview
-                WHERE InterviewID = ?
-            )`;
-
-        pool.query(updateSql, [interviewID], (error, results) => {
+        // Get applicationID associated with the interview
+        const getApplicationIDQuery = `
+            SELECT ApplicationID FROM interview WHERE InterviewID = ?`;
+        pool.query(getApplicationIDQuery, [interviewID], (error, results) => {
             if (error) {
-                console.error('Error canceling interview:', error);
-                return res.status(500).json({ error: 'An error occurred while canceling interview.' });
+                console.error('Error fetching applicationID:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching applicationID.' });
             }
-
-            if (results.affectedRows === 0) {
-                return res.status(404).json({ error: 'Interview not found or already canceled.' });
+            if (results.length === 0) {
+                return res.status(404).json({ error: 'Interview not found.' });
             }
+            const applicationID = results[0].ApplicationID;
 
-            res.status(200).json({ message: `Interview canceled successfully.` });
+            // Update application status back to "Pending"
+            const updateStatusQuery = `
+                UPDATE application
+                SET Status = 'Interview Cancelled'
+                WHERE ApplicationID = ?`;
+            pool.query(updateStatusQuery, [applicationID], (updateError) => {
+                if (updateError) {
+                    console.error('Error updating application status:', updateError);
+                    return res.status(500).json({ error: 'An error occurred while updating application status.' });
+                }
+
+                // Delete the interview
+                const deleteInterviewQuery = `
+                    DELETE FROM interview
+                    WHERE InterviewID = ? AND EmployerID = ?`;
+                pool.query(deleteInterviewQuery, [interviewID, employerId], (deleteError, deleteResults) => {
+                    if (deleteError) {
+                        console.error('Error deleting interview:', deleteError);
+                        return res.status(500).json({ error: 'An error occurred while deleting interview.' });
+                    }
+                    if (deleteResults.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Interview not found.' });
+                    }
+                    res.status(200).json({ message: 'Interview canceled successfully.' });
+                });
+            });
         });
     } catch (error) {
         console.error('Error canceling interview:', error);

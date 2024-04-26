@@ -243,9 +243,9 @@ candidateRoutes.put("/updateProfile", async (req, res) => {
                 Email = ?,
                 DateOfBirth = ?,
                 Phone = ?,
+                Address = ?,
                 State = ?,
                 Country = ?
-                Address = ?,
             WHERE 
                 CandidateID = ?
         `;
@@ -253,11 +253,12 @@ candidateRoutes.put("/updateProfile", async (req, res) => {
     const updateValues = [
       firstName,
       lastName,
+      email,
       dateOfBirth,
       phone,
+      address,
       state,
       country,
-      address,
       candidateId,
     ];
 

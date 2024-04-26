@@ -38,23 +38,22 @@ const EmployerInterviews = () => {
 
     const cancelInterview = async (interviewID) => {
         try {
-            const response = await fetch(`http://localhost:9000/Employer/Interview/cancel`, {
-                method: 'PUT',
+            const deleteResponse = await fetch(`http://localhost:9000/Employer/Interview/cancel`, {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ interviewID }),
                 credentials: 'include'
             });
-            if (response.ok) {
-                console.log(`Interview canceled successfully.`);
-            } else {
-                console.error(`Failed to cancel interview`);
+            if (!deleteResponse.ok) {
+                throw new Error('Failed to cancel interview');
             }
+            console.log('Interview canceled successfully.');
         } catch (error) {
             console.error('Error canceling interview:', error);
         }
-    };
+    };   
 
     return (
         <>
@@ -81,7 +80,7 @@ const EmployerInterviews = () => {
                                 <td>{interview.InterviewDateTime}</td>
                                 <td>{interview.Note}</td>
                                 <td>
-                                    <button onClick={() => cancelInterview(interview.InterviewID)}>Cancel</button>
+                                <button onClick={async () => {cancelInterview(interview.InterviewID)}}>Cancel</button>
                                 </td>
                             </tr>
                         ))}
