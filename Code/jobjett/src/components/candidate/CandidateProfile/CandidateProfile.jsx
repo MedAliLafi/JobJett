@@ -5,32 +5,33 @@ import Navbar from "../NavBar/CandidateNavbar.jsx";
 const CandidateProfile = () => {
   const navigate = useNavigate();
   const [candidateInfo, setCandidateInfo] = useState(null);
-  const [FirstName, setFirstName] = useState(""); // Moved inside the component
-  const [LastName, setLastName] = useState(""); // Moved inside the component
+  const [editMode, setEditMode] = useState(false); // State to track edit mode
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [DOB, setDOB] = useState("");
-  const [phone, setphone] = useState("");
-  const [address, setadress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [state, setState] = useState("");
-  const [country, setcountry] = useState("");
-  var dateOfBirth;
+  const [country, setCountry] = useState("");
+
   useEffect(() => {
     fetchCandidateInfo();
   }, []);
+
   useEffect(() => {
     if (candidateInfo) {
-      setFirstName(candidateInfo.firstName); // Set FirstName when candidateInfo is updated
+      setFirstName(candidateInfo.firstName);
       setLastName(candidateInfo.lastName);
       setEmail(candidateInfo.email);
       let DD = candidateInfo.dateOfBirth.slice(0, 2);
       let MM = candidateInfo.dateOfBirth.slice(3, 5);
       let YY = candidateInfo.dateOfBirth.slice(6, 10);
       setDOB(YY + "-" + MM + "-" + DD);
-      setphone(candidateInfo.phone);
-      setphone(candidateInfo.phone);
-      setadress(candidateInfo.address);
+      setPhone(candidateInfo.phone);
+      setAddress(candidateInfo.address);
       setState(candidateInfo.state);
-      setcountry(candidateInfo.country);
+      setCountry(candidateInfo.country);
     }
   }, [candidateInfo]);
 
@@ -109,30 +110,41 @@ const CandidateProfile = () => {
     }
   };
 
-  function handleFirstNameChange(e) {
-    setFirstName(e.target.value);
-  }
-  const handlastNameChange = (e) => {
-    setLastName(e.target.value);
+  const handleEditProfile = () => {
+    setEditMode(true); // Enable edit mode
   };
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleSaveProfile = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:9000/Candidate/updateProfile",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            firstName: FirstName,
+            lastName: LastName,
+            dateOfBirth: DOB,
+            phone: phone,
+            address: address,
+            state: state,
+            country: country,
+          }),
+        }
+      );
+      if (response.ok) {
+        console.log("Profile updated successfully");
+        setEditMode(false); // Disable edit mode after saving
+      } else {
+        console.error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
-  const handleDOBChange = (e) => {
-    setDOB(e.target.value);
-  };
-  const handlePhoneChange = (e) => {
-    setphonee(e.target.value);
-  };
-  const handleadressChange = (e) => {
-    setadress(e.target.value);
-  };
-  const handleStateChange = (e) => {
-    setState(e.target.value);
-  };
-  const handleCountryChange = (e) => {
-    setcountry(e.target.value);
-  };
+
   return (
     <>
       <Navbar></Navbar>
@@ -148,14 +160,25 @@ const CandidateProfile = () => {
                 >
                   First Name:
                 </label>
-                <input
-                  id="FirstName"
-                  type="text"
-                  placeholder="From Date"
-                  value={FirstName}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={handleFirstNameChange}
-                />
+
+                {editMode ? (
+                  <input
+                    id="FirstName"
+                    type="text"
+                    placeholder="First Name"
+                    value={FirstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                ) : (
+                  <input
+                    id="FirstName"
+                    type="text"
+                    placeholder="First Name"
+                    value={FirstName}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                )}
               </div>
               <div className="flex-grow">
                 <label
@@ -164,14 +187,24 @@ const CandidateProfile = () => {
                 >
                   Last Name:
                 </label>
-                <input
-                  id="LastName"
-                  type="text"
-                  placeholder="From Date"
-                  value={LastName}
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={handlastNameChange}
-                />
+                {editMode ? (
+                  <input
+                    id="LastName"
+                    type="text"
+                    placeholder="Last Name"
+                    value={LastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                ) : (
+                  <input
+                    id="LastName"
+                    type="text"
+                    placeholder="Last Name"
+                    value={LastName}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                )}
               </div>
             </div>
             <div className="flex-grow">
@@ -181,62 +214,102 @@ const CandidateProfile = () => {
               >
                 Email:
               </label>
-              <input
-                id="Email"
-                type="text"
-                placeholder="From Date"
-                value={email}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                onChange={handleEmailChange}
-              />
+              {editMode ? (
+                <input
+                  id="Email"
+                  type="text"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              ) : (
+                <input
+                  id="Email"
+                  type="text"
+                  placeholder="Email"
+                  value={email}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              )}
             </div>
             <div className="flex-grow">
               <label
                 htmlFor="dob"
                 className="block text-sm font-medium text-gray-700"
               >
-                Date of birth:
+                Date of Birth:
               </label>
-              <input
-                id="dob"
-                type="date"
-                placeholder="From Date"
-                value={DOB}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                onChange={handleDOBChange}
-              />
+              {editMode ? (
+                <input
+                  id="dob"
+                  type="date"
+                  placeholder="Date of Birth"
+                  value={DOB}
+                  onChange={(e) => setDOB(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              ) : (
+                <input
+                  id="dob"
+                  type="date"
+                  placeholder="Date of Birth"
+                  value={DOB}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              )}
             </div>
             <div className="flex-grow">
               <label
-                htmlFor="Email"
+                htmlFor="tel"
                 className="block text-sm font-medium text-gray-700"
               >
-                Tel:
+                Phone:
               </label>
-              <input
-                id="tel"
-                type="tel"
-                placeholder="From Date"
-                value={phone}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                onChange={handlePhoneChange}
-              />
+              {editMode ? (
+                <input
+                  id="tel"
+                  type="tel"
+                  placeholder="Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              ) : (
+                <input
+                  id="tel"
+                  type="tel"
+                  placeholder="Phone"
+                  value={phone}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              )}
             </div>
             <div className="flex-grow">
               <label
-                htmlFor="Email"
+                htmlFor="Address"
                 className="block text-sm font-medium text-gray-700"
               >
                 Address:
               </label>
-              <input
-                id="Email"
-                type="email"
-                placeholder="From Date"
-                value={address}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                onChange={handleadressChange}
-              />
+              {editMode ? (
+                <input
+                  id="Address"
+                  type="text"
+                  placeholder="Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              ) : (
+                <input
+                  id="Address"
+                  type="text"
+                  placeholder="Address"
+                  value={address}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              )}
             </div>
             <div className="flex-grow">
               <label
@@ -245,14 +318,24 @@ const CandidateProfile = () => {
               >
                 State:
               </label>
-              <input
-                id="State"
-                type="text"
-                placeholder="From Date"
-                value={state}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                onChange={handleStateChange}
-              />
+              {editMode ? (
+                <input
+                  id="State"
+                  type="text"
+                  placeholder="State"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              ) : (
+                <input
+                  id="State"
+                  type="text"
+                  placeholder="State"
+                  value={state}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              )}
             </div>
             <div className="flex-grow">
               <label
@@ -261,40 +344,31 @@ const CandidateProfile = () => {
               >
                 Country:
               </label>
-              <input
-                id="Country"
-                type="text"
-                placeholder="From Date"
-                value={country}
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                onChange={handleCountryChange}
-              />
+              {editMode ? (
+                <input
+                  id="Country"
+                  type="text"
+                  placeholder="Country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              ) : (
+                <input
+                  id="Country"
+                  type="text"
+                  placeholder="Country"
+                  value={country}
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              )}
             </div>
-
-            <p>
-              <strong>First Name:</strong> {candidateInfo.firstName}
-            </p>
-            <p>
-              <strong>Last Name:</strong> {candidateInfo.lastName}
-            </p>
-            <p>
-              <strong>Email:</strong> {candidateInfo.email}
-            </p>
-            <p>
-              <strong>Date of birth:</strong> {candidateInfo.dateOfBirth}
-            </p>
-            <p>
-              <strong>Phone:</strong> {candidateInfo.phone}
-            </p>
-            <p>
-              <strong>Address:</strong> {candidateInfo.address}
-            </p>
-            <p>
-              <strong>State:</strong> {candidateInfo.state}
-            </p>
-            <p>
-              <strong>Country:</strong> {candidateInfo.country}
-            </p>
+            <button
+              className="btn"
+              onClick={editMode ? handleSaveProfile : handleEditProfile}
+            >
+              {editMode ? "Save Profile" : "Edit Profile"}
+            </button>
           </div>
         )}
         <h3>Actions</h3>
