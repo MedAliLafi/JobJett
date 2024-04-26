@@ -135,4 +135,72 @@ employerRoutes.get('/employerInfo', async (req, res) => {
     }
 });
 
+employerRoutes.put("/updateProfile", async (req, res) => {
+    try {
+      const pool = req.pool;
+      const token = req.cookies.token;
+      if (!token) return null;
+      const decoded = jwt.verify(token, 'secret_key');
+      const userId = decoded.user.UserID;
+      const employerId = await getEmployerIdFromToken(pool, req);
+      if (!employerId) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+  
+      const {
+        companyName,
+        email,
+        industry,
+        phone,
+        address,
+        state,
+        country,
+      } = req.body;
+      const updateQuery = `
+        UPDATE Employer AS e
+        JOIN User AS u ON e.UserID = u.UserID
+        SET 
+            e.CompanyName = ?,
+            u.Email = ?,
+            e.Industry = ?,
+            e.Phone = ?,
+            e.Address = ?,
+            e.State = ?,
+            e.Country = ?
+        WHERE 
+            e.EmployerID = ?
+    `;
+  
+      const updateValues = [
+        companyName,
+        email,
+        industry,
+        phone,
+        address,
+        state,
+        country,
+        employerId,
+      ];
+  
+      pool.query(updateQuery, updateValues, (error, results) => {
+        if (error) {
+          console.error("Error updating employer profile:", error);
+          return res.status(500).json({
+            error: "An error occurred while updating employer profile.",
+          });
+        }
+        console.log("Employer profile updated successfully");
+        res
+          .status(200)
+          .json({ message: "Employer profile updated successfully" });
+      });
+    } catch (error) {
+      console.error("Error updating employer profile:", error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while updating employer profile." });
+    }
+  });
+  
+
 module.exports = { employerRoutes, getEmployerIdFromToken, getEmployerInfoById };
