@@ -69,3 +69,24 @@
 .singleJob:hover button:hover {
   color: var(--blue);
 }
+.transparent-background {
+  background-color: rgba(255, 255, 255, 0.105);
+}
+#sb-button {
+  color: var(--blue);
+  background-color: white;
+  border: 2px solid var(--blue);
+}
+#sb-button:hover {
+  background-color: var(--blue);
+  color: white;
+}
+#closeButton {
+  color: gray;
+}
+#closeButton:hover {
+  color: rgb(232, 31, 31);
+}
+#shadow {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
