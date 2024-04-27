@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../NavBar/CandidateNavbar.jsx";
 
@@ -70,11 +70,11 @@ const CandidateProfile = () => {
   };
 
   const handleChangePassword = () => {
-    navigate("/candidate/profile/changepassword");
+    navigate('/candidate/profile/changepassword');
   };
 
   const handleChangeEmail = () => {
-    navigate("/candidate/profile/changeemail");
+      navigate('/candidate/profile/changeemail');
   };
 
   const handleDeleteAccount = async () => {
