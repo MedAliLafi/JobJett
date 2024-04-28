@@ -3,35 +3,36 @@ const { registerUser, loginUser } = require('./user.js');
 const employerRoutes = express.Router();
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 
-// Function to get employer information by ID
 function getEmployerInfoById(pool, employerId) {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT Employer.FirstName, Employer.LastName, Employer.DateOfBirth, Employer.CompanyName, Employer.NumberOfEmployees, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
-            if (error) {
-                reject(error);
+return new Promise((resolve, reject) => {
+    pool.query('SELECT Employer.FirstName, Employer.LastName, Employer.DateOfBirth, Employer.CompanyName, Employer.NumberOfEmployees, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address, Employer.Logo FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
+        if (error) {
+            reject(error);
+        } else {
+            if (results.length > 0) {
+                const employerInfo = {
+                    firstname: results[0].firstname,
+                    lastname: results[0].lastname,
+                    dateOfBirth: results[0].dateOfBirth,
+                    companyName: results[0].CompanyName,
+                    numberOfEmployees: results[0].numberOfEmployees,
+                    email: results[0].Email,
+                    industry: results[0].Industry,
+                    phone: results[0].Phone,
+                    state: results[0].State,
+                    country: results[0].Country,
+                    address: results[0].Address,
+                    logo: results[0].Logo
+                };
+                resolve(employerInfo);
             } else {
-                if (results.length > 0) {
-                    const employerInfo = {
-                        firstname: results[0].firstname,
-                        lastname: results[0].lastname,
-                        dateOfBirth: results[0].dateOfBirth,
-                        companyName: results[0].CompanyName,
-                        numberOfEmployees: results[0].numberOfEmployees,
-                        email: results[0].Email,
-                        industry: results[0].Industry,
-                        phone: results[0].Phone,
-                        state: results[0].State,
-                        country: results[0].Country,
-                        address: results[0].Address
-                    };
-                    resolve(employerInfo);
-                } else {
-                    reject(new Error('Employer not found for the given ID.'));
-                }
+                reject(new Error('Employer not found for the given ID.'));
             }
-        });
+        }
     });
+});
 }
 
 function getEmployerIdFromToken(pool, req) {
@@ -135,13 +136,15 @@ employerRoutes.get('/employerInfo', async (req, res) => {
     }
 });
 
-employerRoutes.put("/updateProfile", async (req, res) => {
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 1000000000, files: 1 },
+  });
+  
+  employerRoutes.put("/updateProfile", upload.single('logo'), async (req, res) => {
     try {
       const pool = req.pool;
-      const token = req.cookies.token;
-      if (!token) return null;
-      const decoded = jwt.verify(token, 'secret_key');
-      const userId = decoded.user.UserID;
+      const logo = req.file.buffer.toString('base64');
       const employerId = await getEmployerIdFromToken(pool, req);
       if (!employerId) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -157,19 +160,18 @@ employerRoutes.put("/updateProfile", async (req, res) => {
         country,
       } = req.body;
       const updateQuery = `
-        UPDATE Employer AS e
-        JOIN User AS u ON e.UserID = u.UserID
+        UPDATE Employer
         SET 
-            e.CompanyName = ?,
-            u.Email = ?,
-            e.Industry = ?,
-            e.Phone = ?,
-            e.Address = ?,
-            e.State = ?,
-            e.Country = ?
+            CompanyName = ?,
+            Industry = ?,
+            Phone = ?,
+            Address = ?,
+            State = ?,
+            Country = ?,
+            Logo = ?
         WHERE 
-            e.EmployerID = ?
-    `;
+            EmployerID = ?
+      `;
   
       const updateValues = [
         companyName,
@@ -179,9 +181,10 @@ employerRoutes.put("/updateProfile", async (req, res) => {
         address,
         state,
         country,
+        logo,
         employerId,
       ];
-  
+      console.log(updateValues);
       pool.query(updateQuery, updateValues, (error, results) => {
         if (error) {
           console.error("Error updating employer profile:", error);
@@ -201,6 +204,5 @@ employerRoutes.put("/updateProfile", async (req, res) => {
         .json({ error: "An error occurred while updating employer profile." });
     }
   });
-  
 
 module.exports = { employerRoutes, getEmployerIdFromToken, getEmployerInfoById };

@@ -10,9 +10,14 @@ function CV() {
   const [searchable, setSearchable] = useState(false);
   const [newSkill, setNewSkill] = useState("");
   const [skills, setSkills] = useState([]);
+  const [newSoftSkill, setNewSoftSkill] = useState("");
+  const [softskills, setSoftSkills] = useState([]);
   const [cvId, setCVId] = useState("");
-  const handleChange = (event) => {
+  const handleChange1 = (event) => {
     setNewSkill(event.target.value);
+  };
+  const handleChange2 = (event) => {
+    setNewSoftSkill(event.target.value);
   };
 
   useEffect(() => {
@@ -32,7 +37,8 @@ function CV() {
           const cvData = await cvResponse.json();
           setSummary(cvData.Summary);
           setSearchable(cvData.Searchable === "true");
-          setSkills(cvData.Skills.split(";"));
+          setSkills(cvData.Skills.split(";code;"));
+          setSoftSkills(cvData.SoftSkills.split(";code;"));
         } else {
           console.error("Failed to fetch CV data");
         }
@@ -483,6 +489,19 @@ function CV() {
       }
     }
   }
+
+  function addSoftSkill(event) {
+    if (event.keyCode === 13) {
+      const softskillInput = event.target.value.trim();
+      setNewSoftSkill("");
+
+      if (softskillInput !== "") {
+        setSoftSkills((prevSoftSkills) => [...prevSoftSkills, softskillInput]);
+        event.target.value = "";
+      }
+    }
+  }
+
   function removeFormItem(type, index) {
     if (type === "education") {
       setEducationForms((prevForms) => prevForms.filter((_, i) => i !== index));
@@ -499,6 +518,10 @@ function CV() {
 
   function removeSkill(index) {
     setSkills((prevSkills) => prevSkills.filter((_, i) => i !== index));
+  }
+
+  function removeSoftSkill(index) {
+    setSoftSkills((prevSoftSkills) => prevSoftSkills.filter((_, i) => i !== index));
   }
 
   function handleAddEducation() {
@@ -625,7 +648,8 @@ function CV() {
       // Now, update the CV data
       const cvData = {
         summary,
-        skills: skills.join(";"), // Convert array to string
+        skills: skills.join(";code;"),
+        softskills: softskills.join(";code;"),
         searchable,
       };
 
@@ -828,7 +852,7 @@ function CV() {
                 type="text"
                 id="Skills"
                 value={newSkill}
-                onChange={handleChange}
+                onChange={handleChange1}
                 onKeyDown={addSkill}
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 placeholder="Enter skills and press Enter"
@@ -844,6 +868,54 @@ function CV() {
                   <button
                     type="button"
                     onClick={() => removeSkill(index)}
+                    className="ml-2 focus:outline-none"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-600"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.42-9.88l2.12-2.12a1 1 0 011.42 1.42l-2.12 2.12 2.12 2.12a1 1 0 01-1.42 1.42L10 11.42l-2.12 2.12a1 1 0 01-1.42-1.42l2.12-2.12-2.12-2.12a1 1 0 011.42-1.42l2.12 2.12z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+
+          <fieldset>
+            <div className="mb-2">
+              <label
+                htmlFor="SoftSkills"
+                className="block mb-2 text-lg font-bold text-blueColor"
+              >
+                Soft Skills:
+              </label>
+              <input
+                type="text"
+                id="SoftSkills"
+                value={newSoftSkill}
+                onChange={handleChange2}
+                onKeyDown={addSoftSkill}
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                placeholder="Enter soft skills and press Enter"
+              />
+            </div>
+            <ul className="mb-5 flex flex-wrap mt-2">
+              {softskills.map((softskill, index) => (
+                <li
+                  key={index}
+                  className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full m-1 flex items-center"
+                >
+                  {softskill}
+                  <button
+                    type="button"
+                    onClick={() => removeSoftSkill(index)}
                     className="ml-2 focus:outline-none"
                   >
                     <svg

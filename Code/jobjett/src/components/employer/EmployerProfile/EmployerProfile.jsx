@@ -13,6 +13,7 @@ const EmployerProfile = () => {
     const [address, setAddress] = useState("");
     const [state, setState] = useState("");
     const [country, setCountry] = useState("");
+    const [logo, setLogo] = useState(null);
 
     useEffect(() => {
         fetchEmployerInfo();
@@ -27,6 +28,7 @@ const EmployerProfile = () => {
             setAddress(employerInfo.address);
             setState(employerInfo.state);
             setCountry(employerInfo.country);
+            setLogo(employerInfo.logo);
         }
     }, [employerInfo]);
 
@@ -110,28 +112,27 @@ const EmployerProfile = () => {
 
     const handleSaveProfile = async () => {
         try {
+            const formData = new FormData();
+            formData.append('companyName', companyName);
+            formData.append('email', email);
+            formData.append('industry', industry);
+            formData.append('phone', phone);
+            formData.append('address', address);
+            formData.append('state', state);
+            formData.append('country', country);
+            formData.append('logo', logo);
             const response = await fetch(
                 'http://localhost:9000/Employer/updateProfile',
                 {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     credentials: 'include',
-                    body: JSON.stringify({
-                        companyName: companyName,
-                        email: email,
-                        industry: industry,
-                        phone: phone,
-                        address: address,
-                        state: state,
-                        country: country
-                    })
+                    body: formData
                 }
             );
             if (response.ok) {
                 console.log('Profile updated successfully');
                 setEditMode(false);
+                fetchEmployerInfo();
             } else {
                 console.error('Failed to update profile');
             }
@@ -146,7 +147,26 @@ const EmployerProfile = () => {
             <div className="mt-10 max-w-3xl mx-auto text-center">
                 <h2>Employer Profile</h2>
                 {employerInfo && (
-                        <div>
+                    <form className="flex flex-col gap-4" encType="multipart/form-data">
+                        <div className="flex-grow">
+                                <label htmlFor="logo" className="block text-sm font-medium text-gray-700">Logo:</label>
+                                {editMode ? (
+                                    <input
+                                        id="logo"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setLogo(e.target.files[0])}
+                                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    />
+                                ) : (
+                                    <img
+                                        id="logo"
+                                        src= "data:image/png;base64,<%=logo%>"
+                                        alt="Company Logo"
+                                        className="w-20 h-20 rounded-full mx-auto"
+                                    />
+                                )}
+                            </div>
                         <div className="flex-grow">
                             <label htmlFor="companyName"
                             className="block text-sm font-medium text-gray-700"
@@ -176,13 +196,12 @@ const EmployerProfile = () => {
                                               >Email:</label>
                             {editMode ? (
                                 <input
-                                    id="email"
-                                    type="text"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
-                                />
+                                id="email"
+                                type="text"
+                                value={email}
+                                disabled
+                                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            />
                             ) : (
                                 <input
                                     id="email"
@@ -315,11 +334,12 @@ const EmployerProfile = () => {
                             )}
                         </div>
                         <button 
+                                      type="button"
                                       className="btn"
                                       onClick={editMode ? handleSaveProfile : handleEditProfile}>
                             {editMode ? 'Save Profile' : 'Edit Profile'}
                         </button>
-                    </div>
+                    </form>
                 )}
                 <h3>Actions</h3>
                 <button className="btn" onClick={handleViewApplications}>View Applications</button>

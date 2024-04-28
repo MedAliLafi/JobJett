@@ -391,7 +391,7 @@ const CandidateProfile = () => {
         <button className="btn" onClick={handleManageCV}>
           Manage CV
         </button>
-        <button className="btn" onClick={handleChangePassword}>
+        <button className="btn" onClick={handleChangePassword}   style={{ width: 'auto' }}>
           Change Password
         </button>
         <button className="btn" onClick={handleChangeEmail}>
