@@ -89,15 +89,20 @@ const Noty = () => {
       </div>
       {showDropdown && (
         <div className="notification-dropdown">
-          <ul>
-          {notifications.map((notification) => (
-            <li key={notification.NotificationID} onClick={() => handleNotificationClick(notification)}>
-              <span className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification); }}>X</span>
-              <div>{notification.Message}</div>
-              <div>{notification.DateTime}</div>
-            </li>
-          ))}
-          </ul>
+          {count === 0 ? (
+            <div className="no-notifications">You have no notifications</div>
+          ) : (
+            <ul>
+              {notifications.map((notification) => (
+                <li key={notification.NotificationID} onClick={() => handleNotificationClick(notification)}>
+                  <span className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification); }}>X</span>
+                  <div>Title: {notification.Title}</div>
+                  <div>Description: {notification.Description}</div>
+                  <div>Date and Time: {notification.DateTime}</div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>
