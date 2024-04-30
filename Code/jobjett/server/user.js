@@ -166,4 +166,63 @@ userRoutes.delete('/deleteUser', async (req, res) => {
     }
 });
 
+userRoutes.get('/notifications', async (req, res) => {
+    const pool = req.pool;
+    try {
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
+        const query = 'SELECT * FROM Notification WHERE UserID = ?';
+        pool.query(query, [userId], (error, results) => {
+            if (error) {
+                console.error('Error fetching notifications:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching notifications.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching notifications.' });
+    }
+});
+
+userRoutes.delete('/deleteNotification/:notificationId', async (req, res) => {
+    const pool = req.pool;
+    const { notificationId } = req.params;
+    try {
+        const deleteQuery = 'DELETE FROM Notification WHERE NotificationID = ?';
+        pool.query(deleteQuery, [notificationId], (error, result) => {
+            if (error) {
+                console.error('Error deleting notification:', error);
+                return res.status(500).json({ error: 'An error occurred while deleting notification.' });
+            }
+            console.log('Notification deleted successfully');
+            res.status(200).json({ message: 'Notification deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        return res.status(500).json({ error: 'An error occurred while deleting notification.' });
+    }
+});
+
+userRoutes.put('/markAsRead/:notificationId', async (req, res) => {
+    const pool = req.pool;
+    const { notificationId } = req.params;
+    try {
+        const updateQuery = 'UPDATE Notification SET `Read` = 1 WHERE NotificationID = ?';
+        pool.query(updateQuery, [notificationId], (error, result) => {
+            if (error) {
+                console.error('Error marking notification as read:', error);
+                return res.status(500).json({ error: 'An error occurred while marking notification as read.' });
+            }
+            console.log('Notification marked as read successfully');
+            res.status(200).json({ message: 'Notification marked as read successfully' });
+        });
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        return res.status(500).json({ error: 'An error occurred while marking notification as read.' });
+    }
+});
+
 module.exports = { userRoutes, registerUser , loginUser};

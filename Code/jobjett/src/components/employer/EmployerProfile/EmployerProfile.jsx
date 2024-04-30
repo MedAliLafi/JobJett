@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from "../NavBar/EmployerNavbar.jsx";
+import defaultlogo from "../../../assets/default-logo.png";
 
 const EmployerProfile = () => {
     const navigate = useNavigate();
@@ -13,7 +14,8 @@ const EmployerProfile = () => {
     const [address, setAddress] = useState("");
     const [state, setState] = useState("");
     const [country, setCountry] = useState("");
-    const [logo, setLogo] = useState(null);
+    const [logo, setLogo] = useState("");
+    const [logoPath, setLogoPath] = useState("");
 
     useEffect(() => {
         fetchEmployerInfo();
@@ -28,7 +30,8 @@ const EmployerProfile = () => {
             setAddress(employerInfo.address);
             setState(employerInfo.state);
             setCountry(employerInfo.country);
-            setLogo(employerInfo.logo);
+            setLogoPath(employerInfo.logo);
+            
         }
     }, [employerInfo]);
 
@@ -44,6 +47,7 @@ const EmployerProfile = () => {
             if (response.ok) {
                 const data = await response.json();
                 setEmployerInfo(data);
+                setLogoPath(data.logo);
             } else {
                 console.error('Failed to fetch employer information');
             }
@@ -120,7 +124,11 @@ const EmployerProfile = () => {
             formData.append('address', address);
             formData.append('state', state);
             formData.append('country', country);
-            formData.append('logo', logo);
+            
+            if (logo) {
+                formData.append('logo', logo);
+            }
+            console.log(logo.name);
             const response = await fetch(
                 'http://localhost:9000/Employer/updateProfile',
                 {
@@ -140,33 +148,35 @@ const EmployerProfile = () => {
             console.error('Error updating profile:', error);
         }
     };
-
+    
     return (
         <>
             <Navbar></Navbar>
             <div className="mt-10 max-w-3xl mx-auto text-center">
                 <h2>Employer Profile</h2>
                 {employerInfo && (
-                    <form className="flex flex-col gap-4" encType="multipart/form-data">
-                        <div className="flex-grow">
-                                <label htmlFor="logo" className="block text-sm font-medium text-gray-700">Logo:</label>
-                                {editMode ? (
-                                    <input
-                                        id="logo"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => setLogo(e.target.files[0])}
-                                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                    />
-                                ) : (
-                                    <img
-                                        id="logo"
-                                        src= "data:image/png;base64,<%=logo%>"
-                                        alt="Company Logo"
-                                        className="w-20 h-20 rounded-full mx-auto"
-                                    />
-                                )}
-                            </div>
+                    <form encType="multipart/form-data">
+                        <div className="flex-grow relative">
+                            {editMode ? (
+                                <input
+                                    id="logo"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setLogo(e.target.files[0])}
+                                    className="hidden"
+                                />
+                            ) : null}
+                            <img
+                                src={logoPath || defaultlogo}
+                                alt="Company Logo"
+                                className="w-20 h-20 rounded-full mx-auto"
+                            />
+                            {editMode ? (
+                                <label htmlFor="logo" className="text-black rounded-full p-1 cursor-pointer border border-black mt-2 mx-auto text-center">
+                                    Change Company Logo
+                                </label>
+                            ) : null}
+                        </div>
                         <div className="flex-grow">
                             <label htmlFor="companyName"
                             className="block text-sm font-medium text-gray-700"
@@ -178,7 +188,6 @@ const EmployerProfile = () => {
                                     value={companyName}
                                     onChange={(e) => setCompanyName(e.target.value)}
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             ) : (
                                 <input
@@ -192,8 +201,8 @@ const EmployerProfile = () => {
                         </div>
                         <div className="flex-grow">
                             <label htmlFor="email"
-                                              className="block text-sm font-medium text-gray-700"
-                                              >Email:</label>
+                                className="block text-sm font-medium text-gray-700"
+                                >Email:</label>
                             {editMode ? (
                                 <input
                                 id="email"
@@ -209,14 +218,13 @@ const EmployerProfile = () => {
                                     value={email}
                                     disabled
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             )}
                         </div>
                         <div className="flex-grow">
                             <label htmlFor="industry"
-                                              className="block text-sm font-medium text-gray-700"
-                                              >Industry:</label>
+                                className="block text-sm font-medium text-gray-700"
+                                >Industry:</label>
                             {editMode ? (
                                 <input
                                     id="industry"
@@ -224,7 +232,6 @@ const EmployerProfile = () => {
                                     value={industry}
                                     onChange={(e) => setIndustry(e.target.value)}
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             ) : (
                                 <input
@@ -233,14 +240,13 @@ const EmployerProfile = () => {
                                     value={industry}
                                     disabled
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             )}
                         </div>
                         <div className="flex-grow">
                             <label htmlFor="phone"
-                                              className="block text-sm font-medium text-gray-700"
-                                              >Phone:</label>
+                                className="block text-sm font-medium text-gray-700"
+                                >Phone:</label>
                             {editMode ? (
                                 <input
                                     id="phone"
@@ -263,8 +269,8 @@ const EmployerProfile = () => {
                         </div>
                         <div className="flex-grow">
                             <label htmlFor="address"
-                                              className="block text-sm font-medium text-gray-700"
-                                              >Address:</label>
+                                className="block text-sm font-medium text-gray-700"
+                                >Address:</label>
                             {editMode ? (
                                 <input
                                     id="address"
@@ -272,7 +278,6 @@ const EmployerProfile = () => {
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value)}
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             ) : (
                                 <input
@@ -281,14 +286,13 @@ const EmployerProfile = () => {
                                     value={address}
                                     disabled
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             )}
                         </div>
                         <div className="flex-grow">
                             <label htmlFor="state"
-                                              className="block text-sm font-medium text-gray-700"
-                                              >State:</label>
+                                className="block text-sm font-medium text-gray-700"
+                                >State:</label>
                             {editMode ? (
                                 <input
                                     id="state"
@@ -296,7 +300,6 @@ const EmployerProfile = () => {
                                     value={state}
                                     onChange={(e) => setState(e.target.value)}
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             ) : (
                                 <input
@@ -305,14 +308,13 @@ const EmployerProfile = () => {
                                     value={state}
                                     disabled
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             )}
                         </div>
                         <div className="flex-grow">
                             <label htmlFor="country"
-                                              className="block text-sm font-medium text-gray-700"
-                                              >Country:</label>
+                                className="block text-sm font-medium text-gray-700"
+                                >Country:</label>
                             {editMode ? (
                                 <input
                                     id="country"
@@ -320,7 +322,6 @@ const EmployerProfile = () => {
                                     value={country}
                                     onChange={(e) => setCountry(e.target.value)}
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             ) : (
                                 <input
@@ -329,14 +330,13 @@ const EmployerProfile = () => {
                                     value={country}
                                     disabled
                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-
                                 />
                             )}
                         </div>
                         <button 
-                                      type="button"
-                                      className="btn"
-                                      onClick={editMode ? handleSaveProfile : handleEditProfile}>
+                            type="button"
+                            className="btn"
+                            onClick={editMode ? handleSaveProfile : handleEditProfile}>
                             {editMode ? 'Save Profile' : 'Edit Profile'}
                         </button>
                     </form>
@@ -344,7 +344,7 @@ const EmployerProfile = () => {
                 <h3>Actions</h3>
                 <button className="btn" onClick={handleViewApplications}>View Applications</button>
                 <button className="btn" onClick={handleAddJobOffer}>Add Job Offer</button>
-                <button className="btn" onClick={handleChangePassword}>Change Password</button>
+                <button className="btn" onClick={handleChangePassword}   style={{ width: 'auto' }}>Change Password</button>
                 <button className="btn" onClick={handleChangeEmail}>Change Email</button>
                 <button className="btn" onClick={handleDeleteAccount}>Delete Account</button>
                 <button className="btn" onClick={logout}>Logout</button>

@@ -1,0 +1,43 @@
+.noty-icon {
+    position: relative;
+    display: inline;
+  }
+  
+  .noty-count {
+    position: absolute;
+    right: 0;
+    background-color: red;
+    font-size: 9px;
+    color: white;
+    display: inline;
+    padding: 3px 5px;
+    border-radius: 20px;
+  }
+
+  .notification-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    z-index: 1000;
+  }
+  
+  .notification-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .notification-dropdown li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .notification-dropdown li:last-child {
+    border-bottom: none;
+  }
+  
+  

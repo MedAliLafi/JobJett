@@ -7,7 +7,6 @@ import { AiOutlineSearch, AiOutlineCloseCircle } from "react-icons/ai";
 import { BsHouseDoor } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { BiTimeFive } from "react-icons/bi";
-import logo1 from "../../../assets/MicrosoftLogo.png";
 import "./CandidateHomePage.css";
 import JobOfferDetails from "../JobOfferDetails/JobOfferDetails";
 import ApplyNowtModal from "./ApplyNowtModal.jsx";
@@ -191,7 +190,7 @@ function CandidateHomePage() {
           {jobOffers.map(
             ({
               JobOfferID,
-              image,
+              Logo,
               Title,
               DatePosted,
               Location,
@@ -216,7 +215,7 @@ function CandidateHomePage() {
                 <div className=" text-[13px] text-[#959595] pt-[20px] border-t-[2px] mt-[20px] group-hover:text-white overflow-hidden">
                   {truncateDescription(Description)}
                   <div className="CompanyName flex items-center gap-2">
-                    <img src={logo1} alt="Company Logo" className="w-[10%]" />
+                    <img src={Logo} alt=" " className="w-[10%]" />
                     <span className="text-[14px] py-[1rem] block group-hover:text-white">
                       {CompanyName}
                     </span>

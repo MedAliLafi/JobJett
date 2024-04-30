@@ -107,7 +107,7 @@ jobofferRoutes.get('/loadjoboffers', async (req, res) => {
             const totalCount = countResults[0].totalCount;
 
             // Execute the select query to fetch paginated job offers
-            let selectQuery = 'SELECT joboffer.*, employer.CompanyName FROM joboffer';
+            let selectQuery = 'SELECT joboffer.*, employer.CompanyName, employer.Logo FROM joboffer';
             selectQuery += ` ${joinClause}`;
             if (whereClause) {
                 selectQuery += ` WHERE ${whereClause}`;

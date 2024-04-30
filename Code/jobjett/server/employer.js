@@ -3,7 +3,7 @@ const { registerUser, loginUser } = require('./user.js');
 const employerRoutes = express.Router();
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
+const multer  = require('multer');
 
 function getEmployerInfoById(pool, employerId) {
 return new Promise((resolve, reject) => {
@@ -136,73 +136,82 @@ employerRoutes.get('/employerInfo', async (req, res) => {
     }
 });
 
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 1000000000, files: 1 },
-  });
-  
-  employerRoutes.put("/updateProfile", upload.single('logo'), async (req, res) => {
-    try {
-      const pool = req.pool;
-      const logo = req.file.buffer.toString('base64');
-      const employerId = await getEmployerIdFromToken(pool, req);
-      if (!employerId) {
-        return res.status(401).json({ error: "Unauthorized" });
-      }
-  
-      const {
-        companyName,
-        email,
-        industry,
-        phone,
-        address,
-        state,
-        country,
-      } = req.body;
-      const updateQuery = `
-        UPDATE Employer
-        SET 
-            CompanyName = ?,
-            Industry = ?,
-            Phone = ?,
-            Address = ?,
-            State = ?,
-            Country = ?,
-            Logo = ?
-        WHERE 
-            EmployerID = ?
-      `;
-  
-      const updateValues = [
-        companyName,
-        email,
-        industry,
-        phone,
-        address,
-        state,
-        country,
-        logo,
-        employerId,
-      ];
-      console.log(updateValues);
-      pool.query(updateQuery, updateValues, (error, results) => {
-        if (error) {
-          console.error("Error updating employer profile:", error);
-          return res.status(500).json({
-            error: "An error occurred while updating employer profile.",
-          });
-        }
-        console.log("Employer profile updated successfully");
-        res
-          .status(200)
-          .json({ message: "Employer profile updated successfully" });
-      });
-    } catch (error) {
-      console.error("Error updating employer profile:", error);
-      return res
-        .status(500)
-        .json({ error: "An error occurred while updating employer profile." });
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'logos')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.png');
     }
-  });
+});
+
+const upload = multer({ storage: storage });
+
+employerRoutes.put("/updateProfile", upload.single('logo'), async (req, res) => {
+    try {
+        const pool = req.pool;
+        const logoFile = req.file;
+        const logoPath = logoFile ? '/logos/' + logoFile.filename : '';
+        console.log(logoPath);
+        const employerId = await getEmployerIdFromToken(pool, req);
+        if (!employerId) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const {
+            companyName,
+            email,
+            industry,
+            phone,
+            address,
+            state,
+            country,
+        } = req.body;
+
+        const updateQuery = `
+            UPDATE Employer
+            SET 
+                CompanyName = ?,
+                Industry = ?,
+                Phone = ?,
+                Address = ?,
+                State = ?,
+                Country = ?,
+                Logo = ?
+            WHERE 
+                EmployerID = ?
+        `;
+
+        const updateValues = [
+            companyName,
+            industry,
+            phone,
+            address,
+            state,
+            country,
+            logoPath,
+            employerId,
+        ];
+
+        pool.query(updateQuery, updateValues, (error, results) => {
+            if (error) {
+                console.error("Error updating employer profile:", error);
+                return res.status(500).json({
+                    error: "An error occurred while updating employer profile.",
+                });
+            }
+            console.log("Employer profile updated successfully");
+            res
+                .status(200)
+                .json({ message: "Employer profile updated successfully" });
+        });
+    } catch (error) {
+        console.error("Error updating employer profile:", error);
+        return res
+            .status(500)
+            .json({ error: "An error occurred while updating employer profile." });
+    }
+});
 
 module.exports = { employerRoutes, getEmployerIdFromToken, getEmployerInfoById };

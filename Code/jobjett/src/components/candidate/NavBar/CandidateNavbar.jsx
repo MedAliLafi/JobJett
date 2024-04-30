@@ -1,15 +1,17 @@
+import React, { useState, useEffect } from "react";
 import "./CandidateNavbar.css";
 import logo from "../../../assets/output-onlinetools.png";
 import profile from "../../../assets/profileIcon.png";
 import { Link } from "react-router-dom";
 import Noty from "./Notification.jsx";
-function candidateNavbar() {
+
+function CandidateNavbar() {
   return (
     <nav className="navbar">
       <div className="logo">
         <a>
-        <Link to="/">
-          <img src={logo} alt="" className="logo"></img>
+          <Link to="/">
+            <img src={logo} alt="" className="logo"></img>
           </Link>
         </a>
       </div>
@@ -26,7 +28,7 @@ function candidateNavbar() {
           </li>
         </ul>
       </div>
-      <Noty width={"33px"} color={"#00579e"} count={10} className="notyIcon"/>
+      <Noty/>
       <Link to="/candidate/profile">
         <img src={profile} className="profileIcon" />
       </Link>
@@ -34,4 +36,4 @@ function candidateNavbar() {
   );
 }
 
-export default candidateNavbar;
+export default CandidateNavbar;
