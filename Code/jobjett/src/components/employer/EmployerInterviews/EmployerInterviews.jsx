@@ -91,7 +91,7 @@ const EmployerInterviews = () => {
                 <td className="px-6 py-4">{interview.Title}</td>
                 <td className="px-6 py-4">{interview.CandidateName}</td>
                 <td className="px-6 py-4">{interview.InterviewDateTime}</td>
-                <td className="px-6 py-4">{interview.Note}</td>
+                <td className="px-6 py-4">{interview.Message}</td>
                 <td className="px-6 py-4">
                   <button
                     onClick={async () => cancelInterview(interview.InterviewID)}

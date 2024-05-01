@@ -225,7 +225,6 @@ jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
 });
 
 
-// Route to update application status to "Interview Scheduled"
 jobofferRoutes.post('/:jobofferId/schedule-interview/:candidateId', async (req, res) => {
     try {
         const pool = req.pool;
@@ -234,21 +233,60 @@ jobofferRoutes.post('/:jobofferId/schedule-interview/:candidateId', async (req, 
         const { dateTime } = req.body;
 
         // Update application status to "Interview Scheduled"
-        const sql = 'UPDATE application SET Status = ?, InterviewDateTime = ? WHERE JobOfferID = ? AND CandidateID = ?';
-        const values = ['Interview Scheduled', dateTime, jobOfferId, candidateId];
-        pool.query(sql, values, (error, result) => {
-            if (error) {
-                console.error('Error scheduling interview:', error);
-                return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
-            }
-            console.log('Interview scheduled successfully');
-            res.status(200).json({ message: 'Interview scheduled successfully' });
+        const updateSql = 'UPDATE application SET Status = ?, InterviewDateTime = ? WHERE JobOfferID = ? AND CandidateID = ?';
+        const updateValues = ['Interview Scheduled', dateTime, jobOfferId, candidateId];
+        await new Promise((resolve, reject) => {
+            pool.query(updateSql, updateValues, (error, result) => {
+                if (error) {
+                    console.error('Error scheduling interview:', error);
+                    return reject('An error occurred while scheduling the interview.');
+                }
+                console.log('Interview scheduled successfully');
+                resolve();
+            });
         });
+
+        // Get job title
+        const jobOfferQuery = 'SELECT Title FROM joboffer WHERE JobOfferId = ?';
+        const [jobOfferResult] = await pool.query(jobOfferQuery, [jobOfferId]);
+        if (!jobOfferResult.length) {
+            console.error('Error retrieving job offer details');
+            return res.status(404).json({ error: 'Job offer not found.' });
+        }
+        const { Title } = jobOfferResult[0];
+
+        // Get user ID from candidate
+        const candidateQuery = 'SELECT UserId FROM candidate WHERE CandidateId = ?';
+        const [candidateResult] = await pool.query(candidateQuery, [candidateId]);
+        if (!candidateResult.length) {
+            console.error('Error retrieving candidate details');
+            return res.status(404).json({ error: 'Candidate not found.' });
+        }
+        const { UserId } = candidateResult[0];
+
+        // Add notification
+        const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+        const notificationValues = [UserId, `You've been accepted for an interview for the job offer ${Title}`, dateTime, 0, `/candidate/applications`];
+        await new Promise((resolve, reject) => {
+            pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
+                if (notificationError) {
+                    console.error('Error adding notification:', notificationError);
+                    return reject('An error occurred while adding notification.');
+                }
+                console.log('Notification added successfully');
+                resolve();
+            });
+        });
+
+        // All operations succeeded
+        return res.status(200).json({ message: 'Interview scheduled successfully' });
     } catch (error) {
         console.error('Error scheduling interview:', error);
         return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
     }
 });
+
+
 
 // Route to get job offer details by ID
 jobofferRoutes.get('/:jobofferId', async (req, res) => {
