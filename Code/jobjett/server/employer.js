@@ -3,31 +3,36 @@ const { registerUser, loginUser } = require('./user.js');
 const employerRoutes = express.Router();
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer  = require('multer');
 
-// Function to get employer information by ID
 function getEmployerInfoById(pool, employerId) {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT Employer.CompanyName, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
-            if (error) {
-                reject(error);
+return new Promise((resolve, reject) => {
+    pool.query('SELECT Employer.FirstName, Employer.LastName, Employer.DateOfBirth, Employer.CompanyName, Employer.NumberOfEmployees, User.Email, Employer.Industry, Employer.Phone, Employer.State, Employer.Country, Employer.Address, Employer.Logo FROM Employer INNER JOIN User ON Employer.UserID = User.UserID WHERE EmployerID = ?', [employerId], (error, results) => {
+        if (error) {
+            reject(error);
+        } else {
+            if (results.length > 0) {
+                const employerInfo = {
+                    firstname: results[0].firstname,
+                    lastname: results[0].lastname,
+                    dateOfBirth: results[0].dateOfBirth,
+                    companyName: results[0].CompanyName,
+                    numberOfEmployees: results[0].numberOfEmployees,
+                    email: results[0].Email,
+                    industry: results[0].Industry,
+                    phone: results[0].Phone,
+                    state: results[0].State,
+                    country: results[0].Country,
+                    address: results[0].Address,
+                    logo: results[0].Logo
+                };
+                resolve(employerInfo);
             } else {
-                if (results.length > 0) {
-                    const employerInfo = {
-                        companyName: results[0].CompanyName,
-                        email: results[0].Email,
-                        industry: results[0].Industry,
-                        phone: results[0].Phone,
-                        state: results[0].State,
-                        country: results[0].Country,
-                        address: results[0].Address
-                    };
-                    resolve(employerInfo);
-                } else {
-                    reject(new Error('Employer not found for the given ID.'));
-                }
+                reject(new Error('Employer not found for the given ID.'));
             }
-        });
+        }
     });
+});
 }
 
 function getEmployerIdFromToken(pool, req) {
@@ -53,7 +58,7 @@ function getEmployerIdFromToken(pool, req) {
 // Route to register a new employer
 employerRoutes.post('/registerEmployer', async (req, res) => {
     const pool = req.pool;
-    const { email, password, companyName, industry, phone, state, country, address } = req.body;
+    const { email, password, firstname, lastname, dateOfBirth, companyName, industry, numberOfEmployees, phone, state, country, address } = req.body;
     
     try {
         // Hash the password
@@ -67,8 +72,8 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 
         const userID = userResult.insertId;
         // Now, register the employer using the user ID obtained
-        const sql = 'INSERT INTO Employer (UserID, CompanyName, Industry, Phone, State, Country, Address) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const values = [userID, companyName, industry, phone, state, country, address];
+        const sql = 'INSERT INTO Employer (UserID, FirstName, LastName, DateOfBirth, CompanyName, Industry, NumberOfEmployees, Phone, State, Country, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const values = [userID, firstname, lastname, dateOfBirth, companyName, industry, numberOfEmployees, phone, state, country, address ];
 
         pool.query(sql, values, (error, employerResult) => {
             if (error) {
@@ -88,7 +93,7 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
 // Route to login employer
 employerRoutes.post('/loginEmployer', async (req, res) => {
     const pool = req.pool;
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
     try {
         loginUser(pool, email, password, (error, result) => {
             if (error) {
@@ -100,11 +105,13 @@ employerRoutes.post('/loginEmployer', async (req, res) => {
             }
             const user = result.user;
             if (user.UserType !== 'Employer') {
-                console.log('User is not a employer');
-                return res.status(401).json({ error: 'User is not a employer.' });
+                console.log('User is not an employer');
+                return res.status(401).json({ error: 'User is not an employer.' });
             }
-            const token = jwt.sign({ user: user}, 'secret_key');
-            res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }); // One month expiration
+            
+            const expiresIn = rememberMe ? '30d' : '1d';
+            const token = jwt.sign({ user: user}, 'secret_key', { expiresIn });            
+            res.cookie('token', token, { httpOnly: true, maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : undefined });
             res.status(200).json({ message: 'Login successful', token: token });
         });
     } catch (error) {
@@ -126,6 +133,84 @@ employerRoutes.get('/employerInfo', async (req, res) => {
     } catch (error) {
         console.error('Error fetching employer information:', error);
         res.status(500).json({ error: 'An error occurred while fetching employer information' });
+    }
+});
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'logos')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.png');
+    }
+});
+
+const upload = multer({ storage: storage });
+
+employerRoutes.put("/updateProfile", upload.single('logo'), async (req, res) => {
+    try {
+        const pool = req.pool;
+        const logoFile = req.file;
+        const logoPath = logoFile ? '/logos/' + logoFile.filename : '';
+        console.log(logoPath);
+        const employerId = await getEmployerIdFromToken(pool, req);
+        if (!employerId) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const {
+            companyName,
+            email,
+            industry,
+            phone,
+            address,
+            state,
+            country,
+        } = req.body;
+
+        const updateQuery = `
+            UPDATE Employer
+            SET 
+                CompanyName = ?,
+                Industry = ?,
+                Phone = ?,
+                Address = ?,
+                State = ?,
+                Country = ?,
+                Logo = ?
+            WHERE 
+                EmployerID = ?
+        `;
+
+        const updateValues = [
+            companyName,
+            industry,
+            phone,
+            address,
+            state,
+            country,
+            logoPath,
+            employerId,
+        ];
+
+        pool.query(updateQuery, updateValues, (error, results) => {
+            if (error) {
+                console.error("Error updating employer profile:", error);
+                return res.status(500).json({
+                    error: "An error occurred while updating employer profile.",
+                });
+            }
+            console.log("Employer profile updated successfully");
+            res
+                .status(200)
+                .json({ message: "Employer profile updated successfully" });
+        });
+    } catch (error) {
+        console.error("Error updating employer profile:", error);
+        return res
+            .status(500)
+            .json({ error: "An error occurred while updating employer profile." });
     }
 });
 

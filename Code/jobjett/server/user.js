@@ -52,8 +52,10 @@ userRoutes.post('/changePassword', async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
     try {
-        const userId = req.user.user.UserId;
-        // Check if the current password matches the one in the database
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
             if (error) {
@@ -93,14 +95,16 @@ userRoutes.post('/changePassword', async (req, res) => {
     }
 });
 
-// Route to change email
+// In your user.js file where you define routes
 userRoutes.post('/changeEmail', async (req, res) => {
     const pool = req.pool;
-    const newEmail = req.body;
+    const { newEmail, password } = req.body;
 
     try {
-        const userId = req.user.user.UserId;
-        // Check if the user exists
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
         const query = 'SELECT * FROM User WHERE UserID = ?';
         pool.query(query, [userId], async (error, results) => {
             if (error) {
@@ -111,6 +115,13 @@ userRoutes.post('/changeEmail', async (req, res) => {
             if (results.length === 0) {
                 // User not found
                 return res.status(404).json({ error: 'User not found.' });
+            }
+
+            const user = results[0];
+            const passwordMatch = await bcrypt.compare(password, user.Password);
+            if (!passwordMatch) {
+                // Current password is incorrect
+                return res.status(401).json({ error: 'Incorrect password.' });
             }
 
             // Update the user's email in the database
@@ -129,6 +140,7 @@ userRoutes.post('/changeEmail', async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while changing email.' });
     }
 });
+
 
 // Route to delete user
 userRoutes.delete('/deleteUser', async (req, res) => {
@@ -151,6 +163,65 @@ userRoutes.delete('/deleteUser', async (req, res) => {
     } catch (error) {
         console.error('Error deleting user:', error);
         return res.status(500).json({ error: 'An error occurred while deleting user.' });
+    }
+});
+
+userRoutes.get('/notifications', async (req, res) => {
+    const pool = req.pool;
+    try {
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
+        const query = 'SELECT * FROM Notification WHERE UserID = ?';
+        pool.query(query, [userId], (error, results) => {
+            if (error) {
+                console.error('Error fetching notifications:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching notifications.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching notifications.' });
+    }
+});
+
+userRoutes.delete('/deleteNotification/:notificationId', async (req, res) => {
+    const pool = req.pool;
+    const { notificationId } = req.params;
+    try {
+        const deleteQuery = 'DELETE FROM Notification WHERE NotificationID = ?';
+        pool.query(deleteQuery, [notificationId], (error, result) => {
+            if (error) {
+                console.error('Error deleting notification:', error);
+                return res.status(500).json({ error: 'An error occurred while deleting notification.' });
+            }
+            console.log('Notification deleted successfully');
+            res.status(200).json({ message: 'Notification deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        return res.status(500).json({ error: 'An error occurred while deleting notification.' });
+    }
+});
+
+userRoutes.put('/markAsRead/:notificationId', async (req, res) => {
+    const pool = req.pool;
+    const { notificationId } = req.params;
+    try {
+        const updateQuery = 'UPDATE Notification SET `Read` = 1 WHERE NotificationID = ?';
+        pool.query(updateQuery, [notificationId], (error, result) => {
+            if (error) {
+                console.error('Error marking notification as read:', error);
+                return res.status(500).json({ error: 'An error occurred while marking notification as read.' });
+            }
+            console.log('Notification marked as read successfully');
+            res.status(200).json({ message: 'Notification marked as read successfully' });
+        });
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        return res.status(500).json({ error: 'An error occurred while marking notification as read.' });
     }
 });
 

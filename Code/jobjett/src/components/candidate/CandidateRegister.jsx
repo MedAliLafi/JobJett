@@ -315,6 +315,7 @@ const CandidateRegister = () => {
                 const data = await response.json();
                 if (data.loggedIn) {
                     navigate("/candidate/profile");
+                    window.location.reload();
                 }
             } else {
                 console.error('Failed to check if candidate is logged in');
