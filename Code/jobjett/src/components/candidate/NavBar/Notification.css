@@ -1,43 +1,70 @@
 .noty-icon {
-    position: relative;
-    display: inline;
-  }
-  
-  .noty-count {
-    position: absolute;
-    right: 0;
-    background-color: red;
-    font-size: 9px;
-    color: white;
-    display: inline;
-    padding: 3px 5px;
-    border-radius: 20px;
-  }
+  position: relative;
+  display: inline-block;
+}
 
-  .notification-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 5px 10px;
-    z-index: 1000;
-  }
-  
-  .notification-dropdown ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .notification-dropdown li {
-    padding: 5px 0;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .notification-dropdown li:last-child {
-    border-bottom: none;
-  }
-  
-  
+.noty-count {
+  position: absolute;
+  right: 0;
+  top: -6px;
+  background-color: red;
+  font-size: 9px;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 20px;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 5px); /* Added some spacing between the icon and dropdown */
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px; /* Increased padding for better spacing */
+  z-index: 1000;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Added a subtle box shadow */
+  width: 300px; /* Adjusted width to make the dropdown wider */
+  max-height: 300px; /* Added maximum height to prevent overflow */
+  overflow-y: auto; /* Added scrollbar when content exceeds max-height */
+}
+
+.notification-dropdown ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-dropdown li {
+  position: relative; /* Add relative positioning */
+  padding: 5px 0;
+  border-bottom: 1px solid #ccc;
+  overflow: auto;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+.notification-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.delete-button {
+  cursor: pointer;
+  font-size: 80%;
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+} 
+.delete-button:hover {
+  color: #333;
+}
+
+.notification-dropdown li:hover {
+  background-color: #f9f9f9;
+}
+
+.notification-dropdown li:hover .delete-button {
+  opacity: 1; /* Show the delete button when the notification is hovered */
+}

@@ -23,6 +23,7 @@ const Noty = () => {
       });
       if (response.ok) {
         navigate(notification.Link);
+        setShowDropdown(false);
       } else {
         console.error("Failed to mark notification as read:", response.statusText);
       }
@@ -95,10 +96,11 @@ const Noty = () => {
             <ul>
               {notifications.map((notification) => (
                 <li key={notification.NotificationID} onClick={() => handleNotificationClick(notification)}>
+                  <div className="notification-content">
+                    <span>{notification.Message}</span><br></br>
+                    <span>{notification.DateTime}</span>
+                  </div>
                   <span className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification); }}>X</span>
-                  <div>Title: {notification.Title}</div>
-                  <div>Description: {notification.Description}</div>
-                  <div>Date and Time: {notification.DateTime}</div>
                 </li>
               ))}
             </ul>

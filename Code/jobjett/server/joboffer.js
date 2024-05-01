@@ -2,6 +2,7 @@ const express = require('express');
 const { getEmployerIdFromToken, getEmployerInfoById } = require('./employer.js');
 const { getCandidateIdFromToken, getCandidateInfoById } = require('./candidate.js');
 const jobofferRoutes = express.Router();
+const jwt = require('jsonwebtoken');
 
 // Route to add a new job offer
 jobofferRoutes.post('/addJobOffer', async (req, res) => {
@@ -26,7 +27,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
             ReqExperience: reqExperience,
             ReqSkills: reqSkills,
             ReqSoftSkills: reqSoftSkills,
-            AdditionalQuestions: additionalQuestions, // New field
+            AdditionalQuestions: additionalQuestions,
             Description: jobDescription,
             Type: jobType,
             Salary: salary,
@@ -344,15 +345,19 @@ jobofferRoutes.get('/:applicationID/application', async (req, res) => {
     }
 });
 
-
 // Route to apply for a job offer
 jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
     try {
         const pool = req.pool;
+
         const candidateId = await getCandidateIdFromToken(pool, req);
         if (!candidateId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
+
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
 
         const { description } = req.body;
         const jobOfferId = req.params.jobofferId;
@@ -364,19 +369,51 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
         // Insert application data into the database
         const sql = 'INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied) VALUES (?, ?, ?, ?, ?, ?)';
         const values = [candidateId, cvId, jobOfferId, description, status, dateApplied];
-        pool.query(sql, values, (error, result) => {
+        pool.query(sql, values, async (error, result) => {
             if (error) {
                 console.error('Error applying for job offer:', error);
                 return res.status(500).json({ error: 'An error occurred while applying for the job offer.' });
             }
             console.log('Application submitted successfully');
-            res.status(200).json({ message: 'Application submitted successfully' });
+            
+            // Get job title and employer ID
+            const jobOfferQuery = 'SELECT Title, EmployerId FROM joboffer WHERE JobOfferId = ?';
+            pool.query(jobOfferQuery, [jobOfferId], async (jobOfferError, [jobOfferResult]) => { // Destructure the result in the callback
+                if (jobOfferError || !jobOfferResult) { // Check if there's an error or if result is empty
+                    console.error('Error retrieving job offer details:', jobOfferError);
+                    return res.status(404).json({ error: 'Job offer not found.' });
+                }
+                const { Title, EmployerId } = jobOfferResult;
+                
+                // Get user ID from employer
+                const employerQuery = 'SELECT UserId FROM employer WHERE EmployerId = ?';
+                pool.query(employerQuery, [EmployerId], async (employerError, [employerResult]) => {
+                    if (employerError || !employerResult) { // Check if there's an error or if result is empty
+                        console.error('Error retrieving employer details:', employerError);
+                        return res.status(404).json({ error: 'Employer not found.' });
+                    }
+                    const { UserId } = employerResult;
+                    
+                    // Add notification
+                    const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+                    const notificationValues = [UserId, `New applicant for your ${Title}offer!`, dateApplied, 0, `/employer/applications/${jobOfferId}`];
+                    pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
+                        if (notificationError) {
+                            console.error('Error adding notification:', notificationError);
+                            return res.status(500).json({ error: 'An error occurred while adding notification.' });
+                        }
+                        console.log('Notification added successfully');
+                        res.status(200).json({ message: 'Application submitted successfully' });
+                    });
+                });
+            });
         });
     } catch (error) {
         console.error('Error applying for job offer:', error);
         return res.status(500).json({ error: 'An error occurred while applying for the job offer.' });
     }
 });
+
 
 jobofferRoutes.get('/:applicationID/work_experience', async (req, res) => {
     try {
