@@ -61,7 +61,16 @@ const Noty = () => {
         const data = await response.json();
         const data2 = data.map((notification) => ({
           ...notification,
-          DateTime: new Date(notification.DateTime).toLocaleDateString("en-GB"),
+          DateTime: new Date(
+            notification.DateTime
+          ).toLocaleString("en-GB", {
+            timeZone: "UTC",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
         }));
         setNotifications(data2);
         setNotificationCount(data2.length);

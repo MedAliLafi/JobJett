@@ -49,7 +49,7 @@ const CandidateApplications = () => {
                   <li key={application.ApplicationID}>
                     - Job Title: {application.JobOfferTitle}- Company Name:{" "}
                     {application.CompanyName}- Description:{" "}
-                    {application.Description}- Status: {application.Status}
+                    {application.Description}Status: {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}
                   </li>
                 ))}
               </ul>

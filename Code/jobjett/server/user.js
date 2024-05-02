@@ -173,7 +173,7 @@ userRoutes.get('/notifications', async (req, res) => {
         if (!token) return null;
         const decoded = jwt.verify(token, 'secret_key');
         const userId = decoded.user.UserID;
-        const query = 'SELECT * FROM Notification WHERE UserID = ?';
+        const query = 'SELECT * FROM Notification WHERE UserID = ? ORDER BY DateTime DESC';
         pool.query(query, [userId], (error, results) => {
             if (error) {
                 console.error('Error fetching notifications:', error);

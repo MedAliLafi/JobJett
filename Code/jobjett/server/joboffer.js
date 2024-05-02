@@ -210,83 +210,49 @@ jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
     try {
         const pool = req.pool;
         const applicationID = req.params.applicationID;
-        const sql = `UPDATE application SET Status = 'Rejected' WHERE applicationID = ?`;
-        pool.query(sql, [applicationID], (error, results) => {
+
+        // Fetch UserID associated with the application
+        const getUserIDQuery = `
+            SELECT c.UserID
+            FROM application a
+            INNER JOIN candidate c ON a.CandidateID = c.CandidateID
+            WHERE a.applicationID = ?`;
+        pool.query(getUserIDQuery, [applicationID], (error, results) => {
             if (error) {
-                console.error('Error updating application status:', error);
-                return res.status(500).json({ error: 'An error occurred while updating application status.' });
+                console.error('Error fetching UserID:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching UserID.' });
             }
-            res.status(200).json({ message: 'Application status updated successfully.' });
+            if (results.length === 0) {
+                return res.status(404).json({ error: 'Application not found.' });
+            }
+            const { UserID } = results[0];
+
+            // Update application status to 'Rejected'
+            const updateStatusQuery = `UPDATE application SET Status = 'Denied' WHERE applicationID = ?`;
+            pool.query(updateStatusQuery, [applicationID], (updateError) => {
+                if (updateError) {
+                    console.error('Error updating application status:', updateError);
+                    return res.status(500).json({ error: 'An error occurred while updating application status.' });
+                }
+
+                // Add notification for application denial
+                const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+                const notificationValues = [UserID, `Your job application has been denied.`, new Date().toISOString(), 0, `/candidate/applications`];
+                pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
+                    if (notificationError) {
+                        console.error('Error adding notification:', notificationError);
+                        return res.status(500).json({ error: 'An error occurred while adding notification.' });
+                    }
+                    console.log('Denial notification added successfully');
+                    res.status(200).json({ message: 'Application status updated successfully.' });
+                });
+            });
         });
     } catch (error) {
         console.error('Error updating application status:', error);
         return res.status(500).json({ error: 'An error occurred while updating application status.' });
     }
 });
-
-
-jobofferRoutes.post('/:jobofferId/schedule-interview/:candidateId', async (req, res) => {
-    try {
-        const pool = req.pool;
-        const jobOfferId = req.params.jobofferId;
-        const candidateId = req.params.candidateId;
-        const { dateTime } = req.body;
-
-        // Update application status to "Interview Scheduled"
-        const updateSql = 'UPDATE application SET Status = ?, InterviewDateTime = ? WHERE JobOfferID = ? AND CandidateID = ?';
-        const updateValues = ['Interview Scheduled', dateTime, jobOfferId, candidateId];
-        await new Promise((resolve, reject) => {
-            pool.query(updateSql, updateValues, (error, result) => {
-                if (error) {
-                    console.error('Error scheduling interview:', error);
-                    return reject('An error occurred while scheduling the interview.');
-                }
-                console.log('Interview scheduled successfully');
-                resolve();
-            });
-        });
-
-        // Get job title
-        const jobOfferQuery = 'SELECT Title FROM joboffer WHERE JobOfferId = ?';
-        const [jobOfferResult] = await pool.query(jobOfferQuery, [jobOfferId]);
-        if (!jobOfferResult.length) {
-            console.error('Error retrieving job offer details');
-            return res.status(404).json({ error: 'Job offer not found.' });
-        }
-        const { Title } = jobOfferResult[0];
-
-        // Get user ID from candidate
-        const candidateQuery = 'SELECT UserId FROM candidate WHERE CandidateId = ?';
-        const [candidateResult] = await pool.query(candidateQuery, [candidateId]);
-        if (!candidateResult.length) {
-            console.error('Error retrieving candidate details');
-            return res.status(404).json({ error: 'Candidate not found.' });
-        }
-        const { UserId } = candidateResult[0];
-
-        // Add notification
-        const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
-        const notificationValues = [UserId, `You've been accepted for an interview for the job offer ${Title}`, dateTime, 0, `/candidate/applications`];
-        await new Promise((resolve, reject) => {
-            pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
-                if (notificationError) {
-                    console.error('Error adding notification:', notificationError);
-                    return reject('An error occurred while adding notification.');
-                }
-                console.log('Notification added successfully');
-                resolve();
-            });
-        });
-
-        // All operations succeeded
-        return res.status(200).json({ message: 'Interview scheduled successfully' });
-    } catch (error) {
-        console.error('Error scheduling interview:', error);
-        return res.status(500).json({ error: 'An error occurred while scheduling the interview.' });
-    }
-});
-
-
 
 // Route to get job offer details by ID
 jobofferRoutes.get('/:jobofferId', async (req, res) => {
