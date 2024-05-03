@@ -324,7 +324,7 @@ const EmployerRegister = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.loggedIn) {
-          navigate("/employer/profile");
+          navigate("/employer");
         }
       } else {
         console.error("Failed to check if employer is logged in");
@@ -396,7 +396,7 @@ const EmployerRegister = () => {
       }
 
       console.log("Login successful");
-      navigate("/employer/profile");
+      navigate("/employer");
       window.location.reload();
     } catch (error) {
       console.error("Error registering employer:", error);

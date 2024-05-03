@@ -6,6 +6,7 @@ function CV() {
   const [educationForms, setEducationForms] = useState([]);
   const [workExperienceForms, setWorkExperienceForms] = useState([]);
   const [certificatesForm, setCertificatesForm] = useState([]);
+  const [domain, setDomain] = useState("");
   const [summary, setSummary] = useState("");
   const [searchable, setSearchable] = useState(false);
   const [newSkill, setNewSkill] = useState("");
@@ -13,12 +14,118 @@ function CV() {
   const [newSoftSkill, setNewSoftSkill] = useState("");
   const [softskills, setSoftSkills] = useState([]);
   const [cvId, setCVId] = useState("");
+  const [newJob, setNewJob] = useState("");
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [showList, setShowList] = useState(false);
   const handleChange1 = (event) => {
     setNewSkill(event.target.value);
   };
   const handleChange2 = (event) => {
     setNewSoftSkill(event.target.value);
   };
+
+  let jobs = [
+    "Software Developer",
+    "Data Scientist",
+    "Cybersecurity Analyst",
+    "Registered Nurse (RN)",
+    "Occupational Therapist",
+    "Physical Therapist",
+    "Physician Assistant",
+    "Nurse Practitioner",
+    "Medical and Health Services Manager",
+    "Artificial Intelligence (AI) Engineer",
+    "Cloud Architect",
+    "DevOps Engineer",
+    "Product Manager",
+    "UX/UI Designer",
+    "Digital Marketing Specialist",
+    "Financial Analyst",
+    "Management Consultant",
+    "Human Resources Manager",
+    "Sales Manager",
+    "Accountant",
+    "Web Developer",
+    "Mobile App Developer",
+    "Information Security Analyst",
+    "Network Engineer",
+    "Systems Analyst",
+    "Marketing Manager",
+    "Operations Manager",
+    "Supply Chain Manager",
+    "Project Manager",
+    "Civil Engineer",
+    "Mechanical Engineer",
+    "Electrical Engineer",
+    "Chemical Engineer",
+    "Environmental Engineer",
+    "Biomedical Engineer",
+    "Aerospace Engineer",
+    "Industrial Engineer",
+    "Quality Assurance Engineer",
+    "Software Quality Assurance (QA) Engineer",
+    "Data Engineer",
+    "Machine Learning Engineer",
+    "Business Intelligence Analyst",
+    "Statistician",
+    "Actuary",
+    "Pharmacist",
+    "Dental Hygienist",
+    "Veterinarian",
+    "Optometrist",
+    "Dental Assistant",
+    "Pharmacy Technician",
+    "Medical Laboratory Technician",
+    "Radiologic Technologist",
+    "Physical Therapy Assistant",
+    "Occupational Therapy Assistant",
+    "Speech-Language Pathologist",
+    "Computer Systems Administrator",
+    "Database Administrator",
+    "IT Support Specialist",
+    "Technical Writer",
+    "Content Writer",
+    "Social Media Manager",
+    "Customer Success Manager",
+    "Logistics Coordinator",
+    "Supply Chain Analyst",
+    "Operations Research Analyst",
+    "Risk Analyst",
+    "Compliance Officer",
+    "Legal Assistant",
+    "Paralegal",
+    "Executive Assistant",
+    "Administrative Assistant",
+    "Receptionist",
+    "Customer Service Representative",
+    "Retail Sales Associate",
+    "Real Estate Agent",
+    "Property Manager",
+    "Construction Manager",
+    "Architect",
+    "Interior Designer",
+    "Graphic Designer",
+    "Illustrator",
+    "Animator",
+    "Video Editor",
+    "Film Director",
+    "Photographer",
+    "Event Planner",
+    "Wedding Planner",
+    "Chef",
+    "Restaurant Manager",
+    "Bartender",
+    "Waiter/Waitress",
+    "Housekeeping Supervisor",
+    "Janitor",
+    "Landscape Architect",
+    "Horticulturist",
+    "Personal Trainer",
+    "Yoga Instructor",
+    "Fitness Coach",
+    "Nutritionist",
+    "Life Coach",
+  ];
 
   useEffect(() => {
     async function fetchData() {
@@ -35,6 +142,7 @@ function CV() {
         const cvResponse = await fetchExistingData("getCV");
         if (cvResponse.ok) {
           const cvData = await cvResponse.json();
+          setDomain(cvData.Domain);
           setSummary(cvData.Summary);
           setSearchable(cvData.Searchable === "true");
           setSkills(cvData.Skills.split(";code;"));
@@ -101,6 +209,21 @@ function CV() {
     }
     fetchData();
   }, []);
+
+  const filterfct = (e) => {
+    const input = e.target.value.toLowerCase();
+    setNewJob(input);
+    const filtered = jobs.filter((job) => job.toLowerCase().includes(input));
+    setFilteredJobs(filtered);
+    setShowList(true);
+    setDomain(input);
+  };
+
+  const handleJobClick = (job) => {
+    setNewJob(job);
+    setShowList(false);
+    setDomain(job);
+  };
 
   async function fetchCandidateInfo() {
     const response = await fetch(
@@ -647,6 +770,7 @@ function CV() {
 
       // Now, update the CV data
       const cvData = {
+        domain,
         summary,
         skills: skills.join(";code;"),
         softskills: softskills.join(";code;"),
@@ -789,6 +913,41 @@ function CV() {
         </div> */}
         <div className="mt-10 max-w-4xl mx-auto add-job-image">
           <h2 className="text-center text-xl font-bold">Build your resume:</h2>
+          <div className="mb-5">
+          <label
+            htmlFor="Domain"
+            className="block mb-2 text-lg font-bold text-blueColor "
+            >
+            Domain:
+          </label>
+          <input
+            type="text"
+            name="Domain"
+            id="Domain"
+            list="jobName"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            placeholder="Enter your domain"
+            required
+            autoComplete="off"
+            value={newJob}
+            onChange={filterfct}
+          />
+          {showList && ( // Only render the list if showList is true
+            <div className="result-box text-sm">
+              <ul>
+                {filteredJobs.map((job, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleJobClick(job)} // Pass the clicked job to handleJobClick
+                    className="text-gray-900 hover:bg-gray-100 "
+                  >
+                    {job}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
           <div>
             <label
               htmlFor="summary"

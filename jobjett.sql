@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2024 at 05:13 PM
+-- Generation Time: May 03, 2024 at 11:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,8 +42,8 @@ CREATE TABLE `application` (
 --
 
 INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`) VALUES
-(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25'),
-(6, 21, 10, 4, 'Pendaa.ing', 'Interview Cancelled', '2024-04-07');
+(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Scheduled_45', '2024-04-25'),
+(6, 21, 10, 4, 'Pendaa.ing', 'Rejected', '2024-04-07');
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE `candidate` (
 --
 
 INSERT INTO `candidate` (`CandidateID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `Phone`, `State`, `Country`, `Address`, `CV_ID`) VALUES
-(21, 39, 'canaa', 'can', '2002-10-30', '234920834', 'Tunis', 'Tunisia', 'qwejkrnqwerqwkerl', 10);
+(21, 39, 'canaa', 'cana', '2002-10-30', '234920834', 'Tunis', 'Tunisia', 'qwejkrnqwerqwkerl', 10);
 
 -- --------------------------------------------------------
 
@@ -98,15 +98,16 @@ CREATE TABLE `cv` (
   `Summary` text DEFAULT NULL,
   `Skills` varchar(500) DEFAULT NULL,
   `Searchable` enum('true','false') DEFAULT NULL,
-  `SoftSkills` varchar(500) DEFAULT NULL
+  `SoftSkills` varchar(500) DEFAULT NULL,
+  `Domain` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cv`
 --
 
-INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`, `SoftSkills`) VALUES
-(10, 21, 'ahla summary', 'qwer;code;werq;code;asdfjoisadj', 'true', 'asdf;code;asdf;code;sadf;code;asdf');
+INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`, `SoftSkills`, `Domain`) VALUES
+(10, 21, 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf', 'Software Developer');
 
 -- --------------------------------------------------------
 
@@ -151,7 +152,7 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `CompanyName`, `Industry`, `NumberOfEmployees`, `Phone`, `State`, `Country`, `Address`, `Logo`) VALUES
-(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ', '/logos/logo-1714518907232-875201290.png');
+(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ', '/logos/logo-1714583360075-918751769.png');
 
 -- --------------------------------------------------------
 
@@ -162,11 +163,20 @@ INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOf
 CREATE TABLE `interview` (
   `InterviewID` int(11) NOT NULL,
   `ApplicationID` int(11) DEFAULT NULL,
+  `JobOfferId` int(11) DEFAULT NULL,
   `CandidateID` int(11) DEFAULT NULL,
   `EmployerID` int(11) DEFAULT NULL,
   `InterviewDateTime` datetime DEFAULT NULL,
   `Message` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `interview`
+--
+
+INSERT INTO `interview` (`InterviewID`, `ApplicationID`, `JobOfferId`, `CandidateID`, `EmployerID`, `InterviewDateTime`, `Message`) VALUES
+(45, 1, 4, 21, 11, '2024-05-07 15:04:00', 'qwerwqer'),
+(46, NULL, 45, 21, 11, '2024-05-25 03:37:00', 'qwerqwer');
 
 -- --------------------------------------------------------
 
@@ -255,8 +265,11 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`NotificationID`, `UserID`, `Message`, `DateTime`, `Read`, `Link`) VALUES
-(4, 39, 'Sa7a wa7chsadfijnasndfiamsdfoimweofimqwefokmwqef', '2024-04-23 21:44:46', 1, '/candidate/applications'),
-(5, 39, 'sa7a patron', '2024-04-24 21:45:16', 0, '/candidate/applications');
+(21, 39, 'Your interview has been rescheduled.', '2024-05-02 10:51:24', 0, '/candidate/applications'),
+(22, 39, 'Your interview has been cancelled.', '2024-05-02 10:52:28', 0, '/candidate/applications'),
+(23, 39, 'You\'ve been scheduled for an interview.', '2024-05-02 11:00:04', 0, '/candidate/applications'),
+(24, 39, 'Your interview has been rescheduled.', '2024-05-02 11:04:10', 0, '/candidate/applications'),
+(25, 39, 'You\'ve been scheduled for an interview.', '2024-05-02 23:43:40', 1, '/candidate/applications');
 
 -- --------------------------------------------------------
 
@@ -294,7 +307,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`UserID`, `Email`, `Password`, `UserType`) VALUES
 (35, 'test@mail', '$2b$10$bPXlJI3yyAGwftLkeYClL.eHqQg5hSNyGX1SnsPOGiAfmi13KFc0O', 'Employer'),
-(39, 'can@mail', '$2b$10$/XqiS6zpyxuAxvs5QiXOD.y8ezO8BGtMSWcGQ9IxXDaukDb7QSWBS', 'Candidate');
+(39, 'can@mail', '$2b$10$/XqiS6zpyxuAxvs5QiXOD.y8ezO8BGtMSWcGQ9IxXDaukDb7QSWBS', 'Candidate'),
+(57, 'sarra@mail', '$2b$10$5c8.Rh2vhqzMio2z8ygn9epwwnUevAlypJlvFlUjjxuxp.d00Y8uS', 'Candidate');
 
 -- --------------------------------------------------------
 
@@ -370,7 +384,8 @@ ALTER TABLE `interview`
   ADD PRIMARY KEY (`InterviewID`),
   ADD KEY `application_fk` (`ApplicationID`),
   ADD KEY `candidate_fk` (`CandidateID`),
-  ADD KEY `employer_fk` (`EmployerID`);
+  ADD KEY `employer_fk` (`EmployerID`),
+  ADD KEY `interview_ibfk_1` (`JobOfferId`);
 
 --
 -- Indexes for table `joboffer`
@@ -424,7 +439,7 @@ ALTER TABLE `application`
 -- AUTO_INCREMENT for table `candidate`
 --
 ALTER TABLE `candidate`
-  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `certification`
@@ -436,7 +451,7 @@ ALTER TABLE `certification`
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `education`
@@ -454,7 +469,7 @@ ALTER TABLE `employer`
 -- AUTO_INCREMENT for table `interview`
 --
 ALTER TABLE `interview`
-  MODIFY `InterviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `InterviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
@@ -466,7 +481,7 @@ ALTER TABLE `joboffer`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -478,7 +493,7 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `work_experience`
@@ -537,7 +552,8 @@ ALTER TABLE `employer`
 ALTER TABLE `interview`
   ADD CONSTRAINT `application_fk` FOREIGN KEY (`ApplicationID`) REFERENCES `application` (`ApplicationID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `candidate_fk` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandidateID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `employer_fk` FOREIGN KEY (`EmployerID`) REFERENCES `employer` (`EmployerID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `employer_fk` FOREIGN KEY (`EmployerID`) REFERENCES `employer` (`EmployerID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `interview_ibfk_1` FOREIGN KEY (`JobOfferId`) REFERENCES `joboffer` (`JobOfferID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `joboffer`

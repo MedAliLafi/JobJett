@@ -26,6 +26,9 @@ function CandidateNavbar() {
           <li>
             <Link to="/candidate/applications">Applications</Link>
           </li>
+          <li>
+            <Link to="/candidate/interviews">Interviews</Link>
+          </li>
         </ul>
       </div>
       <Noty/>

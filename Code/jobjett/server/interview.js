@@ -13,14 +13,14 @@ interviewRoutes.post('/:applicationID/add', async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const { interviewDateTime, message, CandidateID } = req.body;
+        const { interviewDateTime, message, CandidateID, JobOfferID } = req.body;
 
         // Insert new interview entry
         const insertSql = `
-            INSERT INTO interview (ApplicationID, CandidateID, EmployerID, InterviewDateTime, Message)
-            VALUES (?, ?, ?, ?, ?)`;
+            INSERT INTO interview (ApplicationID, CandidateID, EmployerID, InterviewDateTime, Message, JobOfferID)
+            VALUES (?, ?, ?, ?, ?, ?)`;
 
-        pool.query(insertSql, [applicationID, CandidateID, employerId, interviewDateTime, message], (error, results) => {
+        pool.query(insertSql, [applicationID, CandidateID, employerId, interviewDateTime, message, JobOfferID], (error, results) => {
             if (error) {
                 console.error('Error inserting interview:', error);
                 return res.status(500).json({ error: 'An error occurred while scheduling interview.' });
@@ -75,6 +75,62 @@ interviewRoutes.post('/:applicationID/add', async (req, res) => {
 });
 
 
+interviewRoutes.post('/add2', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const applicationID = null;
+        const employerId = await getEmployerIdFromToken(pool, req);
+
+        if (!employerId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const { interviewDateTime, message, CandidateID, JobOfferID } = req.body;
+
+        // Insert new interview entry
+        const insertSql = `
+            INSERT INTO interview (ApplicationID, CandidateID, EmployerID, InterviewDateTime, Message, JobOfferID)
+            VALUES (?, ?, ?, ?, ?, ?)`;
+
+        pool.query(insertSql, [applicationID, CandidateID, employerId, interviewDateTime, message, JobOfferID], (error, results) => {
+            if (error) {
+                console.error('Error inserting interview:', error);
+                return res.status(500).json({ error: 'An error occurred while scheduling interview.' });
+            }
+            const interviewID = results.insertId;
+            // Get candidate user ID
+            pool.query('SELECT UserId FROM candidate WHERE CandidateId = ?', [CandidateID], (candidateError, candidateResult) => {
+                if (candidateError) {
+                    console.error('Error retrieving candidate details:', candidateError);
+                    return res.status(500).json({ error: 'An error occurred while retrieving candidate details.' });
+                }
+
+                if (!candidateResult || candidateResult.length === 0) {
+                    console.error('Error retrieving candidate details');
+                    return res.status(404).json({ error: 'Candidate not found.' });
+                }
+                const { UserId } = candidateResult[0];
+
+                // Add notification
+                const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+                const notificationValues = [UserId, `You've been scheduled for an interview.`, new Date().toISOString(), 0, `/candidate/applications`];
+
+                pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
+                    if (notificationError) {
+                        console.error('Error adding notification:', notificationError);
+                        return res.status(500).json({ error: 'An error occurred while adding notification.' });
+                    }
+                    console.log('Notification added successfully');
+                    res.status(200).json({ message: 'Interview scheduled successfully.', interviewID });
+                });
+            });
+        });
+    } catch (error) {
+        console.error('Error scheduling interview:', error);
+        return res.status(500).json({ error: 'An error occurred while scheduling interview.' });
+    }
+});
+
 // Add a GET endpoint to fetch all interviews
 interviewRoutes.get('/getinterviews', async (req, res) => {
     try {
@@ -89,6 +145,32 @@ interviewRoutes.get('/getinterviews', async (req, res) => {
             WHERE interview.EmployerID = ?`;
 
         pool.query(query, [employerId], (error, results) => {
+            if (error) {
+                console.error('Error fetching interviews:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching interviews.' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error fetching interviews:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching interviews.' });
+    }
+});
+
+// Add a GET endpoint to fetch all interviews
+interviewRoutes.get('/getinterviews2', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateId = await getCandidateIdFromToken(pool, req);
+        const query = `
+            SELECT interview.InterviewID, joboffer.Title, employer.CompanyName, interview.InterviewDateTime, interview.Message
+            FROM interview
+            INNER JOIN application ON interview.ApplicationID = application.ApplicationID
+            INNER JOIN joboffer ON application.JobOfferID = joboffer.JobOfferID
+            INNER JOIN employer ON joboffer.EmployerID = employer.EmployerID
+            WHERE interview.CandidateID = ?`;
+
+        pool.query(query, [candidateId], (error, results) => {
             if (error) {
                 console.error('Error fetching interviews:', error);
                 return res.status(500).json({ error: 'An error occurred while fetching interviews.' });

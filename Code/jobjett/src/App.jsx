@@ -11,6 +11,7 @@ import CandidateApplications from "./components/candidate/CandidateApplications/
 import Cv from "./components/candidate/Cv/Cv.jsx";
 import JobOfferDetails from "./components/candidate/JobOfferDetails/JobOfferDetails.jsx";
 import CandidateApplication from "./components/candidate/Application/Application.jsx";
+import EmployerHomePage from "./components/employer/EmployerHomePage/EmployerHomePage.jsx";
 import EmployerLogin from "./components/employer/EmployerLogin/EmployerLogin.jsx";
 import EmployerRegister from "./components/employer/EmployerRegister/EmployerRegister.jsx";
 import EmployerProfile from "./components/employer/EmployerProfile/EmployerProfile.jsx";
@@ -21,6 +22,8 @@ import EmployerInterviews from "./components/employer/EmployerInterviews/Employe
 import JobApplications from "./components/employer/EmployerApplications/JobApplications.jsx"
 import JobApplication from "./components/employer/EmployerApplications/JobApplication.jsx";
 import AddJobOffer from "./components/employer/AddJobOffer/AddJobOffer.jsx";
+import OfferAJob from "./components/employer/EmployerHomePage/OfferAJob.jsx";
+import CandidateInterviews from "./components/candidate/CandidateInterviews/CandidateInterviews.jsx";
 
 function App() {
   // Retrieve authentication status from local storage or default to false
@@ -132,8 +135,16 @@ function App() {
             path="/candidate/application"
             element={withCandidateProtection(<CandidateApplication />)}
           />
+          <Route
+            path="/candidate/interviews"
+            element={withCandidateProtection(<CandidateInterviews />)}
+          />
           <Route path="/employer/login" element={<EmployerLogin />} />
           <Route path="/employer/register" element={<EmployerRegister />} />
+          <Route
+            path="/employer"
+            element={withEmployerProtection(<EmployerHomePage />)}
+          />
           <Route
             path="/employer/profile"
             element={withEmployerProtection(<EmployerProfile />)}
@@ -165,6 +176,10 @@ function App() {
           <Route
             path="/employer/applications/:jobOfferID/:applicationID"
             element={withEmployerProtection(<JobApplication />)}
+          />
+          <Route
+            path="/employer/offerajob/:candidateID"
+            element={withEmployerProtection(<OfferAJob />)}
           />
         </Routes>
       </div>
