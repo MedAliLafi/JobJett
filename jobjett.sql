@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2024 at 11:27 AM
+-- Generation Time: May 04, 2024 at 08:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,16 +34,17 @@ CREATE TABLE `application` (
   `JobOfferID` int(11) DEFAULT NULL,
   `Description` text DEFAULT NULL,
   `Status` varchar(100) DEFAULT NULL,
-  `DateApplied` date DEFAULT NULL
+  `DateApplied` date DEFAULT NULL,
+  `Type` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `application`
 --
 
-INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`) VALUES
-(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Scheduled_45', '2024-04-25'),
-(6, 21, 10, 4, 'Pendaa.ing', 'Rejected', '2024-04-07');
+INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`, `Type`) VALUES
+(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Applied'),
+(34, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Offered');
 
 -- --------------------------------------------------------
 
@@ -86,6 +87,13 @@ CREATE TABLE `certification` (
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `certification`
+--
+
+INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `certification`, `DateIssued`, `description`) VALUES
+(184, 21, 10, 'qwerqwerqwer', '2024-11', 'qwerqwerqwer');
+
 -- --------------------------------------------------------
 
 --
@@ -107,7 +115,7 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`, `SoftSkills`, `Domain`) VALUES
-(10, 21, 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf', 'Software Developer');
+(10, 21, 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf', 'Occupational Therapist');
 
 -- --------------------------------------------------------
 
@@ -124,6 +132,13 @@ CREATE TABLE `education` (
   `School` varchar(255) DEFAULT NULL,
   `TimePeriod` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `education`
+--
+
+INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldOfStudy`, `School`, `TimePeriod`) VALUES
+(110, 21, 10, 'On-the-Job Training', 'qwer', 'qwer', '2024-10_Present');
 
 -- --------------------------------------------------------
 
@@ -169,14 +184,6 @@ CREATE TABLE `interview` (
   `InterviewDateTime` datetime DEFAULT NULL,
   `Message` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `interview`
---
-
-INSERT INTO `interview` (`InterviewID`, `ApplicationID`, `JobOfferId`, `CandidateID`, `EmployerID`, `InterviewDateTime`, `Message`) VALUES
-(45, 1, 4, 21, 11, '2024-05-07 15:04:00', 'qwerwqer'),
-(46, NULL, 45, 21, 11, '2024-05-25 03:37:00', 'qwerqwer');
 
 -- --------------------------------------------------------
 
@@ -265,11 +272,7 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`NotificationID`, `UserID`, `Message`, `DateTime`, `Read`, `Link`) VALUES
-(21, 39, 'Your interview has been rescheduled.', '2024-05-02 10:51:24', 0, '/candidate/applications'),
-(22, 39, 'Your interview has been cancelled.', '2024-05-02 10:52:28', 0, '/candidate/applications'),
-(23, 39, 'You\'ve been scheduled for an interview.', '2024-05-02 11:00:04', 0, '/candidate/applications'),
-(24, 39, 'Your interview has been rescheduled.', '2024-05-02 11:04:10', 0, '/candidate/applications'),
-(25, 39, 'You\'ve been scheduled for an interview.', '2024-05-02 23:43:40', 1, '/candidate/applications');
+(36, 35, 'Your interview has been cancelled.', '2024-05-04 16:57:05', 1, '/employer/interviews');
 
 -- --------------------------------------------------------
 
@@ -325,6 +328,13 @@ CREATE TABLE `work_experience` (
   `TimePeriod` varchar(100) DEFAULT NULL,
   `Description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `work_experience`
+--
+
+INSERT INTO `work_experience` (`WorkExperienceID`, `CandidateID`, `CV_ID`, `JobTitle`, `Company`, `TimePeriod`, `Description`) VALUES
+(91, 21, 10, 'qwerqwer', 'qwerqwer', '2024-10_Present', 'qwerqwerqwer');
 
 --
 -- Indexes for dumped tables
@@ -433,7 +443,7 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `application`
 --
 ALTER TABLE `application`
-  MODIFY `ApplicationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `ApplicationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `candidate`
@@ -445,7 +455,7 @@ ALTER TABLE `candidate`
 -- AUTO_INCREMENT for table `certification`
 --
 ALTER TABLE `certification`
-  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=180;
+  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
 
 --
 -- AUTO_INCREMENT for table `cv`
@@ -457,7 +467,7 @@ ALTER TABLE `cv`
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `employer`
@@ -469,7 +479,7 @@ ALTER TABLE `employer`
 -- AUTO_INCREMENT for table `interview`
 --
 ALTER TABLE `interview`
-  MODIFY `InterviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `InterviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
@@ -481,7 +491,7 @@ ALTER TABLE `joboffer`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -499,7 +509,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `work_experience`
 --
 ALTER TABLE `work_experience`
-  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- Constraints for dumped tables

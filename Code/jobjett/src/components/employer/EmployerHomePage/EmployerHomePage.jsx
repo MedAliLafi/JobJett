@@ -6,6 +6,7 @@ import { AiOutlineSearch, AiOutlineCloseCircle } from "react-icons/ai";
 import { IoLocationOutline } from "react-icons/io5";
 import { BiTimeFive } from "react-icons/bi";
 import "./EmployerHomePage.css";
+import { useNavigate } from "react-router-dom";
 
 function EmployerHomePage() {
   const [keywordSearchText, setKeywordSearchText] = useState("");
@@ -14,6 +15,7 @@ function EmployerHomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchClicked, setSearchClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchClicked) {
@@ -32,7 +34,7 @@ function EmployerHomePage() {
           params: {
             page: currentPage,
             pageSize: 9,
-            jobTitle: keywordSearchText,
+            keyword: keywordSearchText,
             location: locationSearchText,
           },
         }
@@ -57,6 +59,11 @@ function EmployerHomePage() {
     event.preventDefault();
     setSearchClicked(true);
     setCurrentPage(1);
+  };
+
+  
+  const handleOfferJob = (CandidateID) => {
+    navigate(`/employer/offerajob/${CandidateID}`);
   };
 
   const isLastPage = currentPage >= totalPages;

@@ -44,7 +44,7 @@ const CandidateInterviews = () => {
   const cancelInterview = async (interviewID) => {
     try {
       const deleteResponse = await fetch(
-        `http://localhost:9000/Candidate/Interview/cancel`,
+        `http://localhost:9000/Candidate/Interview/cancel2`,
         {
           method: "DELETE",
           headers: {

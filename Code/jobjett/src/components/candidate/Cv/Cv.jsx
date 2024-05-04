@@ -147,6 +147,7 @@ function CV() {
           setSearchable(cvData.Searchable === "true");
           setSkills(cvData.Skills.split(";code;"));
           setSoftSkills(cvData.SoftSkills.split(";code;"));
+          setNewJob(cvData.Domain);
         } else {
           console.error("Failed to fetch CV data");
         }

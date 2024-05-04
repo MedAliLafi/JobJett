@@ -187,7 +187,6 @@ jobofferRoutes.get('/loadcandidates', async (req, res) => {
     }
 });
 
-
 // Route to get job offers made by the employer
 jobofferRoutes.get('/joboffers', async (req, res) => {
     try {
@@ -293,7 +292,7 @@ jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
 
                 // Add notification for application denial
                 const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
-                const notificationValues = [UserID, `Your job application has been denied.`, new Date().toISOString(), 0, `/candidate/applications`];
+                const notificationValues = [UserID, `Your job application has been denied.`, new Date().toISOString(), 0, `/candidate/applications/${applicationID}`];
                 pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
                     if (notificationError) {
                         console.error('Error adding notification:', notificationError);
@@ -426,8 +425,8 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
         const status = 'Pending';
 
         // Insert application data into the database
-        const sql = 'INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied) VALUES (?, ?, ?, ?, ?, ?)';
-        const values = [candidateId, cvId, jobOfferId, description, status, dateApplied];
+        const sql = 'INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied, Type) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const values = [candidateId, cvId, jobOfferId, description, status, dateApplied, `Applied`];
         pool.query(sql, values, async (error, result) => {
             if (error) {
                 console.error('Error applying for job offer:', error);

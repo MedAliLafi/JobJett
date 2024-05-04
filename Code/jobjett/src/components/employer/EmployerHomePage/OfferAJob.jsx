@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const OfferAJob = () => {
-  const { candidateID } = useParams(); // Get the candidate ID from URL params
+  const { candidateID } = useParams();
   const navigate = useNavigate();
 
   const [jobOffers, setJobOffers] = useState([]);
@@ -37,7 +37,7 @@ const OfferAJob = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-        const response = await fetch(`http://localhost:9000/Employer/Interview/add2`, {
+        const response = await fetch(`http://localhost:9000/Employer/Interview/offer`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -47,6 +47,7 @@ const OfferAJob = () => {
             message: message,
             CandidateID: candidateID,
             JobOfferID: selectedJobOffer,
+            note: note,
           }),
           credentials: "include",
         });
@@ -104,7 +105,7 @@ const OfferAJob = () => {
           {/* Modify the condition for displaying the "Set up interview" button */}
           {selectedJobOffer && (
             <>
-              <button onClick={handleSetInterview}>Set up interview</button>
+              <button type="button" onClick={handleSetInterview}>Set up interview</button>
               {/* Add interview section */}
               {showDateTimeInput && showMessageInput && (
                 <div>
