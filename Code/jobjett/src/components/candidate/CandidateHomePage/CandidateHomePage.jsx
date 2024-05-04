@@ -1,14 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 import Navbar from "../NavBar/CandidateNavbar.jsx";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineSearch, AiOutlineCloseCircle } from "react-icons/ai";
 import { BsHouseDoor } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { BiTimeFive } from "react-icons/bi";
 import "./CandidateHomePage.css";
-import JobOfferDetails from "./JobOfferDetails.jsx";
-import Application from "./Application.jsx";
 
 function CandidateHomePage() {
   const [jobSearchText, setJobSearchText] = useState("");
@@ -18,8 +17,7 @@ function CandidateHomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchClicked, setSearchClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
-  const [applyModalOpen, setApplyModalOpen] = useState(false);
-  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchClicked) {
@@ -71,12 +69,12 @@ function CandidateHomePage() {
     setCurrentPage(1);
   };
 
-  const handleApplyModalToggle = (jobOfferID) => {
-    setApplyModalOpen(jobOfferID);
+  const redirectToApplication = (JobOfferID) => {
+    navigate(`/candidate/application?jobofferId=${JobOfferID}`);
   };
 
-  const handleSeeDetailsModalToggle = (jobOfferID) => {
-    setDetailsModalOpen(jobOfferID);
+  const redirectToJobOfferDetails = (JobOfferID) => {
+    navigate(`/candidate/joboffer/${JobOfferID}`);
   };
 
   const isLastPage = currentPage >= totalPages;
@@ -224,36 +222,20 @@ function CandidateHomePage() {
                   <div>
                     <button
                       className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-black group-hover:text-white"
-                      onClick={() => handleSeeDetailsModalToggle(JobOfferID)}
+                      onClick={() => redirectToJobOfferDetails(JobOfferID)}
                       type="button"
                     >
                       See Details
                     </button>
-                    {/* Render apply modal only for the selected job offer */}
-                    {detailsModalOpen === JobOfferID && (
-                      <JobOfferDetails
-                        isOpen={true}
-                        onClose={() => handleSeeDetailsModalToggle(null)}
-                        jobofferId={JobOfferID}
-                      />
-                    )}
                   </div>
                   <div>
                     <button
                       className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-white group-hover:text-white"
-                      onClick={() => handleApplyModalToggle(JobOfferID)}
+                      onClick={() => redirectToApplication(JobOfferID)}
                       type="button"
                     >
                       Apply Now
                     </button>
-                    {/* Render apply modal only for the selected job offer */}
-                    {applyModalOpen === JobOfferID && (
-                      <Application
-                        isOpen={true}
-                        onClose={() => handleApplyModalToggle(null)}
-                        jobofferId={JobOfferID}
-                      />
-                    )}
                   </div>
                 </div>
               </div>

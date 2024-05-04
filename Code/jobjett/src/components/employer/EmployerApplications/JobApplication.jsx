@@ -117,13 +117,6 @@ return (
                         <p>Date Applied: {new Date(application.DateApplied).toLocaleDateString('en-GB')}</p>
                         <p>Status: {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}</p>
                     </div>
-                    {/* Move Application Note here */}
-                    {application && (
-                        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                            <p className="font-semibold">Application Note:</p>
-                            <p>{application.Description}</p>
-                        </div>
-                    )}
                 </>
             )}
             {/* Display work experiences */}

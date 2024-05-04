@@ -46,7 +46,7 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
     if (e.key === "Enter" && newSkill.trim() !== "") {
       setSkills([...skills, newSkill.trim()]);
       setNewSkill("");
-      const skillsText = skills.join(';');
+      const skillsText = skills.join(';code;');
       setFormData({ ...formData, reqSkills: skillsText });
     }
   };
@@ -54,7 +54,7 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
     if (e.key === "Enter" && newSoftSkill.trim() !== "") {
       setSoftSkills([...SoftSkills, newSoftSkill.trim()]);
       setNewSoftSkill("");
-      const softskillsText = SoftSkills.join(';');
+      const softskillsText = SoftSkills.join(';code;');
       setFormData({ ...formData, reqSoftSkills: softskillsText });
     }
   };
@@ -62,7 +62,7 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
     if (e.key === "Enter" && newQuestion.trim() !== "") {
       setQuestions([...Questions, newQuestion.trim()]);
       setNewQuestion("");
-      const questionsText = Questions.join(';');
+      const questionsText = Questions.join(';code;');
       setFormData({ ...formData, additionalQuestions: questionsText });
     }
   };

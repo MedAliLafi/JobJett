@@ -159,13 +159,23 @@
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: var(--blue); /* Assuming you have a blue color variable */
+  background-color: var(--blue);
   color: white;
   cursor: pointer;
+  width: 100px;
   transition: background-color 0.3s ease;
   margin-bottom: 20px;
+  display: inline-block; /* Ensure the buttons occupy space even when hidden */
 }
 
 .paginationButton:hover {
-  background-color: var(--blue-hover); /* Adjust to your preferred hover color */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: var(--blue);
+  background-color: white;
+}
+
+/* Hide pagination buttons when disabled */
+.paginationButton[disabled] {
+  display: none;
 }
