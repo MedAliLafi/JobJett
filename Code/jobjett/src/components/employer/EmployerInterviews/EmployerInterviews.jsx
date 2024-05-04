@@ -3,6 +3,9 @@ import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const EmployerInterviews = () => {
   const [interviews, setInterviews] = useState([]);
+  const [showRescheduleInput, setShowRescheduleInput] = useState({});
+  const [rescheduleDateTime, setRescheduleDateTime] = useState({});
+  const [rescheduleMessage, setRescheduleMessage] = useState({});
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -31,6 +34,18 @@ const EmployerInterviews = () => {
             }),
           }));
           setInterviews(formattedInterviews);
+          // Initialize state for showing reschedule input for each interview
+          const initialShowRescheduleInput = {};
+          const initialRescheduleDateTime = {};
+          const initialRescheduleMessage = {};
+          formattedInterviews.forEach(interview => {
+            initialShowRescheduleInput[interview.InterviewID] = false;
+            initialRescheduleDateTime[interview.InterviewID] = '';
+            initialRescheduleMessage[interview.InterviewID] = interview.Message;
+          });
+          setShowRescheduleInput(initialShowRescheduleInput);
+          setRescheduleDateTime(initialRescheduleDateTime);
+          setRescheduleMessage(initialRescheduleMessage);
         } else {
           console.error("Failed to fetch interviews");
         }
@@ -64,6 +79,63 @@ const EmployerInterviews = () => {
     }
   };
 
+  const handleReschedule = (interviewID) => {
+    setShowRescheduleInput(prevState => ({
+      ...prevState,
+      [interviewID]: true
+    }));
+  };
+
+  const handleRescheduleDateTimeChange = (interviewID, value) => {
+    setRescheduleDateTime(prevState => ({
+      ...prevState,
+      [interviewID]: value
+    }));
+  };
+
+  const handleRescheduleMessageChange = (interviewID, value) => {
+    setRescheduleMessage(prevState => ({
+      ...prevState,
+      [interviewID]: value
+    }));
+  };
+
+  const rescheduleInterview = async (interviewID) => {
+    try {
+      const response = await fetch(
+        `http://localhost:9000/Employer/Interview/${interviewID}/reschedule`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ interviewID, interviewDateTime: rescheduleDateTime[interviewID], message: rescheduleMessage[interviewID] }),
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        console.log("Interview rescheduled successfully.");
+        // Update UI to hide input and reset state
+        setShowRescheduleInput(prevState => ({
+          ...prevState,
+          [interviewID]: false
+        }));
+        setRescheduleDateTime(prevState => ({
+          ...prevState,
+          [interviewID]: ''
+        }));
+        setRescheduleMessage(prevState => ({
+          ...prevState,
+          [interviewID]: ''
+        }));
+      } else {
+        console.error("Failed to reschedule interview");
+      }
+    } catch (error) {
+      console.error("Error rescheduling interview:", error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -91,11 +163,48 @@ const EmployerInterviews = () => {
                 <td className="px-6 py-4">{interview.Title}</td>
                 <td className="px-6 py-4">{interview.CandidateName}</td>
                 <td className="px-6 py-4">{interview.InterviewDateTime}</td>
-                <td className="px-6 py-4">{interview.Note}</td>
                 <td className="px-6 py-4">
+                  {/* Show reschedule button and input */}
+                  {!showRescheduleInput[interview.InterviewID] && (
+                    <span>{interview.Message}</span>
+                  )}
+                  {showRescheduleInput[interview.InterviewID] && (
+                    <input
+                      type="text"
+                      value={rescheduleMessage[interview.InterviewID]}
+                      onChange={(e) => handleRescheduleMessageChange(interview.InterviewID, e.target.value)}
+                      className="mr-2"
+                    />
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  {!showRescheduleInput[interview.InterviewID] && (
+                    <button
+                      onClick={() => handleReschedule(interview.InterviewID)}
+                      className="text-white bg-blue-600 hover:bg-blue-700 rounded-md px-3 py-1"
+                    >
+                      Reschedule
+                    </button>
+                  )}
+                  {showRescheduleInput[interview.InterviewID] && (
+                    <>
+                      <input
+                        type="datetime-local"
+                        value={rescheduleDateTime[interview.InterviewID]}
+                        onChange={(e) => handleRescheduleDateTimeChange(interview.InterviewID, e.target.value)}
+                        className="mr-2"
+                      />
+                      <button
+                        onClick={() => rescheduleInterview(interview.InterviewID)}
+                        className="text-white bg-green-600 hover:bg-green-700 rounded-md px-3 py-1"
+                      >
+                        Save
+                      </button>
+                    </>
+                  )}
                   <button
                     onClick={async () => cancelInterview(interview.InterviewID)}
-                    className="text-white bg-red-600 hover:bg-red-700 rounded-md px-3 py-1"
+                    className="text-white bg-red-600 hover:bg-red-700 rounded-md px-3 py-1 ml-2"
                   >
                     Cancel
                   </button>

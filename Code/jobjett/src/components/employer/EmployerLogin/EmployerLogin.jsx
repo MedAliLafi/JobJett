@@ -23,7 +23,7 @@ const EmployerLogin = () => {
                 const data = await response.json();
                 if (data.loggedIn) {
                     setIsLoggedIn(true);
-                    navigate("/employer/profile");
+                    navigate("/employer");
                 }
             } else {
                 console.error('Failed to check if employer is logged in');
@@ -56,7 +56,7 @@ const EmployerLogin = () => {
 
             if (response.ok) {
                 setIsLoggedIn(true);
-                navigate("/employer/profile");
+                navigate("/employer");
                 window.location.reload();
             } else {
                 throw new Error('Login failed');

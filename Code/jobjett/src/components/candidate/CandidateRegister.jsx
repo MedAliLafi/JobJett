@@ -314,7 +314,7 @@ const CandidateRegister = () => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.loggedIn) {
-                    navigate("/candidate/profile");
+                    navigate("/candidate");
                     window.location.reload();
                 }
             } else {
@@ -383,7 +383,7 @@ const CandidateRegister = () => {
             }
 
             console.log('Login successful');
-            navigate("/candidate/profile");
+            navigate("/candidate");
         } catch (error) {
             console.error('Error registering candidate:', error);
         }

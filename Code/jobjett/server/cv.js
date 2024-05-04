@@ -6,15 +6,16 @@ const cvRoutes = express.Router();
 cvRoutes.post('/updateCV', async (req, res) => {
     try {
         const pool = req.pool;
-        const { summary, skills, softskills, searchable } = req.body;
+        const { domain, summary, skills, softskills, searchable } = req.body;
+        console.log(domain);
         const candidateId = await getCandidateIdFromToken(pool, req);
         if (!candidateId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         
         // Update the CV directly assuming it exists
-        const updateSql = 'UPDATE cv SET Summary = ?, Skills = ?, SoftSkills = ?, Searchable = ? WHERE CandidateID = ?';
-        const updateValues = [summary, skills, softskills, searchable, candidateId];
+        const updateSql = 'UPDATE cv SET Domain = ?, Summary = ?, Skills = ?, SoftSkills = ?, Searchable = ? WHERE CandidateID = ?';
+        const updateValues = [domain, summary, skills, softskills, searchable, candidateId];
         pool.query(updateSql, updateValues, (updateError, updateResult) => {
             if (updateError) {
                 console.error('Error updating CV:', updateError);
@@ -108,7 +109,7 @@ cvRoutes.get('/getCV', async (req, res) => {
         if (!candidateId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        const sql = 'SELECT Summary, Skills, SoftSkills, Searchable FROM cv WHERE CandidateID = ?';
+        const sql = 'SELECT Domain, Summary, Skills, SoftSkills, Searchable FROM cv WHERE CandidateID = ?';
         pool.query(sql, [candidateId], (error, rows) => {
             if (error) {
                 console.error('Error fetching CV data:', error);

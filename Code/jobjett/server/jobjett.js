@@ -113,6 +113,7 @@ app.use('/Candidate/cv', cvRoutes);
 app.use('/Employer/JobOffer', jobofferRoutes);
 app.use('/Employer/Interview', interviewRoutes);
 app.use('/Candidate/JobOffer', jobofferRoutes);
+app.use('/Candidate/Interview', interviewRoutes);
 
 // Starting the server
 const port = 9000;

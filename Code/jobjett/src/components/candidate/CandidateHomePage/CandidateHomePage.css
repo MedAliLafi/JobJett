@@ -1,3 +1,5 @@
+/* CandidateHomePage.css */
+
 #btn:hover {
   background-color: white;
   color: black;
@@ -8,7 +10,7 @@
 
 .singleJob {
   position: relative;
-  width: 300px; /* Set the width */
+  width: 300px;
   height: 375px;
   padding: 20px;
   background-color: white;
@@ -18,33 +20,30 @@
 }
 
 .time span {
-  width: 50px; /* Adjust the width as needed */
+  width: 50px;
   display: inline-block;
   overflow: hidden;
-  text-overflow: ellipsis; /* Add ellipsis for long text */
-  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .icon {
   cursor: pointer;
   font-size: 23px;
 }
+
 .searchDiv {
   margin-top: 40px;
 }
-/* #searchbtn:hover {
-    background-color: white;
-    color: black;
-    outline: 2.5px solid#00579b;
-    outline-offset: 4.5px;
-    outline-offset: 1px;
-  } */
+
 #searchbtn:hover {
   background-color: #0a77c4;
 }
+
 .clearAllButton {
   text-decoration: underline;
 }
+
 .jobButtons {
   position: absolute;
   bottom: 10px;
@@ -52,41 +51,121 @@
   width: 100%;
   padding: 10px;
   display: flex;
-  flex-direction: column; /* Stack buttons vertically */
+  flex-direction: column;
 }
+
 .jobButtons button {
-  margin-bottom: 7px; /* Add margin between buttons */
+  margin-bottom: 7px;
 }
+
 .singleJob:hover > * {
   color: white;
 }
+
 .singleJob:hover h1 {
   color: white;
 }
+
 .singleJob:hover button {
   color: white;
 }
+
 .singleJob:hover button:hover {
   color: var(--blue);
 }
+
 .transparent-background {
   background-color: rgba(255, 255, 255, 0.105);
 }
+
 #sb-button {
   color: var(--blue);
   background-color: white;
   border: 2px solid var(--blue);
 }
+
 #sb-button:hover {
   background-color: var(--blue);
   color: white;
 }
+
 #closeButton {
   color: gray;
 }
+
 #closeButton:hover {
   color: rgb(232, 31, 31);
 }
+
 #shadow {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+/* New styles for modal content */
+.modal-content {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+.modal-header {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-body label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.modal-body textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-footer {
+  text-align: right;
+}
+
+.modal-footer button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.modal-footer button:hover {
+  background-color: #0056b3;
+}
+
+
+.paginationButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--blue); /* Assuming you have a blue color variable */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.paginationButton:hover {
+  background-color: var(--blue-hover); /* Adjust to your preferred hover color */
 }

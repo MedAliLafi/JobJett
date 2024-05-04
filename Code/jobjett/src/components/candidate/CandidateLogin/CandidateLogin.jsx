@@ -23,7 +23,7 @@ const CandidateLogin = () => {
                 const data = await response.json();
                 if (data.loggedIn) {
                     setIsLoggedIn(true);
-                    navigate("/candidate/profile");
+                    navigate("/candidate");
                 }
             } else {
                 console.error('Failed to check if candidate is logged in');
@@ -56,7 +56,7 @@ const CandidateLogin = () => {
 
             if (response.ok) {
                 setIsLoggedIn(true);
-                navigate("/candidate/profile");
+                navigate("/candidate");
                 window.location.reload();
             } else {
                 throw new Error('Login failed');

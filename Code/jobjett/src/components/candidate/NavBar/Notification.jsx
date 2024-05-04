@@ -23,6 +23,7 @@ const Noty = () => {
       });
       if (response.ok) {
         navigate(notification.Link);
+        setShowDropdown(false);
       } else {
         console.error("Failed to mark notification as read:", response.statusText);
       }
@@ -60,7 +61,16 @@ const Noty = () => {
         const data = await response.json();
         const data2 = data.map((notification) => ({
           ...notification,
-          DateTime: new Date(notification.DateTime).toLocaleDateString("en-GB"),
+          DateTime: new Date(
+            notification.DateTime
+          ).toLocaleString("en-GB", {
+            timeZone: "UTC",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
         }));
         setNotifications(data2);
         setNotificationCount(data2.length);
@@ -95,10 +105,11 @@ const Noty = () => {
             <ul>
               {notifications.map((notification) => (
                 <li key={notification.NotificationID} onClick={() => handleNotificationClick(notification)}>
+                  <div className="notification-content">
+                    <span>{notification.Message}</span><br></br>
+                    <span>{notification.DateTime}</span>
+                  </div>
                   <span className="delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification); }}>X</span>
-                  <div>Title: {notification.Title}</div>
-                  <div>Description: {notification.Description}</div>
-                  <div>Date and Time: {notification.DateTime}</div>
                 </li>
               ))}
             </ul>
