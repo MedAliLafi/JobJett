@@ -104,7 +104,7 @@ const Noty = () => {
           ) : (
             <ul>
               {notifications.map((notification) => (
-                <li key={notification.NotificationID} onClick={() => handleNotificationClick(notification)}>
+                <li key={notification.NotificationID} onClick={() => handleNotificationClick(notification)} className={notification.Read === 0 ? "unread" : ""}>
                   <div className="notification-content">
                     <span>{notification.Message}</span><br></br>
                     <span>{notification.DateTime}</span>

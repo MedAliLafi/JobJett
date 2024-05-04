@@ -36,13 +36,19 @@
 }
 
 .notification-dropdown li {
-  position: relative; /* Add relative positioning */
+  position: relative;
   padding: 5px 0;
   border-bottom: 1px solid #ccc;
   overflow: auto;
   word-wrap: break-word;
   text-overflow: ellipsis;
+  background-color: #fff;
 }
+
+.notification-dropdown li.unread {
+  background-color: #f0f8ff;
+}
+
 
 .notification-dropdown li:last-child {
   border-bottom: none;

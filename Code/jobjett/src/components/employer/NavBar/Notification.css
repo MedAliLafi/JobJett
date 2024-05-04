@@ -36,13 +36,20 @@
   }
   
   .notification-dropdown li {
-    position: relative; /* Add relative positioning */
+    position: relative;
     padding: 5px 0;
     border-bottom: 1px solid #ccc;
     overflow: auto;
     word-wrap: break-word;
     text-overflow: ellipsis;
+    /* Add conditional styling for non-read notifications */
+    background-color: #fff;
   }
+  
+  .notification-dropdown li.unread {
+    background-color: #f0f8ff; /* Light blue background for unread notifications */
+  }
+  
   
   .notification-dropdown li:last-child {
     border-bottom: none;
