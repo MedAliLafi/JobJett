@@ -61,7 +61,10 @@ function EmployerHomePage() {
     setCurrentPage(1);
   };
 
-  
+  const handleSeeDetails = (CandidateID) => {
+    navigate(`/employer/details/${CandidateID}`);
+  };
+
   const handleOfferJob = (CandidateID) => {
     navigate(`/employer/offerajob/${CandidateID}`);
   };
@@ -171,11 +174,6 @@ function EmployerHomePage() {
               <h1 className="text-[16px] font-semibold text-black group-hover:text-white">
                 {Domain}
               </h1>
-              <span className=" flex items-center text-[#ccc] gap-1 DatePosted">
-                <BiTimeFive />
-                {/* Change to relevant field */}
-                <span>{Location}</span>
-              </span>
             </span>
             <h6 className="text-[#ccc]">{Location}</h6>
             <div className=" text-[13px] text-[#959595] border-t-[2px] mt-[20px] group-hover:text-white overflow-hidden">
@@ -190,6 +188,13 @@ function EmployerHomePage() {
             {/* Buttons */}
             <div className="jobButtons">
               <div>
+                <button
+                  className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-white group-hover:text-white"
+                  onClick={() => handleSeeDetails(CandidateID)}
+                  type="button"
+                >
+                See Details
+                </button>
                 <button
                   className="border-[2px] rounded-[10px] block p-[10px] w-full text-[14px] font-semibold text-black hover:bg-white group-hover/item:text-white group-hover:text-white"
                   onClick={() => handleOfferJob(CandidateID)}

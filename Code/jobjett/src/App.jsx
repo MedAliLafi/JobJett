@@ -24,6 +24,7 @@ import JobApplication from "./components/employer/EmployerApplications/JobApplic
 import AddJobOffer from "./components/employer/AddJobOffer/AddJobOffer.jsx";
 import OfferAJob from "./components/employer/EmployerHomePage/OfferAJob.jsx";
 import CandidateInterviews from "./components/candidate/CandidateInterviews/CandidateInterviews.jsx";
+import CandidateDetails from "./components/employer/CandidateDetails/CandidateDetails.jsx";
 
 function App() {
   // Retrieve authentication status from local storage or default to false
@@ -180,6 +181,10 @@ function App() {
           <Route
             path="/employer/offerajob/:candidateID"
             element={withEmployerProtection(<OfferAJob />)}
+          />
+          <Route
+            path="/employer/details/:candidateID"
+            element={withEmployerProtection(<CandidateDetails />)}
           />
         </Routes>
       </div>

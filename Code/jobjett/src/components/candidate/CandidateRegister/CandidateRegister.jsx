@@ -130,7 +130,6 @@ const countryOptions = [
   { value: "Iraq", label: "Iraq" },
   { value: "Ireland", label: "Ireland" },
   { value: "Isle of Man", label: "Isle of Man" },
-  { value: "Israel", label: "Israel" },
   { value: "Italy", label: "Italy" },
   { value: "Jamaica", label: "Jamaica" },
   { value: "Japan", label: "Japan" },

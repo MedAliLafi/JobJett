@@ -45,7 +45,7 @@ const EmployerApplications = () => {
       <Navbar></Navbar>
       <div>
         <h2 className="text-center  text-xl font-bold mt-4 text-blueColor">
-          Applications
+          Jobs
         </h2>
 
         <div className="mt-7 relative overflow-x-auto shadow-md sm:rounded-lg">

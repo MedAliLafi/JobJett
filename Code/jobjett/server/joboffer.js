@@ -36,7 +36,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         };
 
         // Save the job offer data to the database
-        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted, Department, Schedule, ReqEducation, ReqExperience, ReqSkills, ReqSoftSkills, AdditionalQuestions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const sql = 'INSERT INTO joboffer (EmployerID, Title, Description, Type, Salary, Location, DatePosted, Department, Schedule, ReqEducation, ReqExperience, ReqSkills, ReqSoftSkills, additionalQuestions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const values = [
             jobOfferData.EmployerID,
             jobOfferData.Title,
@@ -151,6 +151,10 @@ jobofferRoutes.get('/loadcandidates', async (req, res) => {
             const locationParam = `%${location}%`;
             queryParams.push(locationParam, locationParam, locationParam);
         }
+        // Filter candidates based on Searchable flag
+        if (whereClause) whereClause += ' AND ';
+        whereClause += 'cv.Searchable = ?';
+        queryParams.push(true);
 
         // Execute the count query to get the total number of candidates
         let countQuery = 'SELECT COUNT(*) AS totalCount FROM candidate INNER JOIN cv ON candidate.CandidateID = cv.CandidateID';
@@ -454,7 +458,7 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
                     
                     // Add notification
                     const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
-                    const notificationValues = [UserId, `New applicant for your ${Title}offer!`, dateApplied, 0, `/employer/applications/${jobOfferId}`];
+                    const notificationValues = [UserId, `New applicant for your ${Title} offer!`, dateApplied, 0, `/employer/applications/${jobOfferId}`];
                     pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
                         if (notificationError) {
                             console.error('Error adding notification:', notificationError);
@@ -473,17 +477,30 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
 });
 
 
-jobofferRoutes.get('/:applicationID/work_experience', async (req, res) => {
+// Route for fetching work experience
+jobofferRoutes.get('/:idType/:ID/work_experience', async (req, res) => {
     try {
         const pool = req.pool;
-        const applicationID = req.params.applicationID;
-        const sql = `
-            SELECT * FROM work_experience
-            WHERE CandidateID = (
-                SELECT CandidateID FROM application
-                WHERE applicationID = ?
-            );`;
-        pool.query(sql, [applicationID], (error, results) => {
+        const idType = req.params.idType;
+        const ID = req.params.ID;
+
+        let sql;
+        if (idType === 'application') {
+            sql = `
+                SELECT * FROM work_experience
+                WHERE CandidateID = (
+                    SELECT CandidateID FROM application
+                    WHERE applicationID = ?
+                );`;
+        } else if (idType === 'candidate') {
+            sql = `
+                SELECT * FROM work_experience
+                WHERE CandidateID = ?;`;
+        } else {
+            return res.status(400).json({ error: 'Invalid idType. Use "application" or "candidate".' });
+        }
+
+        pool.query(sql, [ID], (error, results) => {
             if (error) {
                 console.error('Error fetching work experience:', error);
                 return res.status(500).json({ error: 'An error occurred while fetching work experience.' });
@@ -496,17 +513,30 @@ jobofferRoutes.get('/:applicationID/work_experience', async (req, res) => {
     }
 });
 
-jobofferRoutes.get('/:applicationID/certificates', async (req, res) => {
+// Route for fetching certificates
+jobofferRoutes.get('/:idType/:ID/certificates', async (req, res) => {
     try {
         const pool = req.pool;
-        const applicationID = req.params.applicationID;
-        const sql = `
-            SELECT * FROM certification
-            WHERE CandidateID = (
-                SELECT CandidateID FROM application
-                WHERE applicationID = ?
-            );`;
-        pool.query(sql, [applicationID], (error, results) => {
+        const idType = req.params.idType;
+        const ID = req.params.ID;
+
+        let sql;
+        if (idType === 'application') {
+            sql = `
+                SELECT * FROM certification
+                WHERE CandidateID = (
+                    SELECT CandidateID FROM application
+                    WHERE applicationID = ?
+                );`;
+        } else if (idType === 'candidate') {
+            sql = `
+                SELECT * FROM certification
+                WHERE CandidateID = ?;`;
+        } else {
+            return res.status(400).json({ error: 'Invalid idType. Use "application" or "candidate".' });
+        }
+
+        pool.query(sql, [ID], (error, results) => {
             if (error) {
                 console.error('Error fetching certificates:', error);
                 return res.status(500).json({ error: 'An error occurred while fetching certificates.' });
@@ -519,17 +549,30 @@ jobofferRoutes.get('/:applicationID/certificates', async (req, res) => {
     }
 });
 
-jobofferRoutes.get('/:applicationID/education', async (req, res) => {
+// Route for fetching education
+jobofferRoutes.get('/:idType/:ID/education', async (req, res) => {
     try {
         const pool = req.pool;
-        const applicationID = req.params.applicationID;
-        const sql = `
-            SELECT * FROM education
-            WHERE CandidateID = (
-                SELECT CandidateID FROM application
-                WHERE applicationID = ?
-            );`;
-        pool.query(sql, [applicationID], (error, results) => {
+        const idType = req.params.idType;
+        const ID = req.params.ID;
+
+        let sql;
+        if (idType === 'application') {
+            sql = `
+                SELECT * FROM education
+                WHERE CandidateID = (
+                    SELECT CandidateID FROM application
+                    WHERE applicationID = ?
+                );`;
+        } else if (idType === 'candidate') {
+            sql = `
+                SELECT * FROM education
+                WHERE CandidateID = ?;`;
+        } else {
+            return res.status(400).json({ error: 'Invalid idType. Use "application" or "candidate".' });
+        }
+
+        pool.query(sql, [ID], (error, results) => {
             if (error) {
                 console.error('Error fetching education:', error);
                 return res.status(500).json({ error: 'An error occurred while fetching education.' });
@@ -541,6 +584,5 @@ jobofferRoutes.get('/:applicationID/education', async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while fetching education.' });
     }
 });
-
 
 module.exports = jobofferRoutes;

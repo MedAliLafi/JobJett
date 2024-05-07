@@ -188,7 +188,7 @@ const CandidateApplications = () => {
                             onClick={() => cancelInterview(application.ApplicationID)}
                             className="text-white bg-red-600 hover:bg-red-700 rounded-md px-3 py-1 ml-2"
                           >
-                            Cancel
+                            Decline
                           </button>
                         </td>
                       </tr>

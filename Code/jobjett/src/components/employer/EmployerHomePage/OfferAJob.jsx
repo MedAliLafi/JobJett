@@ -57,6 +57,7 @@ const OfferAJob = () => {
           const { interviewID } = data;
           console.log("Interview scheduled successfully");
           setShowSubmitButton(true); // Show the submit button after interview setup
+          navigate("/employer/interviews");
         } else {
           console.error("Failed to schedule interview");
         }

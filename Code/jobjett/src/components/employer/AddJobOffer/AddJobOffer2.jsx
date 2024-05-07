@@ -44,29 +44,34 @@ const AddJobOffer2 = ({ formData, setFormData }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && newSkill.trim() !== "") {
-      setSkills([...skills, newSkill.trim()]);
-      setNewSkill("");
-      const skillsText = skills.join(';code;');
+      const updatedSkills = [...skills, newSkill.trim()];
+      setSkills(updatedSkills);
+      const skillsText = updatedSkills.join(';code;');
       setFormData({ ...formData, reqSkills: skillsText });
+      setNewSkill("");
     }
   };
+  
   const handleKeyDown2 = (e) => {
     if (e.key === "Enter" && newSoftSkill.trim() !== "") {
-      setSoftSkills([...SoftSkills, newSoftSkill.trim()]);
+      const updatedSoftSkills = [...SoftSkills, newSoftSkill.trim()];
+      setSoftSkills(updatedSoftSkills);
+      const softSkillsText = updatedSoftSkills.join(';code;');
+      setFormData({ ...formData, reqSoftSkills: softSkillsText });
       setNewSoftSkill("");
-      const softskillsText = SoftSkills.join(';code;');
-      setFormData({ ...formData, reqSoftSkills: softskillsText });
     }
   };
+  
   const handleKeyDown3 = (e) => {
     if (e.key === "Enter" && newQuestion.trim() !== "") {
-      setQuestions([...Questions, newQuestion.trim()]);
-      setNewQuestion("");
-      const questionsText = Questions.join(';code;');
+      const updatedQuestions = [...Questions, newQuestion.trim()];
+      setQuestions(updatedQuestions);
+      const questionsText = updatedQuestions.join(';code;');
       setFormData({ ...formData, additionalQuestions: questionsText });
+      setNewQuestion("");
     }
   };
-
+  
   const handleRemoveSkill = (index) => {
     setSkills(skills.filter((_, i) => i !== index));
   };

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2024 at 01:50 PM
+-- Generation Time: May 07, 2024 at 12:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,12 @@ CREATE TABLE `application` (
 --
 
 INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`, `Type`) VALUES
-(34, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Offered');
+(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Applied'),
+(34, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Offered'),
+(35, 21, 10, 48, 'Bonjkour nous vous aime travaille chez nous frere', 'Interview Cancelled', '2024-05-05', 'Offered'),
+(36, 21, 10, 4, 'bonjour', 'Interview Cancelled', '2024-05-05', 'Offered'),
+(37, 21, 10, 74, 'Ass or tits', 'Interview Scheduled_58', '2024-05-05', 'Offered'),
+(38, 21, 10, 74, 'bonjour sa7a wa7ch', 'Pending', '2024-05-05', 'Applied');
 
 -- --------------------------------------------------------
 
@@ -91,7 +96,7 @@ CREATE TABLE `certification` (
 --
 
 INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `certification`, `DateIssued`, `description`) VALUES
-(185, 21, 10, 'qwerqwerqwer', '2024-11', 'qwerqwerqwer');
+(184, 21, 10, 'qwerqwerqwer', '2024-11', 'qwerqwerqwer');
 
 -- --------------------------------------------------------
 
@@ -114,7 +119,7 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`, `SoftSkills`, `Domain`) VALUES
-(10, 21, 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf', 'fashion design');
+(10, 21, 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf', 'Occupational Therapist');
 
 -- --------------------------------------------------------
 
@@ -137,7 +142,7 @@ CREATE TABLE `education` (
 --
 
 INSERT INTO `education` (`EducationID`, `CandidateID`, `CV_ID`, `Level`, `FieldOfStudy`, `School`, `TimePeriod`) VALUES
-(111, 21, 10, 'On-the-Job Training', 'qwer', 'qwer', '2024-10_Present');
+(110, 21, 10, 'On-the-Job Training', 'qwer', 'qwer', '2024-10_Present');
 
 -- --------------------------------------------------------
 
@@ -166,7 +171,8 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `CompanyName`, `Industry`, `NumberOfEmployees`, `Phone`, `State`, `Country`, `Address`, `Logo`) VALUES
-(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ', '/logos/logo-1714583360075-918751769.png');
+(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ', '/logos/logo-1714583360075-918751769.png'),
+(19, 58, 'Zinoubj', 'Trb', '1999-02-28', 'Zee Project', 'retail', 1, '21473320', 'Osaka', 'Japan', 'Osaka nahj el hend 1900', '/logos/logo-1714939243171-953112206.png');
 
 -- --------------------------------------------------------
 
@@ -183,6 +189,13 @@ CREATE TABLE `interview` (
   `InterviewDateTime` datetime DEFAULT NULL,
   `Message` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `interview`
+--
+
+INSERT INTO `interview` (`InterviewID`, `ApplicationID`, `JobOfferId`, `CandidateID`, `EmployerID`, `InterviewDateTime`, `Message`) VALUES
+(58, 37, NULL, 21, 19, '2024-05-06 00:00:00', 'matjich ma5er patron');
 
 -- --------------------------------------------------------
 
@@ -214,7 +227,7 @@ CREATE TABLE `joboffer` (
 --
 
 INSERT INTO `joboffer` (`JobOfferID`, `EmployerID`, `Title`, `Description`, `Type`, `Salary`, `Location`, `DatePosted`, `Department`, `Schedule`, `ReqEducation`, `ReqExperience`, `ReqSkills`, `ReqSoftSkills`, `additionalQuestions`, `Status`) VALUES
-(4, 11, 'qweirj qwelrkj ', 'uh iguvo8v7tlvutyvhgjvk\r\ng\r\nd\r\ndf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\ndsf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\n', 'Temporary', 'Max_100_per week', 'In-person, within a limited area', '2024-04-04', 'Administration', '4 hour shift', 'Associate\'s Degree', '3-5 years', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'Active'),
+(4, 11, 'qweirj qwelrkj ', 'uh iguvo8v7tlvutyvhgjvk\r\ng\r\nd\r\ndf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\ndsf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\nsdf\r\n', 'Temporary', 'Maximum amount_kugukkj_per week', 'In-person, within a limited area', '2024-04-04', 'Administration', '4 hour shift', 'Associate\'s Degree', '3-5 years', 'qwer;qwer;wqer', 'wqerioiwer;wenr weior', NULL, 'Active'),
 (38, 11, 'Software Engineer', 'We are seeking a highly skilled software engineer to join our dynamic team.', 'Full-time', 'Competitive salary', 'Remote', '2024-04-18', 'Engineering', 'Full-time', 'Bachelor\'s Degree in Computer Science or related field', '3+ years of experience in software development', 'JavaScript, React, Node.js', 'Strong problem-solving skills, teamwork', NULL, 'Active'),
 (39, 11, 'Marketing Specialist', 'Join our marketing team and help us promote our products to a wider audience.', 'Part-time', 'Hourly rate', 'New York City', '2024-04-18', 'Marketing', 'Part-time', 'Bachelor\'s Degree in Marketing or related field', '2+ years of experience in marketing', 'Social media marketing, SEO, Google Analytics', 'Excellent communication skills, creativity', NULL, 'Active'),
 (40, 11, 'Customer Service Representative', 'Provide exceptional customer service to our clients and assist them with their inquiries.', 'Full-time', 'Annual salary', 'Los Angeles', '2024-04-18', 'Customer Service', 'Rotating shifts', 'High School Diploma or equivalent', '1-2 years of experience in customer service', 'Communication skills, problem-solving', 'Patience, empathy', NULL, 'Active'),
@@ -250,7 +263,7 @@ INSERT INTO `joboffer` (`JobOfferID`, `EmployerID`, `Title`, `Description`, `Typ
 (70, 11, 'ahmed hajjem', 'QWOEJIRIJQW', 'Full-time', 'Start_1000_per week', 'Fully remote: no on-site work required', '2024-04-18', 'Supply Chain/Logistics', '4 hour shift', 'Master\'s Degree or Higher', '3-5 years', 'qwerqwer;qwerqwer', 'asdfkljjn;welerjnjww', NULL, 'Active'),
 (71, 11, 'bonjour ', 'bonjour', 'Full-time', '_100-1000_per week', 'In-person, within a limited area', '2024-04-19', 'Public Relations', '4 hour shift', 'Bachelor\'s Degree', '5-10 years', 'qwer;.qewr', 'qwer;qwer', 'qoweirj;qewrqwer', 'Active'),
 (73, 11, 'Software Developer', 'opikasjdfoijqwer iouqweroijwqeori jqwr', 'Full-time', 'Range_100-1100_per year', 'Fully remote: no on-site work required', '2024-04-20', 'Legal', '8 hour shift', 'High School Diploma or Equivalent', '1-2 years', 'qweuiyrhuqw]qw;qwer;qwer', 'qweerqwe;rqwe;r', '', 'Active'),
-(74, 11, 'sasdofioiweqr', 'qwerwqrqwerqwer', 'Full-time', '_100-1000_per year', 'In-person, within a limited area', '2024-05-04', 'Public Relations', '4 hour shift', 'Bachelor\'s Degree', 'More than 10 years', '', '', '', 'Active');
+(74, 19, 'Retail Sales Associate', 'Non binary gender fluid queer transmasc polyamorous ma esmouch dali walla mariem walla hsin ', 'Full-time', 'Max_5_per week', 'In-person, precise location', '2024-05-05', 'Marketing', '10 hour shift', 'Master\'s Degree or Higher', 'Less than 1 year', 'flamboyant;code;gay;code;slutty;code;fruity', '', '', 'Active');
 
 -- --------------------------------------------------------
 
@@ -273,8 +286,13 @@ CREATE TABLE `notification` (
 
 INSERT INTO `notification` (`NotificationID`, `UserID`, `Message`, `DateTime`, `Read`, `Link`) VALUES
 (36, 35, 'Your interview has been cancelled.', '2024-05-04 16:57:05', 1, '/employer/interviews'),
-(37, 39, 'You\'ve been scheduled for an interview.', '2024-05-04 19:06:31', 1, '/candidate/interviews'),
-(39, 35, 'Your interview has been cancelled.', '2024-05-04 19:42:51', 1, '/employer/interviews');
+(37, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-05 17:32:16', 0, '/candidate/applications/35'),
+(38, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-05 17:36:21', 0, '/candidate/applications/36'),
+(39, 39, 'Your interview has been cancelled.', '2024-05-05 17:36:25', 0, '/candidate/applications'),
+(41, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-05 20:08:31', 0, '/candidate/applications/37'),
+(42, 39, 'Your interview has been cancelled.', '2024-05-05 20:08:48', 0, '/candidate/applications'),
+(43, 39, 'You\'ve been scheduled for an interview.', '2024-05-05 20:09:50', 1, '/candidate/interviews'),
+(44, 58, 'New applicant for your Retail Sales Associateoffer!', '2024-05-05 00:00:00', 1, '/employer/applications/74');
 
 -- --------------------------------------------------------
 
@@ -313,7 +331,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`UserID`, `Email`, `Password`, `UserType`) VALUES
 (35, 'test@mail', '$2b$10$bPXlJI3yyAGwftLkeYClL.eHqQg5hSNyGX1SnsPOGiAfmi13KFc0O', 'Employer'),
 (39, 'can@mail', '$2b$10$/XqiS6zpyxuAxvs5QiXOD.y8ezO8BGtMSWcGQ9IxXDaukDb7QSWBS', 'Candidate'),
-(57, 'sarra@mail', '$2b$10$5c8.Rh2vhqzMio2z8ygn9epwwnUevAlypJlvFlUjjxuxp.d00Y8uS', 'Candidate');
+(57, 'sarra@mail', '$2b$10$5c8.Rh2vhqzMio2z8ygn9epwwnUevAlypJlvFlUjjxuxp.d00Y8uS', 'Candidate'),
+(58, 'zinoubj@mail.com', '$2b$10$hPZf7VeLyzGKd1EUQSzA8OdPGQ2PCXNCx3XNpYbpC5lL9zAhWa4Ay', 'Employer');
 
 -- --------------------------------------------------------
 
@@ -336,7 +355,7 @@ CREATE TABLE `work_experience` (
 --
 
 INSERT INTO `work_experience` (`WorkExperienceID`, `CandidateID`, `CV_ID`, `JobTitle`, `Company`, `TimePeriod`, `Description`) VALUES
-(92, 21, 10, 'qwerqwer', 'qwerqwer', '2024-10_Present', 'qwerqwerqwer');
+(91, 21, 10, 'qwerqwer', 'qwerqwer', '2024-10_Present', 'qwerqwerqwer');
 
 --
 -- Indexes for dumped tables
@@ -445,7 +464,7 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `application`
 --
 ALTER TABLE `application`
-  MODIFY `ApplicationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `ApplicationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `candidate`
@@ -457,7 +476,7 @@ ALTER TABLE `candidate`
 -- AUTO_INCREMENT for table `certification`
 --
 ALTER TABLE `certification`
-  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
+  MODIFY `CertificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
 
 --
 -- AUTO_INCREMENT for table `cv`
@@ -469,19 +488,19 @@ ALTER TABLE `cv`
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `EducationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `employer`
 --
 ALTER TABLE `employer`
-  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `EmployerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `interview`
 --
 ALTER TABLE `interview`
-  MODIFY `InterviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `InterviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `joboffer`
@@ -493,7 +512,7 @@ ALTER TABLE `joboffer`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -505,13 +524,13 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `work_experience`
 --
 ALTER TABLE `work_experience`
-  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `WorkExperienceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- Constraints for dumped tables

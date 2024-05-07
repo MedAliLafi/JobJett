@@ -19,13 +19,13 @@ const JobApplication = () => {
                 const applicationResponse = await fetch(`http://localhost:9000/Employer/JobOffer/${applicationID}/application`, {
                     credentials: 'include'
                 });
-                const workExperienceResponse = await fetch(`http://localhost:9000/Employer/JobOffer/${applicationID}/work_experience`, {
+                const workExperienceResponse = await fetch(`http://localhost:9000/Employer/JobOffer/application/${applicationID}/work_experience`, {
                     credentials: 'include'
                 });
-                const certificatesResponse = await fetch(`http://localhost:9000/Employer/JobOffer/${applicationID}/certificates`, {
+                const certificatesResponse = await fetch(`http://localhost:9000/Employer/JobOffer/application/${applicationID}/certificates`, {
                     credentials: 'include'
                 });
-                const educationResponse = await fetch(`http://localhost:9000/Employer/JobOffer/${applicationID}/education`, {
+                const educationResponse = await fetch(`http://localhost:9000/Employer/JobOffer/application/${applicationID}/education`, {
                     credentials: 'include'
                 });
 
@@ -106,10 +106,10 @@ return (
             {application && (
                 <>
                     <h2 className="text-center text-blue-600 text-2xl font-semibold mb-4">
-                        Application: {applicationID}
+                        Application {applicationID}
                     </h2>
                     <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                        <p className="font-semibold">Candidate Details:</p>
+                        <p className="font-semibold">Candidate Details</p>
                         <p>First Name: {application.firstname}</p>
                         <p>Last Name: {application.lastname}</p>
                         <p>State: {application.state}</p>
@@ -118,6 +118,12 @@ return (
                         <p>Status: {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}</p>
                     </div>
                 </>
+            )}
+            {application && application.Type === 'Applied' && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <p className="font-semibold">Cover Letter</p>
+                    <p>{application.Description}</p>
+                </div>
             )}
             {/* Display work experiences */}
             <div className="bg-white shadow-md rounded-lg p-6 mb-6">
