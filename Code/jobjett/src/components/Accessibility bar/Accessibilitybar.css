@@ -1,0 +1,88 @@
+.accessibility-bar {
+    position: fixed;
+    top: 135px;
+    left: 0;
+    background-color: #f8f9fa;
+    border: 2px solid #ced4da;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column; /* Change to vertical direction */
+    align-items: center;
+    justify-content: space-between;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    width: 50px; /* Adjust width if necessary */
+}
+
+.accessibility-bar:hover {
+    transform: translateY(-5px);
+}
+
+.accessibility-bar button, .accessibility-bar select {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 8px;
+    font-size: 18px;
+    color: #333333;
+    transition: color 0.3s ease;
+    margin-bottom: 10px; /* Add margin between items */
+}
+
+.accessibility-bar button:last-child, .accessibility-bar select:last-child {
+    margin-bottom: 0; /* Remove margin from the last item */
+}
+
+.accessibility-bar button:hover, .accessibility-bar select:hover {
+    color: #666666;
+}
+
+.accessibility-bar select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 9 12 15 18 9"></polygon></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
+
+.accessibility-bar select:focus {
+    border-color: #666666;
+}
+
+.font-style-options {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    background-color: #ffffff;
+    border: 2px solid #ced4da;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+
+.font-style-options button {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.font-style-options button:hover {
+    background-color: #e9ecef;
+}
+
+.angle-icon {
+    transform: rotate(270deg);
+}

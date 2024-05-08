@@ -8,6 +8,7 @@ import { BsHouseDoor } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { BiTimeFive } from "react-icons/bi";
 import "./CandidateHomePage.css";
+import AccessibilityBar from "../../Accessibility bar/Accessibilitybar.jsx"
 
 function CandidateHomePage() {
   const [jobSearchText, setJobSearchText] = useState("");
@@ -90,6 +91,7 @@ function CandidateHomePage() {
   return (
     <>
       <div>
+        <AccessibilityBar></AccessibilityBar>
         <Navbar />
       </div>
       <div className="w-[85%] m-auto bg-white">

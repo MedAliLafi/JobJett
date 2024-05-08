@@ -426,7 +426,7 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
         const decoded = jwt.verify(token, 'secret_key');
         const userId = decoded.user.UserID;
 
-        const { description } = req.body;
+        const { description, answers, score } = req.body;
         const jobOfferId = req.params.jobofferId;
         const candidateInfo = await getCandidateInfoById(pool, candidateId);
         const cvId = candidateInfo.cvId;
@@ -434,8 +434,8 @@ jobofferRoutes.post('/:jobofferId/apply', async (req, res) => {
         const status = 'Pending';
 
         // Insert application data into the database
-        const sql = 'INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied, Type) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const values = [candidateId, cvId, jobOfferId, description, status, dateApplied, `Applied`];
+        const sql = 'INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied, Type, Answers, Score) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const values = [candidateId, cvId, jobOfferId, description, status, dateApplied, `Applied`, answers, score];
         pool.query(sql, values, async (error, result) => {
             if (error) {
                 console.error('Error applying for job offer:', error);
