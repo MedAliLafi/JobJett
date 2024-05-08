@@ -108,7 +108,7 @@ jobofferRoutes.get('/loadjoboffers', async (req, res) => {
             const totalCount = countResults[0].totalCount;
 
             // Execute the select query to fetch paginated job offers
-            let selectQuery = 'SELECT joboffer.*, employer.CompanyName, employer.Logo FROM joboffer';
+            let selectQuery = 'SELECT joboffer.*, employer.* FROM joboffer';
             selectQuery += ` ${joinClause}`;
             if (whereClause) {
                 selectQuery += ` WHERE ${whereClause}`;
@@ -313,14 +313,18 @@ jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
     }
 });
 
-// Route to get job offer details by ID
 jobofferRoutes.get('/:jobofferId', async (req, res) => {
     try {
         const pool = req.pool;
         const jobofferId = req.params.jobofferId;
 
-        // Fetch job offer details from the database using jobofferId
-        const sql = 'SELECT * FROM joboffer WHERE JobOfferID = ?';
+        // Fetch job offer details including employer from the database using jobofferId
+        const sql = `
+            SELECT joboffer.*, employer.*
+            FROM joboffer
+            INNER JOIN employer ON joboffer.EmployerID = employer.EmployerID
+            WHERE joboffer.JobOfferID = ?`;
+        
         pool.query(sql, [jobofferId], (error, results) => {
             if (error) {
                 console.error('Error fetching job offer details:', error);
@@ -331,6 +335,7 @@ jobofferRoutes.get('/:jobofferId', async (req, res) => {
                 return res.status(404).json({ error: 'Job offer not found.' });
             }
 
+            // Assuming each job offer has only one employer, you can access the employer details at index 0
             const jobofferDetails = results[0];
             res.status(200).json(jobofferDetails);
         });

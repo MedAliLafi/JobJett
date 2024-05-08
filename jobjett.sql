@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2024 at 12:22 PM
+-- Generation Time: May 08, 2024 at 02:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,20 +35,20 @@ CREATE TABLE `application` (
   `Description` text DEFAULT NULL,
   `Status` varchar(100) DEFAULT NULL,
   `DateApplied` date DEFAULT NULL,
-  `Type` varchar(255) DEFAULT NULL
+  `Type` varchar(255) DEFAULT NULL,
+  `Score` int(11) DEFAULT 0,
+  `Answers` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `application`
 --
 
-INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`, `Type`) VALUES
-(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Applied'),
-(34, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Offered'),
-(35, 21, 10, 48, 'Bonjkour nous vous aime travaille chez nous frere', 'Interview Cancelled', '2024-05-05', 'Offered'),
-(36, 21, 10, 4, 'bonjour', 'Interview Cancelled', '2024-05-05', 'Offered'),
-(37, 21, 10, 74, 'Ass or tits', 'Interview Scheduled_58', '2024-05-05', 'Offered'),
-(38, 21, 10, 74, 'bonjour sa7a wa7ch', 'Pending', '2024-05-05', 'Applied');
+INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`, `Type`, `Score`, `Answers`) VALUES
+(1, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Applied', 0, NULL),
+(34, 21, 10, 4, 'adsfasdfasdf', 'Interview Cancelled', '2024-04-25', 'Offered', 0, NULL),
+(35, 21, 10, 48, 'Bonjkour nous vous aime travaille chez nous frere', 'Interview Cancelled', '2024-05-05', 'Offered', 0, NULL),
+(36, 21, 10, 4, 'bonjour', 'Interview Cancelled', '2024-05-05', 'Offered', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -107,19 +107,19 @@ INSERT INTO `certification` (`CertificationID`, `CandidateID`, `CV_ID`, `certifi
 CREATE TABLE `cv` (
   `CV_ID` int(11) NOT NULL,
   `CandidateID` int(11) DEFAULT NULL,
+  `Domain` varchar(100) DEFAULT NULL,
   `Summary` text DEFAULT NULL,
   `Skills` varchar(500) DEFAULT NULL,
   `Searchable` enum('true','false') DEFAULT NULL,
-  `SoftSkills` varchar(500) DEFAULT NULL,
-  `Domain` varchar(100) DEFAULT NULL
+  `SoftSkills` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cv`
 --
 
-INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Summary`, `Skills`, `Searchable`, `SoftSkills`, `Domain`) VALUES
-(10, 21, 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf', 'Occupational Therapist');
+INSERT INTO `cv` (`CV_ID`, `CandidateID`, `Domain`, `Summary`, `Skills`, `Searchable`, `SoftSkills`) VALUES
+(10, 21, 'Occupational Therapist', 'ahla summaryakdsjnf kjjasdnf lkasdfmlkasmdf alskmdflkasmdf laksdmflk samdflk smdflkqwekrj nqwerk lqwlerm qwlekrmqlwekrm qlwekrm lwkerm lwqkerm lkwfmdlkasmdfl askdmfl kqwmer lqwkemr lkwfm alskdmf lasdkmf lwkerm qlwekr mwdfm laskdmfalskdmf qlwekrm qwelr', 'qwer;code;werq;code;asdfjoisadj;code;asdfasdf', 'true', 'asdf;code;asdf;code;sadf;code;asdf');
 
 -- --------------------------------------------------------
 
@@ -171,8 +171,7 @@ CREATE TABLE `employer` (
 --
 
 INSERT INTO `employer` (`EmployerID`, `UserID`, `FirstName`, `LastName`, `DateOfBirth`, `CompanyName`, `Industry`, `NumberOfEmployees`, `Phone`, `State`, `Country`, `Address`, `Logo`) VALUES
-(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ', '/logos/logo-1714583360075-918751769.png'),
-(19, 58, 'Zinoubj', 'Trb', '1999-02-28', 'Zee Project', 'retail', 1, '21473320', 'Osaka', 'Japan', 'Osaka nahj el hend 1900', '/logos/logo-1714939243171-953112206.png');
+(11, 35, 'Ahmed', 'Hajjem', '2002-10-30', 'test', 'test', 3, '324234', 'Tunis', 'Tunisia', 'wqwerwqerpok ', '/logos/logo-1714583360075-918751769.png');
 
 -- --------------------------------------------------------
 
@@ -189,13 +188,6 @@ CREATE TABLE `interview` (
   `InterviewDateTime` datetime DEFAULT NULL,
   `Message` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `interview`
---
-
-INSERT INTO `interview` (`InterviewID`, `ApplicationID`, `JobOfferId`, `CandidateID`, `EmployerID`, `InterviewDateTime`, `Message`) VALUES
-(58, 37, NULL, 21, 19, '2024-05-06 00:00:00', 'matjich ma5er patron');
 
 -- --------------------------------------------------------
 
@@ -262,8 +254,7 @@ INSERT INTO `joboffer` (`JobOfferID`, `EmployerID`, `Title`, `Description`, `Typ
 (69, 11, 'UI Designer', 'Design user interfaces for digital products and applications to enhance user experience.', 'Full-time', 'Competitive salary', 'San Francisco', '2024-04-18', 'Design', 'Full-time', 'Bachelor\'s Degree in Design or related field', '3+ years of experience in UI design', 'Sketch, Adobe XD', 'User-centric design, Problem-solving', NULL, 'Active'),
 (70, 11, 'ahmed hajjem', 'QWOEJIRIJQW', 'Full-time', 'Start_1000_per week', 'Fully remote: no on-site work required', '2024-04-18', 'Supply Chain/Logistics', '4 hour shift', 'Master\'s Degree or Higher', '3-5 years', 'qwerqwer;qwerqwer', 'asdfkljjn;welerjnjww', NULL, 'Active'),
 (71, 11, 'bonjour ', 'bonjour', 'Full-time', '_100-1000_per week', 'In-person, within a limited area', '2024-04-19', 'Public Relations', '4 hour shift', 'Bachelor\'s Degree', '5-10 years', 'qwer;.qewr', 'qwer;qwer', 'qoweirj;qewrqwer', 'Active'),
-(73, 11, 'Software Developer', 'opikasjdfoijqwer iouqweroijwqeori jqwr', 'Full-time', 'Range_100-1100_per year', 'Fully remote: no on-site work required', '2024-04-20', 'Legal', '8 hour shift', 'High School Diploma or Equivalent', '1-2 years', 'qweuiyrhuqw]qw;qwer;qwer', 'qweerqwe;rqwe;r', '', 'Active'),
-(74, 19, 'Retail Sales Associate', 'Non binary gender fluid queer transmasc polyamorous ma esmouch dali walla mariem walla hsin ', 'Full-time', 'Max_5_per week', 'In-person, precise location', '2024-05-05', 'Marketing', '10 hour shift', 'Master\'s Degree or Higher', 'Less than 1 year', 'flamboyant;code;gay;code;slutty;code;fruity', '', '', 'Active');
+(73, 11, 'Software Developer', 'opikasjdfoijqwer iouqweroijwqeori jqwr', 'Full-time', 'Range_100-1100_per year', 'Fully remote: no on-site work required', '2024-04-20', 'Legal', '8 hour shift', 'High School Diploma or Equivalent', '1-2 years', 'qweuiyrhuqw]qw;qwer;qwer', 'qweerqwe;rqwe;r', '', 'Active');
 
 -- --------------------------------------------------------
 
@@ -291,8 +282,7 @@ INSERT INTO `notification` (`NotificationID`, `UserID`, `Message`, `DateTime`, `
 (39, 39, 'Your interview has been cancelled.', '2024-05-05 17:36:25', 0, '/candidate/applications'),
 (41, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-05 20:08:31', 0, '/candidate/applications/37'),
 (42, 39, 'Your interview has been cancelled.', '2024-05-05 20:08:48', 0, '/candidate/applications'),
-(43, 39, 'You\'ve been scheduled for an interview.', '2024-05-05 20:09:50', 1, '/candidate/interviews'),
-(44, 58, 'New applicant for your Retail Sales Associateoffer!', '2024-05-05 00:00:00', 1, '/employer/applications/74');
+(43, 39, 'You\'ve been scheduled for an interview.', '2024-05-05 20:09:50', 1, '/candidate/interviews');
 
 -- --------------------------------------------------------
 
@@ -330,9 +320,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`UserID`, `Email`, `Password`, `UserType`) VALUES
 (35, 'test@mail', '$2b$10$bPXlJI3yyAGwftLkeYClL.eHqQg5hSNyGX1SnsPOGiAfmi13KFc0O', 'Employer'),
-(39, 'can@mail', '$2b$10$/XqiS6zpyxuAxvs5QiXOD.y8ezO8BGtMSWcGQ9IxXDaukDb7QSWBS', 'Candidate'),
-(57, 'sarra@mail', '$2b$10$5c8.Rh2vhqzMio2z8ygn9epwwnUevAlypJlvFlUjjxuxp.d00Y8uS', 'Candidate'),
-(58, 'zinoubj@mail.com', '$2b$10$hPZf7VeLyzGKd1EUQSzA8OdPGQ2PCXNCx3XNpYbpC5lL9zAhWa4Ay', 'Employer');
+(39, 'can@mail', '$2b$10$/XqiS6zpyxuAxvs5QiXOD.y8ezO8BGtMSWcGQ9IxXDaukDb7QSWBS', 'Candidate');
 
 -- --------------------------------------------------------
 

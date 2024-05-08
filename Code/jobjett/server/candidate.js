@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 function getCandidateInfoById(pool, candidateId) {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address, Candidate.State, Candidate.Country, CV.CV_ID FROM Candidate INNER JOIN User ON Candidate.UserID = User.UserID LEFT JOIN CV ON Candidate.CandidateID = CV.CandidateID WHERE Candidate.CandidateID = ?', [candidateId], (error, results) => {
+        pool.query('SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address, Candidate.State, Candidate.Country, CV.CV_ID, CV.Summary, CV.Skills, CV.SoftSkills, CV.Domain FROM Candidate INNER JOIN User ON Candidate.UserID = User.UserID LEFT JOIN CV ON Candidate.CandidateID = CV.CandidateID WHERE Candidate.CandidateID = ?', [candidateId], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -20,7 +20,11 @@ function getCandidateInfoById(pool, candidateId) {
                         address: results[0].Address,
                         state: results[0].State,
                         country: results[0].Country,
-                        cvId: results[0].CV_ID
+                        cvId: results[0].CV_ID,
+                        summary: results[0].Summary,
+                        skills: results[0].Skills,
+                        softskills: results[0].SoftSkills,
+                        domain: results[0].Domain
                     };
                     resolve(candidateInfo);
                 } else {
@@ -30,7 +34,6 @@ function getCandidateInfoById(pool, candidateId) {
         });
     });
 }
-
 
 function getCandidateIdFromToken(pool, req) {
     const token = req.cookies.token;
@@ -224,5 +227,17 @@ candidateRoutes.put("/updateProfile", async (req, res) => {
         .json({ error: "An error occurred while updating candidate profile." });
     }
   });
+
+candidateRoutes.get('/candidate/:candidateID', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const candidateID = req.params.candidateID;
+        const candidateInfo = await getCandidateInfoById(pool, candidateID);
+        res.status(200).json(candidateInfo);
+    } catch (error) {
+        console.error('Error fetching candidate information:', error);
+        res.status(500).json({ error: 'An error occurred while fetching candidate information' });
+    }   
+});
 
 module.exports = { candidateRoutes, getCandidateIdFromToken, getCandidateInfoById };

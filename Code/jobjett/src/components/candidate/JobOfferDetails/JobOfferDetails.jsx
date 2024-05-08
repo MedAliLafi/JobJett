@@ -59,9 +59,39 @@ const JobOfferDetails = () => {
       <div className="container mx-auto px-4">
         <div className="bg-white shadow-md rounded-lg p-6 mt-8">
           {/* Job offer details */}
-          <h1 className="text-2xl font-semibold mb-4">Job Offer Details</h1>
+          <div className="text-center"> {/* This div centers the text */}
+            <h1 className="text-2xl font-semibold mb-4">Job Offer Details</h1>
+          </div>
           {jobofferDetails && (
             <div>
+              {/* Logo */}
+              {jobofferDetails && (
+                <div className="flex-1 flex justify-center items-center">
+                  <img
+                    src={jobofferDetails.Logo}
+                    alt="Company Logo"
+                    className="w-32 h-32"
+                  />
+                </div>
+              )}
+              <p>
+                <strong>Company Name:</strong> {jobofferDetails.CompanyName}
+              </p>
+              <p>
+                <strong>Industry:</strong> {jobofferDetails.Industry}
+              </p>
+              <p>
+                <strong>Phone:</strong> {jobofferDetails.Phone}
+              </p>
+              <p>
+                <strong>State:</strong> {jobofferDetails.State}
+              </p>
+              <p>
+                <strong>Country:</strong> {jobofferDetails.Country}
+              </p>
+              <p>
+                <strong>Address:</strong> {jobofferDetails.Address}
+              </p>
               <p>
                 <strong>Job Title:</strong> {jobofferDetails.Title}
               </p>
@@ -127,7 +157,7 @@ const JobOfferDetails = () => {
             </div>
           )}
           {/* Button to redirect to application */}
-          <div className="mt-6">
+          <div className="mt-6 ">
             <button
               onClick={redirectToApplication}
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"

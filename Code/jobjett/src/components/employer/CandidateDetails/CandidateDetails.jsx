@@ -5,21 +5,20 @@ import { useNavigate } from "react-router-dom";
 
 const CandidateDetails = () => {
     const { candidateID } = useParams();
-    const { applicationID } = useParams();
-    const [application, setApplication] = useState(null);
+    const [candidate, setCandidate] = useState(null);
     const [workExperiences, setWorkExperiences] = useState([]);
     const [certificates, setCertificates] = useState([]);
     const [education, setEducation] = useState([]);
     const navigate = useNavigate();
 
-    const handleOfferJob = (CandidateID) => {
-        navigate(`/employer/offerajob/${CandidateID}`);
+    const handleOfferJob = (candidateID) => {
+        navigate(`/employer/offerajob/${candidateID}`);
       };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const applicationResponse = await fetch(`http://localhost:9000/Employer/JobOffer/${applicationID}/application`, {
+                const candidateResponse = await fetch(`http://localhost:9000/Candidate/candidate/${candidateID}`, {
                     credentials: 'include'
                 });
                 const workExperienceResponse = await fetch(`http://localhost:9000/Employer/JobOffer/candidate/${candidateID}/work_experience`, {
@@ -32,18 +31,20 @@ const CandidateDetails = () => {
                     credentials: 'include'
                 });
 
-                if (applicationResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok) {
-                    const applicationData = await applicationResponse.json();
+                if (candidateResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok) {
+                    const candidateData = await candidateResponse.json();
                     const workExperiencesData = await workExperienceResponse.json();
                     const certificatesData = await certificatesResponse.json();
                     const educationData = await educationResponse.json();   
-
-                    setApplication(applicationData[0]);
+                    candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString(
+                      "en-GB"
+                    );
+                    setCandidate(candidateData);
                     setWorkExperiences(workExperiencesData);
                     setCertificates(certificatesData);
                     setEducation(educationData);
                 } else {
-                    console.error(`Failed to fetch data for application ${applicationID}`);
+                    console.error(`Failed to fetch data for candidate ${candidateID}`);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -51,23 +52,41 @@ const CandidateDetails = () => {
         };
 
         fetchData();
-    }, [applicationID]);
+    }, [candidateID]);
 
 return (
     <>
         <Navbar />
         <div className="container mx-auto mt-8">
-            {application && (
+            {candidate && (
                 <>
                     <h2 className="text-center text-blue-600 text-2xl font-semibold mb-4">
-                        Candidate Details {applicationID}
+                        Candidate Resume
                     </h2>
                     <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                        <p className="font-semibold">Candidate Details</p>
-                        <p>First Name: {application.firstname}</p>
-                        <p>Last Name: {application.lastname}</p>
-                        <p>State: {application.state}</p>
-                        <p>Country: {application.country}</p>
+                        <p className="font-semibold mb-2">Details</p>
+                        <p>First Name: {candidate.firstName}</p>
+                        <p>Last Name: {candidate.lastName}</p>
+                        <p>Date of Birth: {candidate.dateOfBirth}</p>
+                        <p>Phone: {candidate.phone}</p>
+                        <p>State: {candidate.state}</p>
+                        <p>Country: {candidate.country}</p>
+                        <p>Address: {candidate.address}</p>
+                    </div>
+
+                    {/* Domain, Summary, Skills, and Soft Skills */}
+                    <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h3 className="font-semibold mb-2">Expertise</h3>
+                        <p className="font-semibold">Domain: {candidate.domain}</p>
+                        <p>Summary: {candidate.summary}</p>
+                        <p>Skills:</p>
+                {candidate.skills.split(';code;').map((skill, index) => (
+                    <p key={index}>{skill}</p>
+                ))}
+                <p>Soft Skills:</p>
+                {candidate.softskills.split(';code;').map((softSkill, index) => (
+                    <p key={index}>{softSkill}</p>
+                ))}
                     </div>
                 </>
             )}

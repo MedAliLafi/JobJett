@@ -72,10 +72,10 @@ function EmployerHomePage() {
   const isLastPage = currentPage >= totalPages;
 
   function truncateSummary(summary) {
-    if (summary.length <= 200) {
+    if (summary.length <= 80) {
       return summary;
     } else {
-      return summary.slice(0, 200) + "...";
+      return summary.slice(0, 80) + "...";
     }
   }
 
