@@ -11,10 +11,6 @@ const CandidateDetails = () => {
     const [education, setEducation] = useState([]);
     const navigate = useNavigate();
 
-    const handleOfferJob = (candidateID) => {
-        navigate(`/employer/offerajob/${candidateID}`);
-      };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -53,6 +49,10 @@ const CandidateDetails = () => {
 
         fetchData();
     }, [candidateID]);
+    const handleOfferJob = (candidateID) => {
+        navigate(`/employer/offerajob/${candidateID}`);
+      };
+
 
 return (
     <>
@@ -132,8 +132,8 @@ return (
                 </ul>
             </div>
             <div className="flex justify-between items-center mb-6">
-                <button onClick={handleOfferJob} className="text-white bg-red-600 hover:bg-red-700 rounded-md px-4 py-2">
-                Offer A Job    
+                <button onClick={() => handleOfferJob(candidateID)} className="text-white bg-red-600 hover:bg-red-700 rounded-md px-4 py-2">
+                    Offer A Job    
                 </button>
             </div>
         </div>

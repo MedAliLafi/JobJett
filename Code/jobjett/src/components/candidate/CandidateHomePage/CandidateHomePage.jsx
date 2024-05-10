@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import Navbar from "../NavBar/CandidateNavbar.jsx";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +17,7 @@ function CandidateHomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchClicked, setSearchClicked] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortBy, setSortBy] = useState("newest");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +40,7 @@ function CandidateHomePage() {
             jobTitle: jobSearchText,
             companyName: companySearchText,
             location: locationSearchText,
+            sortBy: sortBy,
           },
         }
       );
@@ -91,7 +92,6 @@ function CandidateHomePage() {
   return (
     <>
       <div>
-        <AccessibilityBar></AccessibilityBar>
         <Navbar />
       </div>
       <div className="w-[85%] m-auto bg-white">
@@ -166,19 +166,20 @@ function CandidateHomePage() {
             </button>
             <div className="singleSearch flex items-center gap-2">
               <label
-                htmlFor="relevance"
+                htmlFor="sortBy"
                 className="text-[#808080] font-semibold"
               >
                 Sort by:
               </label>
               <select
                 name=""
-                id="relevance"
+                id="sortBy"
                 className="bg-white rounded-[3px] px-4 py-1"
-              >
-                <option value="">Relevance</option>
-                <option value="">Newest</option>
-                <option value="">Latest</option>
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
               </select>
             </div>
           </div>

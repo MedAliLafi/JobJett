@@ -12,6 +12,14 @@ const CandidateApplications = () => {
     fetchCandidateApplications();
   }, []);
 
+  function truncateDescription(description) {
+    if (description.length <= 100) {
+      return description;
+    } else {
+      return description.slice(0, 100) + "...";
+    }
+  }
+
   const fetchCandidateApplications = async () => {
     try {
       const response = await fetch(
@@ -116,7 +124,7 @@ const CandidateApplications = () => {
                           scope="row"
                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                         >
-                          {application.Description}
+                  {truncateDescription(application.Description)}
                         </td>
                         <td
                           scope="row"
@@ -175,7 +183,7 @@ const CandidateApplications = () => {
                           scope="row"
                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                         >
-                          {application.Description}
+                  {truncateDescription(application.Description)}
                         </td>
                         <td
                           scope="row"

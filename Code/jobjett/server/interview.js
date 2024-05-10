@@ -84,7 +84,7 @@ interviewRoutes.post('/offer', async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const { interviewDateTime, message, CandidateID, JobOfferID, note } = req.body;
+        const { interviewDateTime, message, CandidateID, JobOfferID, note, score } = req.body;
         const dateApplied = new Date().toISOString().split('T')[0];
         // Get cvId using CandidateID
         const getCvIdSql = 'SELECT CV_ID FROM candidate WHERE CandidateId = ?';
@@ -98,10 +98,10 @@ interviewRoutes.post('/offer', async (req, res) => {
 
             // Insert new application with null description
             const insertApplicationSql = `
-                INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied, Type)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`;
+                INSERT INTO application (CandidateID, CV_ID, JobOfferID, Description, Status, DateApplied, Type, Score)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-            const applicationValues = [CandidateID, cvId, JobOfferID, note, '', dateApplied, 'Offered'];
+            const applicationValues = [CandidateID, cvId, JobOfferID, note, '', dateApplied, 'Offered', score];
 
             pool.query(insertApplicationSql, applicationValues, (applicationError, applicationResults) => {
                 if (applicationError) {

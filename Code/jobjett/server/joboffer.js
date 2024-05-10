@@ -70,7 +70,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
 jobofferRoutes.get('/loadjoboffers', async (req, res) => {
     try {
         const pool = req.pool;        
-        const { page = 1, pageSize = 9, jobTitle, companyName, location } = req.query;
+        const { page = 1, pageSize = 9, jobTitle, companyName, location, sortBy } = req.query;
         const offset = (page - 1) * pageSize;
 
         // Build the WHERE clause for filtering based on search parameters
@@ -113,7 +113,10 @@ jobofferRoutes.get('/loadjoboffers', async (req, res) => {
             if (whereClause) {
                 selectQuery += ` WHERE ${whereClause}`;
             }
+            selectQuery += ' ORDER BY DatePosted ' + (sortBy === 'newest' ? 'DESC' : 'ASC');
+
             selectQuery += ' LIMIT ?, ?';
+            
             queryParams.push(offset, parseInt(pageSize));
             pool.query(selectQuery, queryParams, (error, selectResults) => {
                 if (error) {
@@ -589,5 +592,65 @@ jobofferRoutes.get('/:idType/:ID/education', async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while fetching education.' });
     }
 });
+
+jobofferRoutes.get('/:idType/:ID/candidate-cv', async (req, res) => {
+    try {
+        const pool = req.pool;
+        const idType = req.params.idType;
+        const ID = req.params.ID;
+
+        let sql;
+        if (idType === 'application') {
+            sql = `
+                SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address, Candidate.State, Candidate.Country, CV.CV_ID, CV.Summary, CV.Skills, CV.SoftSkills, CV.Domain 
+                FROM application a
+                JOIN candidate Candidate ON a.CandidateID = Candidate.CandidateID
+                JOIN user User ON Candidate.UserID = User.UserID
+                LEFT JOIN cv CV ON Candidate.CandidateID = CV.CandidateID
+                WHERE a.applicationID = ?;`;
+        } else if (idType === 'candidate') {
+            sql = `
+                SELECT Candidate.FirstName, User.Email, Candidate.LastName, Candidate.DateOfBirth, Candidate.Phone, Candidate.Address, Candidate.State, Candidate.Country, CV.CV_ID, CV.Summary, CV.Skills, CV.SoftSkills, CV.Domain 
+                FROM candidate Candidate
+                JOIN user User ON Candidate.UserID = User.UserID
+                LEFT JOIN cv CV ON Candidate.CandidateID = CV.CandidateID
+                WHERE Candidate.CandidateID = ?;`;
+        } else {
+            return res.status(400).json({ error: 'Invalid idType. Use "application" or "candidate".' });
+        }
+
+        pool.query(sql, [ID], (error, results) => {
+            if (error) {
+                console.error('Error fetching candidate details and CV:', error);
+                return res.status(500).json({ error: 'An error occurred while fetching candidate details and CV.' });
+            }
+
+            if (results.length > 0) {
+                const candidateInfo = {
+                    firstName: results[0].FirstName,
+                    email: results[0].Email,
+                    dateOfBirth: results[0].DateOfBirth,
+                    lastName: results[0].LastName,
+                    phone: results[0].Phone,
+                    address: results[0].Address,
+                    state: results[0].State,
+                    country: results[0].Country,
+                    cvId: results[0].CV_ID,
+                    summary: results[0].Summary,
+                    skills: results[0].Skills,
+                    softskills: results[0].SoftSkills,
+                    domain: results[0].Domain
+                };
+                res.status(200).json(candidateInfo);
+            } else {
+                return res.status(404).json({ error: 'Candidate not found for the given ID.' });
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching candidate details and CV:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching candidate details and CV.' });
+    }
+});
+
 
 module.exports = jobofferRoutes;

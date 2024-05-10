@@ -4,6 +4,8 @@ import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const EmployerApplications = () => {
   const [jobOffers, setJobOffers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,14 +19,7 @@ const EmployerApplications = () => {
         );
         if (jobOffersResponse.ok) {
           const jobOffersData = await jobOffersResponse.json();
-          // Map over job offers and format the date
-          const formattedJobOffers = jobOffersData.map((jobOffer) => ({
-            ...jobOffer,
-            DatePosted: new Date(jobOffer.DatePosted).toLocaleDateString(
-              "en-GB"
-            ),
-          }));
-          setJobOffers(formattedJobOffers);
+          setJobOffers(jobOffersData);
         } else {
           console.error("Failed to fetch job offers");
         }
@@ -40,6 +35,25 @@ const EmployerApplications = () => {
     navigate(`/employer/applications/${jobOfferID}`);
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
+  };
+
+  let filteredJobOffers = jobOffers.filter((jobOffer) =>
+    jobOffer.Title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  console.log(filteredJobOffers);
+
+  if (sortBy === "newest") {
+    filteredJobOffers.sort((a, b) => new Date(b.DatePosted) - new Date(a.DatePosted));
+  } else {
+    filteredJobOffers.sort((a, b) => new Date(a.DatePosted) - new Date(b.DatePosted));
+  }
+
   return (
     <>
       <Navbar></Navbar>
@@ -49,7 +63,30 @@ const EmployerApplications = () => {
         </h2>
 
         <div className="mt-7 relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left ">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center ml-4">
+              <h3 className="text-center font-bold mt-4 mb-4 text-blueColor mr-2">Search</h3>
+              <input
+                type="text"
+                placeholder="Search by job title"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="border p-2"
+              />
+            </div>
+            <div className="flex items-center mr-2">
+              <h3 className="text-center font-bold mt-4 mb-4 text-blueColor mr-2">Sort By</h3>
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="border p-2"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+              </select>
+            </div>
+          </div>
+            <table className="w-full text-sm text-left ">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3">
@@ -68,7 +105,7 @@ const EmployerApplications = () => {
               </tr>
             </thead>
             <tbody>
-              {jobOffers.map((jobOffer) => (
+              {filteredJobOffers.map((jobOffer) => (
                 <tr
                   className="odd:bg-white even:bg-gray-50 border-b"
                   key={jobOffer.JobOfferID}
@@ -89,7 +126,7 @@ const EmployerApplications = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                   >
-                    {jobOffer.DatePosted}
+                    {new Date(jobOffer.DatePosted).toLocaleDateString("en-GB")}
                   </td>
                   <td
                     scope="row"

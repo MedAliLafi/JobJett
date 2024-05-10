@@ -62,6 +62,11 @@ const Application = () => {
                 const certificatesData = await certificatesResponse.json();
                 const educationData = await educationResponse.json();
                 const offerData = await offerResponse.json();   
+                console.log(candidateData);
+                console.log(offerData);
+                console.log(educationData);
+                console.log(workExperiencesData);
+                console.log(certificatesData);
                 candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString("en-GB");
                 offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
                 setAdditionalQuestions(offerData.additionalQuestions);
@@ -317,7 +322,7 @@ return (
         )}
         {/* Description input */}
         <div className="mb-5">
-        <label htmlFor="description" className="block mb-2 text-lg font-bold text-blueColor">Description:</label>
+        <label htmlFor="description" className="block mb-2 text-lg font-bold text-blueColor">Cover Letter:</label>
         <br />
         <textarea
           id="description"

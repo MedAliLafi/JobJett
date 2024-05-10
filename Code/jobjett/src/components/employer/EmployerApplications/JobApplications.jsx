@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../NavBar/EmployerNavbar.jsx";
 
-const ApplicationTable = ({ applications, jobOfferID, type, handleButtonClick }) => (
+const ApplicationTable = ({ applications, jobOfferID, type, handleButtonClick, handleSearch, searchTerm, handleSortChange, sortBy }) => (
   <div>
     <h2 className="text-center text-xl font-bold mt-4 text-blueColor">
       {type === "Applications" ? `Applications for Job Offer ID: ${jobOfferID}` : `Offers for Job Offer ID: ${jobOfferID}`}
@@ -24,6 +24,30 @@ const ApplicationTable = ({ applications, jobOfferID, type, handleButtonClick })
       >
         Offers
       </button>
+    </div>
+    <div className="flex justify-between items-center mb-4">
+      <div className="flex items-center ml-4">
+        <h3 className="text-center font-bold mt-4 mb-4 text-blueColor mr-2">Search</h3>
+        <input
+          type="text"
+          placeholder="Search by candidate name"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="border p-2"
+        />
+      </div>
+      <div className="flex items-center mr-2">
+        <h3 className="text-center font-bold mt-4 mb-4 text-blueColor mr-2">Sort By</h3>
+        <select
+          value={sortBy}
+          onChange={handleSortChange}
+          className="border p-2"
+        >
+          <option value="relevance">Relevance</option>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
     </div>
     {applications.length > 0 ? (
       <div className="mt-7 relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -131,6 +155,8 @@ const JobApplications = () => {
   const { jobOfferID } = useParams();
   const [applications, setApplications] = useState([]);
   const [applicationsType, setApplicationsType] = useState("Applications");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("relevance");
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -141,7 +167,22 @@ const JobApplications = () => {
         );
         if (response.ok) {
           const data = await response.json();
-          setApplications(data.filter(app => app.Type === (applicationsType === "Applications" ? 'Applied' : 'Offered')));
+          const filteredApplications = data.filter(app => app.Type === (applicationsType === "Applications" ? 'Applied' : 'Offered'));
+
+          let filteredAndSortedApplications = filteredApplications.filter(application =>
+            application.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            application.lastname.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+
+          if (sortBy === "newest") {
+            filteredAndSortedApplications.sort((a, b) => new Date(b.DateApplied) - new Date(a.DateApplied));
+          } else if (sortBy === "oldest") {
+            filteredAndSortedApplications.sort((a, b) => new Date(a.DateApplied) - new Date(b.DateApplied));
+          } else if (sortBy === "relevance") {
+            filteredAndSortedApplications.sort((a, b) => b.Score - a.Score);
+          }
+
+          setApplications(filteredAndSortedApplications);
         } else {
           console.error(`Failed to fetch applications for job offer ${jobOfferID}`);
         }
@@ -151,23 +192,33 @@ const JobApplications = () => {
     };
 
     fetchApplications();
-  }, [jobOfferID, applicationsType]);
+  }, [jobOfferID, applicationsType, searchTerm, sortBy]);
 
   const handleButtonClick = (type) => {
     setApplicationsType(type);
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
+  };
+
   return (
     <>
       <Navbar />
-      <div>
-        <ApplicationTable
-          applications={applications}
-          jobOfferID={jobOfferID}
-          type={applicationsType}
-          handleButtonClick={handleButtonClick}
-        />
-      </div>
+      <ApplicationTable
+        applications={applications}
+        jobOfferID={jobOfferID}
+        type={applicationsType}
+        handleButtonClick={handleButtonClick}
+        handleSearch={handleSearch}
+        searchTerm={searchTerm}
+        handleSortChange={handleSortChange}
+        sortBy={sortBy}
+      />
     </>
   );
 };

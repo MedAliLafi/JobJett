@@ -22,7 +22,7 @@ import EmployerInterviews from "./components/employer/EmployerInterviews/Employe
 import JobApplications from "./components/employer/EmployerApplications/JobApplications.jsx"
 import JobApplication from "./components/employer/EmployerApplications/JobApplication.jsx";
 import AddJobOffer from "./components/employer/AddJobOffer/AddJobOffer.jsx";
-import OfferAJob from "./components/employer/EmployerHomePage/OfferAJob.jsx";
+import OfferAJob from "./components/employer/OfferAJob/OfferAJob.jsx";
 import CandidateInterviews from "./components/candidate/CandidateInterviews/CandidateInterviews.jsx";
 import CandidateDetails from "./components/employer/CandidateDetails/CandidateDetails.jsx";
 
