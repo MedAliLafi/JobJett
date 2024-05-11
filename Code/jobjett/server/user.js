@@ -2,6 +2,19 @@ const express = require('express');
 const userRoutes = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'hotmail',
+    auth: {
+        user: 'jobjett@hotmail.com',
+        pass: 'job7050jett'
+    }
+  });
+
+function generateVerificationCode() {
+    return Math.floor(10000000 + Math.random() * 90000000);
+}
 
 // Function to register a new user
 function registerUser(pool, email, password, userType, callback) {
@@ -49,7 +62,61 @@ function loginUser(pool, email, password, callback) {
 // Route to change password
 userRoutes.post('/changePassword', async (req, res) => {
     const pool = req.pool;
-    const { currentPassword, newPassword } = req.body;
+    const { newPassword } = req.body;
+
+    try {
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
+        const query = 'SELECT * FROM User WHERE UserID = ?';
+        pool.query(query, [userId], async (error, results) => {
+            if (error) {
+                console.error('Error querying user:', error);
+                return res.status(500).json({ error: 'An error occurred while changing password.' });
+            }
+
+            if (results.length === 0) {
+                // User not found
+                return res.status(404).json({ error: 'User not found.' });
+            }
+
+            const user = results[0];
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            // Update the user's password in the database
+            const updateQuery = 'UPDATE User SET Password = ? WHERE UserID = ?';
+            pool.query(updateQuery, [hashedPassword, userId], (error, result) => {
+                if (error) {
+                    console.error('Error updating password:', error);
+                    return res.status(500).json({ error: 'An error occurred while changing password.' });
+                }
+                console.log('Password changed successfully');
+                transporter.sendMail({
+                    from: 'jobjett@hotmail.com',
+                    to: user.Email,
+                    subject: 'Your Password has been changed',
+                    text: 'Your Password has been changed successfully!'
+                }, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                    } else {
+                        console.log('Email sent:', info.response);
+                    }
+                });
+                res.status(200).json({ message: 'Password changed successfully' });
+            });
+        });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        return res.status(500).json({ error: 'An error occurred while changing password.' });
+    }
+});
+
+userRoutes.post('/verificationPassword', async (req, res) => {
+    const pool = req.pool;
+    const { currentPassword } = req.body;
 
     try {
         const token = req.cookies.token;
@@ -75,18 +142,20 @@ userRoutes.post('/changePassword', async (req, res) => {
                 return res.status(401).json({ error: 'Incorrect current password.' });
             }
 
-            // Hash the new password
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-            // Update the user's password in the database
-            const updateQuery = 'UPDATE User SET Password = ? WHERE UserID = ?';
-            pool.query(updateQuery, [hashedPassword, userId], (error, result) => {
+            const verificationCode = generateVerificationCode();
+            transporter.sendMail({
+                from: 'jobjett@hotmail.com',
+                to: user.Email,
+                subject: 'Request to change password',
+                text: `Your verification code is: ${verificationCode}`
+            }, (error, info) => {
                 if (error) {
-                    console.error('Error updating password:', error);
-                    return res.status(500).json({ error: 'An error occurred while changing password.' });
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ error: 'An error occurred while sending verification code email.' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    return res.status(200).json({ code: verificationCode }); // Send the verification code to the client
                 }
-                console.log('Password changed successfully');
-                res.status(200).json({ message: 'Password changed successfully' });
             });
         });
     } catch (error) {
@@ -98,7 +167,32 @@ userRoutes.post('/changePassword', async (req, res) => {
 // In your user.js file where you define routes
 userRoutes.post('/changeEmail', async (req, res) => {
     const pool = req.pool;
-    const { newEmail, password } = req.body;
+    const { newEmail } = req.body;
+
+    try {
+        const token = req.cookies.token;
+        if (!token) return null;
+        const decoded = jwt.verify(token, 'secret_key');
+        const userId = decoded.user.UserID;
+        // Update the user's email in the database
+        const updateQuery = 'UPDATE User SET Email = ? WHERE UserID = ?';
+        pool.query(updateQuery, [newEmail, userId], (error, result) => {
+            if (error) {
+                console.error('Error updating email:', error);
+                return res.status(500).json({ error: 'An error occurred while changing email.' });
+            }
+            console.log('Email changed successfully');
+            res.status(200).json({ message: 'Email changed successfully' });
+        });
+    } catch (error) {
+        console.error('Error changing email:', error);
+        return res.status(500).json({ error: 'An error occurred while changing email.' });
+    }
+});
+
+userRoutes.post('/verificationEmail', async (req, res) => {
+    const pool = req.pool;
+    const { password } = req.body;
 
     try {
         const token = req.cookies.token;
@@ -109,7 +203,7 @@ userRoutes.post('/changeEmail', async (req, res) => {
         pool.query(query, [userId], async (error, results) => {
             if (error) {
                 console.error('Error querying user:', error);
-                return res.status(500).json({ error: 'An error occurred while changing email.' });
+                return res.status(500).json({ error: 'An error occurred while changing password.' });
             }
 
             if (results.length === 0) {
@@ -120,27 +214,32 @@ userRoutes.post('/changeEmail', async (req, res) => {
             const user = results[0];
             const passwordMatch = await bcrypt.compare(password, user.Password);
             if (!passwordMatch) {
-                // Current password is incorrect
-                return res.status(401).json({ error: 'Incorrect password.' });
+                // Password is incorrect
+                return res.status(401).json({ error: 'Incorrect  password.' });
             }
 
-            // Update the user's email in the database
-            const updateQuery = 'UPDATE User SET Email = ? WHERE UserID = ?';
-            pool.query(updateQuery, [newEmail, userId], (error, result) => {
+            const verificationCode = generateVerificationCode();
+            transporter.sendMail({
+                from: 'jobjett@hotmail.com',
+                to: user.Email,
+                subject: 'Request to change email',
+                text: `Your verification code is: ${verificationCode}`
+            }, (error, info) => {
                 if (error) {
-                    console.error('Error updating email:', error);
-                    return res.status(500).json({ error: 'An error occurred while changing email.' });
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ error: 'An error occurred while sending verification code email.' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    return res.status(200).json({ code: verificationCode }); // Send the verification code to the client
                 }
-                console.log('Email changed successfully');
-                res.status(200).json({ message: 'Email changed successfully' });
             });
+            return res.status(200).json({ code: verificationCode }); // Send the verification code to the client
         });
     } catch (error) {
-        console.error('Error changing email:', error);
-        return res.status(500).json({ error: 'An error occurred while changing email.' });
+        console.error('Error changing password:', error);
+        return res.status(500).json({ error: 'An error occurred while changing password.' });
     }
 });
-
 
 // Route to delete user
 userRoutes.delete('/deleteUser', async (req, res) => {

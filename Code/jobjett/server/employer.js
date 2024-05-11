@@ -4,6 +4,15 @@ const employerRoutes = express.Router();
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer  = require('multer');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'hotmail',
+    auth: {
+        user: 'jobjett@hotmail.com',
+        pass: 'job7050jett'
+    }
+  });
 
 function getEmployerInfoById(pool, employerId) {
 return new Promise((resolve, reject) => {
@@ -81,6 +90,18 @@ employerRoutes.post('/registerEmployer', async (req, res) => {
                 return res.status(500).json({ error: 'An error occurred while registering the employer.' });
             }
             console.log('Employer registered successfully');
+            transporter.sendMail({
+                from: 'jobjett@hotmail.com',
+                to: email,
+                subject: 'Welcome to JobJett',
+                text: 'Thank you for registering with us!'
+            }, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                } else {
+                    console.log('Email sent:', info.response);
+                }
+            });
             res.status(200).json({ message: 'Employer registered successfully' });
         });
     });

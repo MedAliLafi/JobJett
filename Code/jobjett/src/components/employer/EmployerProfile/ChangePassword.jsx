@@ -7,24 +7,52 @@ const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [verifyNewPassword, setVerifyNewPassword] = useState('');
+    const [Code, setCode] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [verificationCodeSent, setVerificationCodeSent] = useState(false);
 
-    const handleChangePassword = async () => {
+    const handleVerificationCode = async () => {
         if (newPassword !== verifyNewPassword) {
             console.error('New passwords do not match');
             return;
         }
+        try {
+            const response = await fetch('http://localhost:9000/User/verificationPassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ currentPassword }),
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setVerificationCode(parseInt(data.code));
+                setVerificationCodeSent(true);
+            } else {
+                console.error('Failed to change password');
+            }
+        } catch (error) {
+            console.error('Error changing password:', error);
+        }
+    };
 
+    const handleChangePassword = async () => {
+        if (Code !== verificationCode) {
+            console.error('Incorrect verification code');
+            return;
+        }
         try {
             const response = await fetch('http://localhost:9000/User/changePassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ currentPassword, newPassword }),
+                body: JSON.stringify({ newPassword }),
                 credentials: 'include'
             });
             if (response.ok) {
-                navigate('/employer/profile'); // Redirect to profile page
+                navigate('/employer/profile');
             } else {
                 console.error('Failed to change password');
             }
@@ -51,9 +79,18 @@ const ChangePassword = () => {
                         <label htmlFor="verifyNewPassword" className="block text-sm font-medium text-gray-700">Verify New Password:</label>
                         <input type="password" id="verifyNewPassword" value={verifyNewPassword} onChange={e => setVerifyNewPassword(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blueColor focus:ring focus:ring-blueColor focus:ring-opacity-50" />
                     </div>
-                    <button onClick={handleChangePassword} className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blueColor hover:bg-darkBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blueColor">
-                        Change Password
+                    <button onClick={handleVerificationCode} className="w-full mb-4 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blueColor hover:bg-darkBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blueColor">
+                        Send Verification Code
                     </button>
+                    {verificationCodeSent && (
+                    <div className="mb-4">
+                        <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700">Verification Code:</label>
+                        <input type="text" id="verificationCode" value={Code} onChange={e => setCode(parseInt(e.target.value))} className="mt-1 mb-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-blueColor focus:ring focus:ring-blueColor focus:ring-opacity-50" />         
+                        <button onClick={handleChangePassword} className="w-full mb-4 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blueColor hover:bg-darkBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blueColor">
+                        Change Password
+                        </button>
+                    </div>
+                    )}
                 </div>
             </div>
         </>

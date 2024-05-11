@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 11, 2024 at 12:57 AM
+-- Generation Time: May 12, 2024 at 12:24 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,7 +47,8 @@ CREATE TABLE `application` (
 INSERT INTO `application` (`ApplicationID`, `CandidateID`, `CV_ID`, `JobOfferID`, `Description`, `Status`, `DateApplied`, `Type`, `Score`, `Answers`) VALUES
 (35, 21, 10, 1, 'Bonjkour nous vous aime travaille chez nous frere', 'Interview Cancelled', '2024-05-05', 'Applied', 15, NULL),
 (48, 21, 10, 1, 'Bonjour qwoeirm oqwer qowermoqwrekmqw oqkwmer oqwekrm qwer okqmwer okqmwer okmqwero kmqwer okmqwer komqwer okmqwer okmwqer okmqwer okmqwer okmqwer okmqwer okmkqwer okmqwer okmqwer okmkqwer okmqwer', 'Pending', '2024-05-09', 'Applied', 31, 'Yes'),
-(50, 21, 10, 1, 'qwerqwer', 'Interview Scheduled_61', '2024-05-10', 'Offered', 31, NULL);
+(50, 21, 10, 1, 'qwerqwer', 'Interview Scheduled_61', '2024-05-10', 'Offered', 31, NULL),
+(51, 21, 10, 73, 'qwerqwerqwerqwerqwer', 'Pending', '2024-05-11', 'Applied', 22, 'qwerqwer');
 
 -- --------------------------------------------------------
 
@@ -193,7 +194,7 @@ CREATE TABLE `interview` (
 --
 
 INSERT INTO `interview` (`InterviewID`, `ApplicationID`, `JobOfferId`, `CandidateID`, `EmployerID`, `InterviewDateTime`, `Message`) VALUES
-(61, 50, 1, 21, 11, '2024-05-24 19:01:00', 'weqwerqwer');
+(61, 50, 1, 21, 11, '2024-05-12 19:01:00', 'weqwerqwer');
 
 -- --------------------------------------------------------
 
@@ -304,7 +305,10 @@ INSERT INTO `notification` (`NotificationID`, `UserID`, `Message`, `DateTime`, `
 (56, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-10 13:28:41', 0, '/candidate/applications/49'),
 (57, 39, 'Your job application has been denied.', '2024-05-10 13:29:19', 0, '/candidate/applications/49'),
 (58, 39, 'Your job application has been denied.', '2024-05-10 13:29:34', 0, '/candidate/applications/49'),
-(59, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-10 13:58:59', 0, '/candidate/applications/50');
+(59, 39, 'You\'ve been offered a job and scheduled for an interview.', '2024-05-10 13:58:59', 0, '/candidate/applications/50'),
+(60, 35, 'New applicant for your Software Developer offer!', '2024-05-11 00:00:00', 0, '/employer/applications/73'),
+(61, 39, 'You have an interview scheduled for tomorrow.', '2024-05-11 18:10:00', 0, '/candidate/interviews'),
+(62, 35, 'You have an interview scheduled for tomorrow with a candidate.', '2024-05-11 18:10:00', 0, '/employer/interviews');
 
 -- --------------------------------------------------------
 
@@ -474,13 +478,13 @@ ALTER TABLE `work_experience`
 -- AUTO_INCREMENT for table `application`
 --
 ALTER TABLE `application`
-  MODIFY `ApplicationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `ApplicationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `candidate`
 --
 ALTER TABLE `candidate`
-  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `CandidateID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `certification`
@@ -492,7 +496,7 @@ ALTER TABLE `certification`
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `CV_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `education`
@@ -522,7 +526,7 @@ ALTER TABLE `joboffer`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -534,7 +538,7 @@ ALTER TABLE `offer`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `work_experience`

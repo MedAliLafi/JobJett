@@ -3,6 +3,15 @@ const { registerUser, loginUser } = require('./user.js');
 const candidateRoutes = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'hotmail',
+    auth: {
+        user: 'jobjett@hotmail.com',
+        pass: 'job7050jett'
+    }
+  });
 
 function getCandidateInfoById(pool, candidateId) {
     return new Promise((resolve, reject) => {
@@ -101,6 +110,18 @@ candidateRoutes.post('/registerCandidate', async (req, res) => {
                             return res.status(500).json({ error: 'An error occurred while updating the candidate record.' });
                         }
                         console.log('Candidate registered successfully');
+                        transporter.sendMail({
+                            from: 'jobjett@hotmail.com',
+                            to: email,
+                            subject: 'Welcome to JobJett',
+                            text: 'Thank you for registering with us!'
+                        }, (error, info) => {
+                            if (error) {
+                                console.error('Error sending email:', error);
+                            } else {
+                                console.log('Email sent:', info.response);
+                            }
+                        });
                         res.status(200).json({ message: 'Candidate registered successfully' });
                     });
                 });

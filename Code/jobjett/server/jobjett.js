@@ -10,6 +10,7 @@ const cvRoutes = require('./cv.js');
 const jobofferRoutes = require('./joboffer.js');
 const interviewRoutes = require('./interview.js');
 const jwt = require('jsonwebtoken');
+const schedule = require('node-schedule');
 
 const app = express();
 app.use(bodyParser.json());
@@ -32,6 +33,60 @@ const pool = mysql.createPool({
 app.use((req, res, next) => {
   req.pool = pool;
   next();
+});
+
+// Function to check for interviews scheduled for tomorrow and send notifications
+const scheduleInterviewNotifications = (pool) => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
+  const query = `
+      SELECT interview.InterviewID, interview.CandidateID, interview.EmployerID, candidate.UserId AS CandidateUserId, employer.UserId AS EmployerUserId
+      FROM interview
+      INNER JOIN candidate ON interview.CandidateID = candidate.CandidateID
+      INNER JOIN employer ON interview.EmployerID = employer.EmployerID
+      WHERE DATE(interview.InterviewDateTime) = ?`;
+
+  pool.query(query, [tomorrow], (error, results) => {
+      if (error) {
+          console.error('Error fetching interviews for tomorrow:', error);
+          return;
+      }
+      
+      results.forEach(result => {
+          const { InterviewID, CandidateID, EmployerID, CandidateUserId, EmployerUserId } = result;
+
+          // Add notification for candidate
+          const candidateNotificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+          const candidateNotificationValues = [CandidateUserId, `You have an interview scheduled for tomorrow.`, new Date().toISOString(), 0, `/candidate/interviews`];
+
+          pool.query(candidateNotificationSql, candidateNotificationValues, (candidateNotificationError, candidateNotificationResult) => {
+              if (candidateNotificationError) {
+                  console.error('Error adding notification for candidate:', candidateNotificationError);
+                  return;
+              }
+              console.log('Notification added for candidate successfully');
+          });
+
+          // Add notification for employer
+          const employerNotificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+          const employerNotificationValues = [EmployerUserId, `You have an interview scheduled for tomorrow with a candidate.`, new Date().toISOString(), 0, `/employer/interviews`];
+
+          pool.query(employerNotificationSql, employerNotificationValues, (employerNotificationError, employerNotificationResult) => {
+              if (employerNotificationError) {
+                  console.error('Error adding notification for employer:', employerNotificationError);
+                  return;
+              }
+              console.log('Notification added for employer successfully');
+          });
+      });
+  });
+};
+
+// Schedule the function to run every day at 15:00
+schedule.scheduleJob('00 15 * * *', () => {
+  scheduleInterviewNotifications(pool);
 });
 
 // Function to verify JWT token and check if the user is an employer
