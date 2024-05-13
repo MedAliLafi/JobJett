@@ -16,6 +16,10 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
         // Extract job offer data from the request body
         const { jobTitle, jobDepartment, jobSchedule, reqEducation, reqExperience, reqSkills, reqSoftSkills, additionalQuestions, jobLocationType, jobType, payType, pay, payFrequency, jobDescription } = req.body;
         const salary = `${payType}_${pay}_${payFrequency}`;
+        let aq = additionalQuestions;
+        if(aq == ''){
+            aq = null;
+        }
 
         // Construct the job offer object
         const jobOfferData = {
@@ -27,7 +31,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
             ReqExperience: reqExperience,
             ReqSkills: reqSkills,
             ReqSoftSkills: reqSoftSkills,
-            AdditionalQuestions: additionalQuestions,
+            AdditionalQuestions: aq,
             Description: jobDescription,
             Type: jobType,
             Salary: salary,
@@ -51,7 +55,7 @@ jobofferRoutes.post('/addJobOffer', async (req, res) => {
             jobOfferData.ReqExperience,
             jobOfferData.ReqSkills,
             jobOfferData.ReqSoftSkills,
-            jobOfferData.AdditionalQuestions // New field
+            jobOfferData.AdditionalQuestions
         ];
         pool.query(sql, values, (error, result) => {
             if (error) {
