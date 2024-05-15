@@ -25,9 +25,10 @@ import AddJobOffer from "./components/employer/AddJobOffer/AddJobOffer.jsx";
 import OfferAJob from "./components/employer/OfferAJob/OfferAJob.jsx";
 import CandidateInterviews from "./components/candidate/CandidateInterviews/CandidateInterviews.jsx";
 import CandidateDetails from "./components/employer/CandidateDetails/CandidateDetails.jsx";
+import ForgotPasswordC from "./components/candidate/ForgotPassword/ForgotPassword.jsx";
+import ForgotPasswordE from "./components/employer/ForgotPassword/ForgotPassword.jsx";
 
 function App() {
-  // Retrieve authentication status from local storage or default to false
   const [isCandidateAuthenticated, setIsCandidateAuthenticated] = useState(
     localStorage.getItem("isCandidateAuthenticated") === "true" || false
   );
@@ -104,6 +105,7 @@ function App() {
           <Route exact path="/" element={<LandingPage />} />
           <Route path="/candidate/login" element={<CandidateLogin />} />
           <Route path="/candidate/register" element={<CandidateRegister />} />
+          <Route path="/candidate/forgotpassword" element={<ForgotPasswordC />} />
           <Route
             path="/candidate"
             element={withCandidateProtection(<CandidateHomePage />)}
@@ -142,6 +144,7 @@ function App() {
           />
           <Route path="/employer/login" element={<EmployerLogin />} />
           <Route path="/employer/register" element={<EmployerRegister />} />
+          <Route path="/employer/forgotpassword" element={<ForgotPasswordE />} />
           <Route
             path="/employer"
             element={withEmployerProtection(<EmployerHomePage />)}

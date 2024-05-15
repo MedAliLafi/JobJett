@@ -37,6 +37,10 @@ const EmployerLogin = () => {
         checkLoggedIn();
     }, []);
 
+    const handleForgotPasswordClick = () => {
+      navigate('/employer/forgotpassword');
+    };
+
     const loginEmployer = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -135,6 +139,7 @@ const EmployerLogin = () => {
                 </div>
                 <a
                   className="text-sm font-medium text-primary-600 hover:underline hover:text-blueColor"
+                  onClick={handleForgotPasswordClick}
                 >
                   Forgot password?
                 </a>

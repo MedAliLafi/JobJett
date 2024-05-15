@@ -37,6 +37,10 @@ const CandidateLogin = () => {
         checkLoggedIn();
     }, []);
 
+    const handleForgotPasswordClick = () => {
+      navigate('/candidate/forgotpassword');
+    };
+
     const loginCandidate = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -135,6 +139,7 @@ const CandidateLogin = () => {
                 </div>
                 <a
                   className="text-sm font-medium text-primary-600 hover:underline hover:text-blueColor"
+                  onClick={handleForgotPasswordClick}
                 >
                   Forgot password?
                 </a>
