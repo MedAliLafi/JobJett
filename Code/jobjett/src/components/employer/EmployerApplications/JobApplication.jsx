@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const JobApplication = () => {
+    const { jobOfferID } = useParams();
     const { applicationID } = useParams();
     const [application, setApplication] = useState(null);
     const [workExperiences, setWorkExperiences] = useState([]);
@@ -12,6 +13,10 @@ const JobApplication = () => {
     const [showDateTimeInput, setShowDateTimeInput] = useState(false);
     const [message, setMessage] = useState('');
     const [showMessageInput, setShowMessageInput] = useState(false);
+    const [additionalQuestions, setAdditionalQuestions] = useState([]);
+    const [answers, setAnswers] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [softskills, setSoftSkills] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,17 +33,28 @@ const JobApplication = () => {
                 const educationResponse = await fetch(`http://localhost:9000/Employer/JobOffer/application/${applicationID}/education`, {
                     credentials: 'include'
                 });
+                const offerResponse = await fetch(`http://localhost:9000/Candidate/JobOffer/${jobOfferID}`, {
+                    credentials: 'include'
+                });
 
-                if (applicationResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok) {
+                if (applicationResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok && offerResponse.ok) {
                     const applicationData = await applicationResponse.json();
                     const workExperiencesData = await workExperienceResponse.json();
                     const certificatesData = await certificatesResponse.json();
                     const educationData = await educationResponse.json();
-
+                    const offerData = await offerResponse.json();   
+                    offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
+                    applicationData[0].Answers = applicationData[0].Answers.split(";code;");
+                    applicationData[0].Skills = applicationData[0].Skills.split(";code;");
+                    applicationData[0].SoftSkills = applicationData[0].SoftSkills.split(";code;");
                     setApplication(applicationData[0]);
                     setWorkExperiences(workExperiencesData);
                     setCertificates(certificatesData);
                     setEducation(educationData);
+                    setAdditionalQuestions(offerData.additionalQuestions);
+                    setAnswers(applicationData[0].Answers);
+                    setSkills(applicationData[0].Skills);
+                    setSoftSkills(applicationData[0].SoftSkills);
                 } else {
                     console.error(`Failed to fetch data for application ${applicationID}`);
                 }
@@ -110,12 +126,20 @@ return (
                     </h2>
                     <div className="bg-white shadow-md rounded-lg p-6 mb-6">
                         <p className="font-semibold">Candidate Details</p>
-                        <p>First Name: {application.firstname}</p>
-                        <p>Last Name: {application.lastname}</p>
-                        <p>State: {application.state}</p>
-                        <p>Country: {application.country}</p>
+                        <p>First Name: {application.FirstName}</p>
+                        <p>Last Name: {application.LastName}</p>
+                        <p>State: {application.State}</p>
+                        <p>Country: {application.Country}</p>
                         <p>Date Applied: {new Date(application.DateApplied).toLocaleDateString('en-GB')}</p>
                         <p>Status: {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}</p>
+                        <p>Skills:</p>
+                {skills.map((skill, index) => (
+                    <p key={index}>{skill}</p>
+                ))}
+                <p>Soft Skills:</p>
+                {softskills.map((softSkill, index) => (
+                    <p key={index}>{softSkill}</p>
+                ))}
                     </div>
                 </>
             )}
@@ -166,6 +190,20 @@ return (
                     ))}
                 </ul>
             </div>
+            {/* Display additional questions */}
+            {additionalQuestions.length > 0 && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h3 className="font-semibold mb-2">Additional Questions</h3>
+                    <ul>
+                        {additionalQuestions.map((question, index) => (
+                            <li key={index} className="mb-2">
+                                <p className="font-semibold">Question: {question}</p>
+                                <p>Answer: {answers[index]}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
             <div className="flex justify-between items-center mb-6">
                 {/* Modify the condition for displaying the "Set up interview" button */}
                 {application && !application.Status.includes('Interview Scheduled') && (

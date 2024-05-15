@@ -390,14 +390,8 @@ jobofferRoutes.get('/:applicationID/application', async (req, res) => {
         const sql = `
             SELECT 
                 application.*,
-                candidate.firstname, 
-                candidate.lastname, 
-                candidate.phone, 
-                candidate.state, 
-                candidate.country, 
-                candidate.address,
-                cv.summary,
-                cv.skills
+                candidate.*,
+                cv.*
             FROM 
                 application
             INNER JOIN 
