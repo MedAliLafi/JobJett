@@ -60,6 +60,14 @@ const OfferAJob = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!interviewDateTime) {
+      alert('Please select an interview date and time.');
+      return;
+  }
+  if (!message) {
+      alert('Please provide a message for the interview.');
+      return;
+  }
     try {
         const response = await fetch(`http://localhost:9000/Employer/Interview/offer`, {
           method: "POST",
@@ -195,6 +203,14 @@ const OfferAJob = () => {
   
       
   const handleSetInterview = async () => {
+    if (!selectedJobOffer) {
+        alert('Please select a job offer.');
+        return;
+    }
+    if (!note) {
+        alert('Please provide a note.');
+        return;
+    }
     setShowMessageInput(true);
     setShowDateTimeInput(true);
     setShowSubmitButton(true);

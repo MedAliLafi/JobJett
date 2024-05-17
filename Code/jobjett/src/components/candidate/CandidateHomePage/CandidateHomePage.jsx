@@ -82,10 +82,10 @@ function CandidateHomePage() {
   const isLastPage = currentPage >= totalPages;
 
   function truncateDescription(description) {
-    if (description.length <= 80) {
+    if (description.length <= 75) {
       return description;
     } else {
-      return description.slice(0, 80) + "...";
+      return description.slice(0, 75) + "...";
     }
   }
 

@@ -90,6 +90,14 @@ const JobApplication = () => {
 
     const handleAddInterview = async () => {
         try {
+            if (!interviewDateTime) {
+                alert('Please select an interview date and time.');
+                return;
+            }
+            if (!message) {
+                alert('Please provide a message for the interview.');
+                return;
+            }
             const response = await fetch(`http://localhost:9000/Employer/Interview/${applicationID}/add`, {
                 method: 'POST',
                 headers: {
@@ -114,6 +122,7 @@ const JobApplication = () => {
             console.error('Error scheduling interview:', error);
         }
     };
+    
 
 return (
     <>

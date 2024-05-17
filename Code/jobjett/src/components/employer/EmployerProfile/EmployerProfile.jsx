@@ -115,6 +115,42 @@ const EmployerProfile = () => {
     };
 
     const handleSaveProfile = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Invalid email format');
+            return;
+        }
+        
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+            alert('Invalid phone number format');
+            return;
+        }
+
+        if (!companyName.trim()) {
+            alert('Company name is required');
+            return;
+        }
+    
+        if (!industry.trim()) {
+            alert('Industry is required');
+            return;
+        }
+    
+        if (!address.trim()) {
+            alert('Address is required');
+            return;
+        }
+    
+        if (!state.trim()) {
+            alert('State is required');
+            return;
+        }
+    
+        if (!country.trim()) {
+            alert('Country is required');
+            return;
+        }
         try {
             const formData = new FormData();
             formData.append('companyName', companyName);

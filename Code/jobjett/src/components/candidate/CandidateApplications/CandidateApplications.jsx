@@ -82,60 +82,70 @@ const CandidateApplications = () => {
             </button>
           </div>
           {applicationsType === "Applications" && appliedApplications.length > 0 &&(
-            <div>
-              <h3 className="text-xl font-semibold text-blueColor">Applications</h3>
-              <div className="mt-7 relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left">
-                  {/* Table headers */}
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3">
-                        Job Title
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Company Name
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Description
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  {/* Table body */}
-                  <tbody>
-                    {appliedApplications.map((application) => (
-                      <tr key={application.ApplicationID} className="odd:bg-white even:bg-gray-50 border-b">
-                        {/* Table data */}
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                        >
-                          {application.JobOfferTitle}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                        >
-                          {application.CompanyName}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                        >
-                  {truncateDescription(application.Description)}
-                        </td>
-                        <td
-                          scope="row"
-                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                        >
-                          {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+  <div>
+    <h3 className="text-xl font-semibold text-blueColor">Applications</h3>
+    <div className="mt-7 relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table className="w-full text-sm text-left">
+        {/* Table headers */}
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+          <tr>
+            <th scope="col" className="px-6 py-3">
+              Job Title
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Company Name
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Description
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Status
+            </th>
+            <th className="px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        {/* Table body */}
+        <tbody>
+          {appliedApplications.map((application) => (
+            <tr key={application.ApplicationID} className="odd:bg-white even:bg-gray-50 border-b">
+              {/* Table data */}
+              <td
+                scope="row"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+              >
+                {application.JobOfferTitle}
+              </td>
+              <td
+                scope="row"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+              >
+                {application.CompanyName}
+              </td>
+              <td
+                scope="row"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+              >
+                {truncateDescription(application.Description)}
+              </td>
+              <td
+                scope="row"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+              >
+                {application.Status.includes('Interview Scheduled') ? 'Interview Scheduled' : application.Status}
+              </td>
+              <td className="px-6 py-4">
+                {/* Add a button similar to the one in Offers */}
+                <button
+                  // Add your onClick function here when you're ready to implement it
+                  className="text-white bg-red-600 hover:bg-red-700 rounded-md px-3 py-1 ml-2 cursor-not-allowed"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
               </div>
             </div>
           )}

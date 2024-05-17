@@ -24,7 +24,7 @@ const AddJobOffer = () => {
         jobLocationType: '',
         jobType: '',
         jobSchedule:'',
-        payType: '',
+        payType: 'Exact',
         pay: '',
         payFrequency: '',
         jobDescription: '',
@@ -32,10 +32,67 @@ const AddJobOffer = () => {
         reqExperience:'',
         reqSkills:'',
         reqSoftSkills:'',
-        additionalQuestions:'',
+        additionalQuestions:'No',
     });
     
     const submitJobOffer = async () => {
+        const requiredFields = [
+            'jobTitle',
+            'jobDepartment',
+            'jobDescription',
+            'reqEducation',
+            'reqExperience',
+            'jobType',
+            'jobSchedule',
+            'jobLocationType',
+            'payType',
+            'payFrequency',
+            'pay',
+        ];
+        
+        for (const field of requiredFields) {
+            if (!formData[field]) {
+                alert(`${field} is required.`);
+                // Handle error for missing required field
+                return;
+            }
+        }
+        
+        // Skills and soft skills validation
+        if ((!formData.reqSkills || formData.reqSkills.split(';code;').length < 2)) {
+            alert('At least one skill is required.');
+            // Handle error for missing required skills
+            return;
+        }
+        
+        if ((!formData.reqSoftSkills || formData.reqSoftSkills.split(';code;').length < 2)) {
+            alert('At least one soft skill is required.');
+            // Handle error for missing required soft skills
+            return;
+        }
+        
+        // Additional questions validation
+        if (formData.additionalQuestions !== 'No' && (!formData.additionalQuestions || formData.additionalQuestions.split(';code;').length < 2)) {
+            alert('You didnt type the additional questions.');
+            // Handle error for missing additional questions
+            return;
+        }
+        
+        if ((formData.payType === 'Exact' || formData.payType === 'Min' || formData.payType === 'Max') && (!formData.pay)) {
+            alert('Salary amount is required.');
+            // Handle error for missing salary amount
+            return;
+        }        
+        
+        if (formData.payType === 'Range') {
+            const rangeValues = formData.pay.split('-');
+            if (rangeValues.length !== 2 || !rangeValues[0] || !rangeValues[1] || isNaN(rangeValues[0]) || isNaN(rangeValues[1]) || parseInt(rangeValues[0]) >= parseInt(rangeValues[1])) {
+                alert('Salary range format is invalid. Please provide a valid range where the first value is less than the second value.');
+                // Handle error for invalid salary range format
+                return;
+            }
+        }
+        
         try {
             const response = await fetch('http://localhost:9000/Employer/JobOffer/addJobOffer', {
                 method: 'POST',
@@ -56,7 +113,7 @@ const AddJobOffer = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            // Handle netwaaork errors
+            // Handle network errors
         }
     };
     

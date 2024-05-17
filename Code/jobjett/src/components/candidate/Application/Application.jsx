@@ -62,6 +62,11 @@ const Application = () => {
                 const certificatesData = await certificatesResponse.json();
                 const educationData = await educationResponse.json();
                 const offerData = await offerResponse.json();   
+                console.log(candidateData);
+                console.log(offerData);
+                console.log(educationData);
+                console.log(workExperiencesData);
+                console.log(certificatesData);
                 candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString("en-GB");
                 offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
                 setAdditionalQuestions(offerData.additionalQuestions);

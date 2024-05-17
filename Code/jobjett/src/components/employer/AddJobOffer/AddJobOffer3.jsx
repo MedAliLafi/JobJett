@@ -2,7 +2,7 @@ import "./AddJobOffer.css";
 import image from "../../../assets/NA_October_10.jpg";
 import { useState } from "react";
 const AddJobOffer3 = ({ formData, setFormData }) => {
-  const [salary, setSalary] = useState("Range");
+  const [salary, setSalary] = useState("Exact");
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
   const [payFrequency, setPayFrequency] = useState("");

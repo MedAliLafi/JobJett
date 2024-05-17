@@ -102,39 +102,47 @@ const EmployerInterviews = () => {
 
   const rescheduleInterview = async (interviewID) => {
     try {
-      const response = await fetch(
-        `http://localhost:9000/Employer/Interview/${interviewID}/reschedule`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ interviewID, interviewDateTime: rescheduleDateTime[interviewID], message: rescheduleMessage[interviewID] }),
-          credentials: "include",
+        if (!rescheduleDateTime[interviewID]) {
+            alert('Please select a rescheduled date and time.');
+            return;
         }
-      );
-      if (response.ok) {
-        console.log("Interview rescheduled successfully.");
-        // Update UI to hide input and reset state
-        setShowRescheduleInput(prevState => ({
-          ...prevState,
-          [interviewID]: false
-        }));
-        setRescheduleDateTime(prevState => ({
-          ...prevState,
-          [interviewID]: ''
-        }));
-        setRescheduleMessage(prevState => ({
-          ...prevState,
-          [interviewID]: ''
-        }));
-      } else {
-        console.error("Failed to reschedule interview");
-      }
+        if (!rescheduleMessage[interviewID]) {
+            alert('Please provide a reschedule message.');
+            return;
+        }
+        const response = await fetch(
+            `http://localhost:9000/Employer/Interview/${interviewID}/reschedule`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ interviewID, interviewDateTime: rescheduleDateTime[interviewID], message: rescheduleMessage[interviewID] }),
+                credentials: "include",
+            }
+        );
+        if (response.ok) {
+            alert("Interview rescheduled successfully.");
+            setShowRescheduleInput(prevState => ({
+                ...prevState,
+                [interviewID]: false
+            }));
+            setRescheduleDateTime(prevState => ({
+                ...prevState,
+                [interviewID]: ''
+            }));
+            setRescheduleMessage(prevState => ({
+                ...prevState,
+                [interviewID]: ''
+            }));
+        } else {
+            alert("Failed to reschedule interview");
+        }
     } catch (error) {
-      console.error("Error rescheduling interview:", error);
+        alert("Error rescheduling interview:", error);
     }
-  };
+};
+
 
   return (
     <>

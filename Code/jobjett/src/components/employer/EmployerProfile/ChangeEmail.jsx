@@ -34,7 +34,12 @@ const ChangeEmail = () => {
 
     const handleChangeEmail = async () => {
         if (Code !== verificationCode) {
-            console.error('Incorrect verification code');
+            alert('Incorrect verification code');
+            return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(newEmail)) {
+            alert('Please enter a valid email address.');
             return;
         }
         try {
@@ -47,7 +52,7 @@ const ChangeEmail = () => {
                 credentials: 'include'
             });
             if (response.ok) {
-                navigate('/employer/profile'); // Redirect to profile page
+                navigate('/employer/profile');
             } else {
                 console.error('Failed to change email');
             }

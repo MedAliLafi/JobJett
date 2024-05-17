@@ -341,66 +341,107 @@ const EmployerRegister = () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const password = formData.get("password");
-    if (password !== formData.get("passwordConfirmation")) {
-      console.error("Password and confirmation do not match");
+    const email = formData.get("email");
+    const firstname = formData.get("firstname");
+    const lastname = formData.get("lastname");
+    const companyName = formData.get("companyName");
+    const industry = formData.get("industry");
+    const numberOfEmployees = formData.get("numberOfEmployees");
+    const phone = formData.get("phone");
+    const state = formData.get("state");
+    const country = formData.get("country");
+    const address = formData.get("address");
+  
+    if (
+      !email ||
+      !password ||
+      !firstname ||
+      !lastname ||
+      !companyName ||
+      !industry ||
+      !numberOfEmployees ||
+      !phone ||
+      !state ||
+      !country ||
+      !address
+    ) {
+      alert("Please fill in all fields.");
       return;
     }
+  
+    if (password !== formData.get("passwordConfirmation")) {
+      alert("Password and confirmation do not match.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Invalid email format');
+        return;
+    }
+
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+        alert('New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)');
+        return;
+    }
+  
     const day = parseInt(formData.get("day"), 10) + 1;
     const month = parseInt(formData.get("month"), 10) - 1;
     const year = parseInt(formData.get("year"), 10);
     const dateOfBirth = new Date(year, month, day);
+  
     try {
-        const response = await fetch('http://localhost:9000/Employer/registerEmployer', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                email: formData.get('email'),
-                password: formData.get('password'),
-                firstname: formData.get("firstname"),
-                lastname: formData.get("lastname"),
-                dateOfBirth: dateOfBirth,
-                companyName: formData.get('companyName'),
-                industry: formData.get('industry'),
-                numberOfEmployees: formData.get("numberOfEmployees"),
-                phone: formData.get('phone'),
-                state: formData.get('state'),
-                country: formData.get('country'),
-                address: formData.get('address')
-            })
-        });
+      const response = await fetch("http://localhost:9000/Employer/registerEmployer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          password,
+          firstname,
+          lastname,
+          dateOfBirth,
+          companyName,
+          industry,
+          numberOfEmployees,
+          phone,
+          state,
+          country,
+          address,
+        }),
+      });
+  
       if (!response.ok) {
         throw new Error("Registration failed");
       }
-
+  
       console.log("Registration successful");
-      const loginResponse = await fetch("http://localhost:9000/Employer/loginEmployer",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            email: formData.get("email"),
-            password: formData.get("password"),
-          }),
-        }
-      );
-
+      const loginResponse = await fetch("http://localhost:9000/Employer/loginEmployer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+  
       if (!loginResponse.ok) {
         throw new Error("Login failed");
       }
-
+  
       console.log("Login successful");
       navigate("/employer");
       window.location.reload();
     } catch (error) {
       console.error("Error registering employer:", error);
     }
-  };
+  };  
 
   return (
     <>
