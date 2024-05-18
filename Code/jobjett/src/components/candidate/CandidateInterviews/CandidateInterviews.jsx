@@ -55,8 +55,9 @@ const CandidateInterviews = () => {
         }
       );
       if (!deleteResponse.ok) {
-        throw new Error("Failed to cancel interview");
-      }
+        const errorData = await response.json();
+        alert(`${errorData.error}`);
+        throw new Error(errorData.error);      }
       console.log("Interview canceled successfully.");
       // Update the interviews state to remove the canceled interview
       setInterviews((prevInterviews) =>

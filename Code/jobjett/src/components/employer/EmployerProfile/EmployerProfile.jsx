@@ -49,8 +49,9 @@ const EmployerProfile = () => {
                 setEmployerInfo(data);
                 setLogoPath(data.logo);
             } else {
-                console.error('Failed to fetch employer information');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error fetching employer information:', error);
         }
@@ -85,8 +86,9 @@ const EmployerProfile = () => {
                 logout();
                 navigate('/employer/login');
             } else {
-                console.error('Account deletion failed');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error during account deletion:', error);
         }
@@ -178,8 +180,9 @@ const EmployerProfile = () => {
                 setEditMode(false);
                 fetchEmployerInfo();
             } else {
-                console.error('Failed to update profile');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error updating profile:', error);
         }

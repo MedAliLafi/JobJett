@@ -89,8 +89,9 @@ const CandidateProfile = () => {
       if (response.ok) {
         logout();
       } else {
-        console.error("Account deletion failed");
-      }
+        const errorData = await response.json();
+        console.error(errorData);
+        alert(`${errorData.error}`);      }
     } catch (error) {
       console.error("Error during account deletion:", error);
     }
@@ -143,8 +144,9 @@ const CandidateProfile = () => {
         console.log("Profile updated successfully");
         setEditMode(false);
       } else {
-        console.error("Failed to update profile");
-      }
+        const errorData = await response.json();
+        console.error(errorData);
+        alert(`${errorData.error}`);      }
     } catch (error) {
       console.error("Error updating profile:", error);
     }

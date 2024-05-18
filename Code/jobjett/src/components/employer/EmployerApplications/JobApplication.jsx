@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from "../NavBar/EmployerNavbar.jsx";
 
 const JobApplication = () => {
     const { jobOfferID } = useParams();
+    const navigate = useNavigate();
     const { applicationID } = useParams();
     const [application, setApplication] = useState(null);
     const [workExperiences, setWorkExperiences] = useState([]);
@@ -43,16 +44,18 @@ const JobApplication = () => {
                     const certificatesData = await certificatesResponse.json();
                     const educationData = await educationResponse.json();
                     const offerData = await offerResponse.json();   
-                    offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
-                    applicationData[0].Answers = applicationData[0].Answers.split(";code;");
+                    if (offerData.additionalQuestions !== "No") {
+                        offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
+                        applicationData[0].Answers = applicationData[0].Answers.split(";code;");
+                        setAdditionalQuestions(offerData.additionalQuestions);
+                        setAnswers(applicationData[0].Answers);
+                    }
                     applicationData[0].Skills = applicationData[0].Skills.split(";code;");
                     applicationData[0].SoftSkills = applicationData[0].SoftSkills.split(";code;");
                     setApplication(applicationData[0]);
                     setWorkExperiences(workExperiencesData);
                     setCertificates(certificatesData);
                     setEducation(educationData);
-                    setAdditionalQuestions(offerData.additionalQuestions);
-                    setAnswers(applicationData[0].Answers);
                     setSkills(applicationData[0].Skills);
                     setSoftSkills(applicationData[0].SoftSkills);
                 } else {
@@ -75,9 +78,11 @@ const JobApplication = () => {
             if (response.ok) {
                 setApplication(prevState => ({ ...prevState, Status: 'Rejected' }));
                 console.log('Application status updated successfully.');
+                navigate(`/employer/applications/${jobOfferID}`);
             } else {
-                console.error(`Failed to update application status for job offer ${applicationID}`);
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error updating application status:', error);
         }
@@ -116,8 +121,9 @@ const JobApplication = () => {
                 setApplication(prevState => ({ ...prevState, Status: `Interview Scheduled` }));
                 console.log('Interview scheduled successfully');
             } else {
-                console.error('Failed to schedule interview');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error scheduling interview:', error);
         }

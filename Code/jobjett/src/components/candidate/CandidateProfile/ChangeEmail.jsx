@@ -25,8 +25,9 @@ const ChangeEmail = () => {
                 setVerificationCode(parseInt(data.code));
                 setVerificationCodeSent(true);
             } else {
-                console.error('Failed to change email');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error changing email:', error);
         }
@@ -49,8 +50,9 @@ const ChangeEmail = () => {
             if (response.ok) {
                 navigate('/candidate/profile'); // Redirect to profile page
             } else {
-                console.error('Failed to change email');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error changing email:', error);
         }

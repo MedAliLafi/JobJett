@@ -154,7 +154,7 @@ userRoutes.post('/verificationPassword', async (req, res) => {
                     return res.status(500).json({ error: 'An error occurred while sending verification code email.' });
                 } else {
                     console.log('Email sent:', info.response);
-                    return res.status(200).json({ code: verificationCode }); // Send the verification code to the client
+                    return res.status(200).json({ code: verificationCode });
                 }
             });
         });

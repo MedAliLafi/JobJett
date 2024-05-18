@@ -30,7 +30,9 @@ const ChangePassword = () => {
                 setVerificationCode(parseInt(data.code));
                 setVerificationCodeSent(true);
             } else {
-                console.error('Failed to change password');
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);
             }
         } catch (error) {
             console.error('Error changing password:', error);
@@ -71,8 +73,9 @@ const ChangePassword = () => {
             if (response.ok) {
                 navigate('/employer/profile');
             } else {
-                console.error('Failed to change password');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error changing password:', error);
         }

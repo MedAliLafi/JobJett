@@ -91,8 +91,9 @@ const OfferAJob = () => {
           setShowSubmitButton(true); // Show the submit button after interview setup
           navigate("/employer/interviews");
         } else {
-          console.error("Failed to schedule interview");
-        }
+          const errorData = await response.json();
+          console.error(errorData);
+          alert(`${errorData.error}`);        }
       } catch (error) {
         console.error("Error scheduling interview:", error);
       }

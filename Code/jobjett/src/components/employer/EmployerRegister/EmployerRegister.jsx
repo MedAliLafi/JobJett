@@ -324,8 +324,6 @@ const EmployerRegister = () => {
         if (data.loggedIn) {
           navigate("/employer");
         }
-      } else {
-        console.error("Failed to check if employer is logged in");
       }
     } catch (error) {
       console.error("Error checking if employer is logged in:", error);
@@ -414,8 +412,9 @@ const EmployerRegister = () => {
       });
   
       if (!response.ok) {
-        throw new Error("Registration failed");
-      }
+        const errorData = await response.json();
+        alert(`${errorData.error}`);
+        throw new Error(errorData.error);      }
   
       console.log("Registration successful");
       const loginResponse = await fetch("http://localhost:9000/Employer/loginEmployer", {

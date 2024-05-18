@@ -25,8 +25,6 @@ const EmployerLogin = () => {
                     setIsLoggedIn(true);
                     navigate("/employer");
                 }
-            } else {
-                console.error('Failed to check if employer is logged in');
             }
         } catch (error) {
             console.error('Error checking if employer is logged in:', error);
@@ -76,7 +74,9 @@ const EmployerLogin = () => {
               navigate("/employer");
               window.location.reload();
           } else {
-              throw new Error('Login failed');
+            const errorData = await response.json();
+            alert(`${errorData.error}`);
+            throw new Error(errorData.error);
           }
       } catch (error) {
           console.error('Error logging in employer:', error);

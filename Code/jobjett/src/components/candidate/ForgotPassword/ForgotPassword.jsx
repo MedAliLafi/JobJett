@@ -25,8 +25,9 @@ const ForgotPassword = () => {
                 setVerificationCode(data.code);
                 setVerificationCodeSent(true);
             } else {
-                console.error('Failed to send verification code');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error sending verification code:', error);
         }
@@ -66,8 +67,9 @@ const ForgotPassword = () => {
                 console.log('Password changed successfully');
                 navigate('/candidate/login');
             } else {
-                console.error('Failed to change password');
-            }
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);            }
         } catch (error) {
             console.error('Error changing password:', error);
         }

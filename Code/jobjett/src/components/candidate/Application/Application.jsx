@@ -237,7 +237,7 @@ const handleSubmit = async (event) => {
   const newScore = score + additionalPoints;
   setScore(prevScore => {
     const newScore = prevScore + additionalPoints;
-    console.log(newScore); // Log the new score
+    console.log(newScore);
     return newScore;
   });
 
@@ -259,8 +259,9 @@ const handleSubmit = async (event) => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to submit application");
-    }
+      const errorData = await response.json();
+      alert(`${errorData.error}`);
+      throw new Error(errorData.error);    }
 
     alert("Application submitted successfully");
     navigate("/candidate/profile");

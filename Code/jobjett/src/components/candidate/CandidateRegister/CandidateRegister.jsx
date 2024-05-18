@@ -316,8 +316,6 @@ const CandidateRegister = () => {
                     navigate("/candidate");
                     window.location.reload();
                 }
-            } else {
-                console.error('Failed to check if candidate is logged in');
             }
         } catch (error) {
             console.error('Error checking if candidate is logged in:', error);
@@ -396,8 +394,9 @@ const CandidateRegister = () => {
         });
 
         if (!response.ok) {
-            throw new Error('Registration failed');
-        }
+          const errorData = await response.json();
+          alert(`${errorData.error}`);
+          throw new Error(errorData.error);        }
 
         console.log('Registration successful');
         const loginResponse = await fetch('http://localhost:9000/Candidate/loginCandidate', {

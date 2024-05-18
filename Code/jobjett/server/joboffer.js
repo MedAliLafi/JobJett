@@ -320,6 +320,80 @@ jobofferRoutes.put('/:applicationID/deny', async (req, res) => {
     }
 });
 
+jobofferRoutes.put('/:applicationID/decline', async (req, res) => {
+    try {
+      const pool = req.pool;
+      const applicationID = req.params.applicationID;
+  
+      // Fetch application details
+      const getApplicationQuery = `
+        SELECT e.UserID, j.JobOfferID
+        FROM application a
+        INNER JOIN joboffer j ON a.JobOfferID = j.JobOfferID
+        INNER JOIN employer e ON j.EmployerID = e.EmployerID
+        WHERE a.ApplicationID = ?`;
+      pool.query(getApplicationQuery, [applicationID], (error, results) => {
+        if (error) {
+          console.error('Error fetching application details:', error);
+          return res.status(500).json({ error: 'An error occurred while fetching application details.' });
+        }
+        if (results.length === 0) {
+          return res.status(404).json({ error: 'Application not found.' });
+        }
+        const { UserID, JobOfferID } = results[0];
+  
+        // Update application status to 'Declined'
+        const updateStatusQuery = `UPDATE application SET Status = 'Declined' WHERE ApplicationID = ?`;
+        pool.query(updateStatusQuery, [applicationID], (updateError) => {
+          if (updateError) {
+            console.error('Error updating application status:', updateError);
+            return res.status(500).json({ error: 'An error occurred while updating application status.' });
+          }
+  
+          // Add notification for the employer
+          const notificationSql = 'INSERT INTO notification (UserID, Message, DateTime, `Read`, Link) VALUES (?, ?, ?, ?, ?)';
+          const notificationValues = [UserID, `Your offer was declined.`, new Date().toISOString(), 0, `/employer/joboffer/${JobOfferID}`];
+          pool.query(notificationSql, notificationValues, (notificationError, notificationResult) => {
+            if (notificationError) {
+              console.error('Error adding notification:', notificationError);
+              return res.status(500).json({ error: 'An error occurred while adding notification.' });
+            }
+            console.log('Decline notification added successfully');
+            res.status(200).json({ message: 'Application status updated successfully.' });
+          });
+        });
+      });
+    } catch (error) {
+      console.error('Error updating application status:', error);
+      return res.status(500).json({ error: 'An error occurred while updating application status.' });
+    }
+  });
+
+jobofferRoutes.delete('/:applicationID/delete', async (req, res) => {
+try {
+    const pool = req.pool;
+    const applicationID = req.params.applicationID;
+
+    // Delete the application from the database
+    const deleteApplicationQuery = 'DELETE FROM application WHERE ApplicationID = ?';
+    pool.query(deleteApplicationQuery, [applicationID], (error, results) => {
+    if (error) {
+        console.error('Error deleting application:', error);
+        return res.status(500).json({ error: 'An error occurred while deleting the application.' });
+    }
+    if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'Application not found.' });
+    }
+    console.log('Application deleted successfully.');
+    res.status(200).json({ message: 'Application deleted successfully.' });
+    });
+} catch (error) {
+    console.error('Error deleting application:', error);
+    return res.status(500).json({ error: 'An error occurred while deleting the application.' });
+}
+});
+  
+
 jobofferRoutes.get('/:jobofferId', async (req, res) => {
     try {
         const pool = req.pool;
@@ -368,7 +442,7 @@ jobofferRoutes.get('/:jobofferId/applications', async (req, res) => {
     INNER JOIN 
         candidate ON application.CandidateID = candidate.CandidateID
     WHERE 
-        application.JobOfferID = ?;
+        application.JobOfferID = ?    AND application.status <> 'Denied';
         `;
         pool.query(sql, [jobofferId], (error, results) => {
             if (error) {

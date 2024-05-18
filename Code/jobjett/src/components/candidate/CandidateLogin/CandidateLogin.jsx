@@ -25,8 +25,6 @@ const CandidateLogin = () => {
                     setIsLoggedIn(true);
                     navigate("/candidate");
                 }
-            } else {
-                console.error('Failed to check if candidate is logged in');
             }
         } catch (error) {
             console.error('Error checking if candidate is logged in:', error);
@@ -76,7 +74,9 @@ const CandidateLogin = () => {
               navigate("/candidate");
               window.location.reload();
           } else {
-              throw new Error('Login failed');
+            const errorData = await response.json();
+            alert(`${errorData.error}`);
+            throw new Error(errorData.error);
           }
       } catch (error) {
           console.error('Error logging in candidate:', error);

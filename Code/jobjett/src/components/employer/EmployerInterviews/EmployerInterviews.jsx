@@ -47,8 +47,9 @@ const EmployerInterviews = () => {
           setRescheduleDateTime(initialRescheduleDateTime);
           setRescheduleMessage(initialRescheduleMessage);
         } else {
-          console.error("Failed to fetch interviews");
-        }
+          const errorData = await response.json();
+          console.error(errorData);
+          alert(`${errorData.error}`);        }
       } catch (error) {
         console.error("Error fetching interviews:", error);
       }
@@ -136,8 +137,9 @@ const EmployerInterviews = () => {
                 [interviewID]: ''
             }));
         } else {
-            alert("Failed to reschedule interview");
-        }
+          const errorData = await response.json();
+          console.error(errorData);
+          alert(`${errorData.error}`);        }
     } catch (error) {
         alert("Error rescheduling interview:", error);
     }

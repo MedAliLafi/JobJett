@@ -108,8 +108,9 @@ const AddJobOffer = () => {
                 console.log(result.message);
                 navigate("/employer/applications");
             } else {
-                console.error(result.error);
-                // Handle error response
+                const errorData = await response.json();
+                console.error(errorData);
+                alert(`${errorData.error}`);
             }
         } catch (error) {
             console.error('Error:', error);
