@@ -33,14 +33,27 @@ const ForgotPassword = () => {
     };
 
     const handleChangePassword = async () => {
-        if (newPassword !== verifyNewPassword) {
-            console.error('New passwords do not match');
-            return;
-        }
         if (Code !== verificationCode) {
-            console.error('Incorrect verification code');
+            alert('Incorrect verification code');
             return;
         }
+    
+        if (!newPassword || newPassword.trim().length < 8) {
+            alert('New password must be at least 8 characters long');
+            return;
+        }
+    
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+        if (!passwordRegex.test(newPassword)) {
+            alert('New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)');
+            return;
+        }
+    
+        if (newPassword !== verifyNewPassword) {
+            alert('New passwords do not match');
+            return;
+        }
+        
         try {
             const response = await fetch('http://localhost:9000/Candidate/changepass', {
                 method: 'POST',

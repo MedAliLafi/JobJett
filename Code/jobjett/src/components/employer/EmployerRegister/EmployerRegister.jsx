@@ -296,7 +296,6 @@ const countryOptions = [
 ];
 const EmployerRegister = () => {
   const navigate = useNavigate();
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [active, setActive] = useState(1);
 
   const nextButtonFunction = () => {

@@ -62,11 +62,6 @@ const Application = () => {
                 const certificatesData = await certificatesResponse.json();
                 const educationData = await educationResponse.json();
                 const offerData = await offerResponse.json();   
-                console.log(candidateData);
-                console.log(offerData);
-                console.log(educationData);
-                console.log(workExperiencesData);
-                console.log(certificatesData);
                 candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString("en-GB");
                 offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
                 setAdditionalQuestions(offerData.additionalQuestions);
@@ -209,8 +204,20 @@ const handleSubmit = async (event) => {
   event.preventDefault();
   const answersCombined = Object.values(answers).join(';code;');
   const description = event.target.description.value.trim();
+  let formErrors = {};
+
   if (description === "") {
-    alert("Please enter a description for your application.");
+    formErrors.description = "Please enter a description for your application.";
+  }
+
+  additionalQuestions.forEach((question, index) => {
+    if (!answers[index] || answers[index].trim() === "") {
+      formErrors[`question-${index}`] = "This question is required.";
+    }
+  });
+
+  if (Object.keys(formErrors).length > 0) {
+    setErrors(formErrors);
     return;
   }
   

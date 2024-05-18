@@ -42,34 +42,47 @@ const CandidateLogin = () => {
     };
 
     const loginCandidate = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        try {
-            const response = await fetch('http://localhost:9000/Candidate/loginCandidate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    rememberMe: rememberMe
-                }),
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                setIsLoggedIn(true);
-                navigate("/candidate");
-                window.location.reload();
-            } else {
-                throw new Error('Login failed');
-            }
-        } catch (error) {
-            console.error('Error logging in candidate:', error);
-        }
-    };
-
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const email = formData.get('email');
+      const password = formData.get('password');
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+      try {
+          if (!email || !password) {
+              alert('Please fill in both email and password fields.');
+              return;
+          }
+          if (!emailRegex.test(email)) {
+              alert('Please enter a valid email address.');
+              return;
+          }
+          const response = await fetch('http://localhost:9000/Candidate/loginCandidate', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  email: email,
+                  password: password,
+                  rememberMe: rememberMe
+              }),
+              credentials: 'include'
+          });
+  
+          if (response.ok) {
+              setIsLoggedIn(true);
+              navigate("/candidate");
+              window.location.reload();
+          } else {
+              throw new Error('Login failed');
+          }
+      } catch (error) {
+          console.error('Error logging in candidate:', error);
+      }
+  };
+  
     return (
         <>
             <Navbar></Navbar>

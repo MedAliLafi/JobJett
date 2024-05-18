@@ -329,63 +329,99 @@ const CandidateRegister = () => {
     }, []);
 
     const registerCandidate = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const password = formData.get('password');
-        if (password !== formData.get('passwordConfirmation')) {
-            console.error('Password and confirmation do not match');
-            return;
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const password = formData.get("password");
+      const email = formData.get("email");
+      const firstname = formData.get("firstname");
+      const lastname = formData.get("lastname");
+      const phone = formData.get("phone");
+      const state = formData.get("state");
+      const country = formData.get("country");
+      const address = formData.get("address");
+    
+      if (
+        !email ||
+        !password ||
+        !firstname ||
+        !lastname ||
+        !phone ||
+        !state ||
+        !country ||
+        !address
+      ) {
+        alert("Please fill in all fields.");
+        return;
+      }
+    
+      if (password !== formData.get("passwordConfirmation")) {
+        alert("Password and confirmation do not match.");
+        return;
+      }
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+          alert('Invalid email format');
+          return;
+      }
+
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+          alert('New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)');
+          return;
+      }
+
+      const day = parseInt(formData.get("day"), 10) + 1;
+      const month = parseInt(formData.get("month"), 10) - 1;
+      const year = parseInt(formData.get("year"), 10);
+      const dateOfBirth = new Date(year, month, day);    
+      try {
+        const response = await fetch('http://localhost:9000/Candidate/registerCandidate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email: formData.get('email'),
+                password: formData.get('password'),
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                dateOfBirth: dateOfBirth,
+                phone: formData.get('phone'),
+                address: formData.get('address'),
+                state: formData.get('state'),
+                country: formData.get('country')
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Registration failed');
         }
-        const day = parseInt(formData.get('day'), 10) + 1;
-        const month = parseInt(formData.get('month'), 10) - 1;
-        const year = parseInt(formData.get('year'), 10);
-        const dateOfBirth = new Date(year, month, day);
-        try {
-            const response = await fetch('http://localhost:9000/Candidate/registerCandidate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    firstName: formData.get('firstName'),
-                    lastName: formData.get('lastName'),
-                    dateOfBirth: dateOfBirth,
-                    phone: formData.get('phone'),
-                    address: formData.get('address'),
-                    state: formData.get('state'),
-                    country: formData.get('country')
-                })
-            });
 
-            if (!response.ok) {
-                throw new Error('Registration failed');
-            }
+        console.log('Registration successful');
+        const loginResponse = await fetch('http://localhost:9000/Candidate/loginCandidate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email: formData.get('email'),
+                password: formData.get('password')
+            })
+        });
 
-            console.log('Registration successful');
-            const loginResponse = await fetch('http://localhost:9000/Candidate/loginCandidate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password')
-                })
-            });
-
-            if (!loginResponse.ok) {
-                throw new Error('Login failed');
-            }
-
-            console.log('Login successful');
-            navigate("/candidate");
-        } catch (error) {
-            console.error('Error registering candidate:', error);
+        if (!loginResponse.ok) {
+            throw new Error('Login failed');
         }
+
+        console.log('Login successful');
+        navigate("/candidate");
+        window.location.reload();
+      } catch (error) {
+          console.error('Error registering candidate:', error);
+      }
     };
     const nextButtonFunction = () => {
         setActive((prevActive) => Math.min(prevActive + 1, 3));
