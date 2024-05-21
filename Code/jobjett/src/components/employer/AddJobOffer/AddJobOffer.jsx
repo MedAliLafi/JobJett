@@ -72,7 +72,7 @@ const AddJobOffer = () => {
         }
         
         // Additional questions validation
-        if (formData.additionalQuestions !== 'No' && (!formData.additionalQuestions || formData.additionalQuestions.split(';code;').length < 2)) {
+        if (formData.additionalQuestions !== 'No' && (!formData.additionalQuestions || formData.additionalQuestions.split(';code;').length < 1)) {
             alert('You didnt type the additional questions.');
             // Handle error for missing additional questions
             return;

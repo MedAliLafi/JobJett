@@ -37,30 +37,25 @@ const JobApplication = () => {
                 const offerResponse = await fetch(`http://localhost:9000/Candidate/JobOffer/${jobOfferID}`, {
                     credentials: 'include'
                 });
-
-                if (applicationResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok && offerResponse.ok) {
-                    const applicationData = await applicationResponse.json();
-                    const workExperiencesData = await workExperienceResponse.json();
-                    const certificatesData = await certificatesResponse.json();
-                    const educationData = await educationResponse.json();
-                    const offerData = await offerResponse.json();   
-                    if (offerData.additionalQuestions !== "No") {
-                        offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
-                        applicationData[0].Answers = applicationData[0].Answers.split(";code;");
-                        setAdditionalQuestions(offerData.additionalQuestions);
-                        setAnswers(applicationData[0].Answers);
-                    }
-                    applicationData[0].Skills = applicationData[0].Skills.split(";code;");
-                    applicationData[0].SoftSkills = applicationData[0].SoftSkills.split(";code;");
-                    setApplication(applicationData[0]);
-                    setWorkExperiences(workExperiencesData);
-                    setCertificates(certificatesData);
-                    setEducation(educationData);
-                    setSkills(applicationData[0].Skills);
-                    setSoftSkills(applicationData[0].SoftSkills);
-                } else {
-                    console.error(`Failed to fetch data for application ${applicationID}`);
+                const applicationData = await applicationResponse.json();
+                const workExperiencesData = await workExperienceResponse.json();
+                const certificatesData = await certificatesResponse.json();
+                const educationData = await educationResponse.json();
+                const offerData = await offerResponse.json();   
+                if (offerData.additionalQuestions !== "No") {
+                    offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
+                    applicationData[0].Answers = applicationData[0].Answers.split(";code;");
+                    setAdditionalQuestions(offerData.additionalQuestions);
+                    setAnswers(applicationData[0].Answers);
                 }
+                applicationData[0].Skills = applicationData[0].Skills.split(";code;");
+                applicationData[0].SoftSkills = applicationData[0].SoftSkills.split(";code;");
+                setApplication(applicationData[0]);
+                setWorkExperiences(workExperiencesData);
+                setCertificates(certificatesData);
+                setEducation(educationData);
+                setSkills(applicationData[0].Skills);
+                setSoftSkills(applicationData[0].SoftSkills);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

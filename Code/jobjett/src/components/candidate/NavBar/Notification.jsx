@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Notification.css";
 import { useNavigate } from "react-router-dom";
 
@@ -7,10 +7,21 @@ const Noty = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [count, setNotificationCount] = useState(0);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchNotifications();
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
 
   const handleNotificationClick = async (notification) => {
     try {
@@ -98,7 +109,7 @@ const Noty = () => {
         </svg>
       </div>
       {showDropdown && (
-        <div className="notification-dropdown">
+        <div ref={dropdownRef} className="notification-dropdown">
           {count === 0 ? (
             <div className="no-notifications">You have no notifications</div>
           ) : (

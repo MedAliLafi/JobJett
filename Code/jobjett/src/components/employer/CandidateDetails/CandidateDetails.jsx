@@ -26,22 +26,17 @@ const CandidateDetails = () => {
                 const educationResponse = await fetch(`http://localhost:9000/Employer/JobOffer/candidate/${candidateID}/education`, {
                     credentials: 'include'
                 });
-
-                if (candidateResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok) {
-                    const candidateData = await candidateResponse.json();
-                    const workExperiencesData = await workExperienceResponse.json();
-                    const certificatesData = await certificatesResponse.json();
-                    const educationData = await educationResponse.json();   
-                    candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString(
-                      "en-GB"
-                    );
-                    setCandidate(candidateData);
-                    setWorkExperiences(workExperiencesData);
-                    setCertificates(certificatesData);
-                    setEducation(educationData);
-                } else {
-                    console.error(`Failed to fetch data for candidate ${candidateID}`);
-                }
+                const candidateData = await candidateResponse.json();
+                const workExperiencesData = await workExperienceResponse.json();
+                const certificatesData = await certificatesResponse.json();
+                const educationData = await educationResponse.json();   
+                candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString(
+                    "en-GB"
+                );
+                setCandidate(candidateData);
+                setWorkExperiences(workExperiencesData);
+                setCertificates(certificatesData);
+                setEducation(educationData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

@@ -36,25 +36,25 @@ img {
   color: var(--dark-color);
   /* background: var(--dark-color); */
 }
-.btn-group .btn-submit,
+.btn-group .btn-verify,
 .form-one.active ~ .btn-group .btn-next {
   display: block;
 }
-.form-one.active ~ .btn-group .btn-submit {
+.form-one.active ~ .btn-group .btn-verify {
   display: none;
 }
-.btn-group .btn-submit,
+.btn-group .btn-verify,
 .form-two.active ~ .btn-group .btn-next {
   display: block;
 }
-.form-two.active ~ .btn-group .btn-submit {
+.form-two.active ~ .btn-group .btn-verify {
   display: none;
 }
-.btn-group .btn-submit,
+.btn-group .btn-verify,
 .form-three.active ~ .btn-group .btn-next {
   display: none;
 }
-.form-three.active ~ .btn-group .btn-submit {
+.form-three.active ~ .btn-group .btn-verify {
   display: block;
 }
 .form-box {

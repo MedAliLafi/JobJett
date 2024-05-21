@@ -205,11 +205,11 @@ img {
   border-color: var(--blue);
   color: black;
 }
-.btn-group .btn-submit,
+.btn-group .btn-verify,
 .form-three.active ~ .btn-group .btn-next {
   display: none;
 }
-.form-three.active ~ .btn-group .btn-submit {
+.form-three.active ~ .btn-group .btn-verify {
   display: block;
 }
 

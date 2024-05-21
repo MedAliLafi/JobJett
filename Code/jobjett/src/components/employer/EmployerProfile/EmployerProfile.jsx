@@ -123,7 +123,7 @@ const EmployerProfile = () => {
             return;
         }
         
-        const phoneRegex = /^\d{10}$/;
+        const phoneRegex = /^\d{8}$/;
         if (!phoneRegex.test(phone)) {
             alert('Invalid phone number format');
             return;

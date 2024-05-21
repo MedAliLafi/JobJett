@@ -324,4 +324,30 @@ userRoutes.put('/markAsRead/:notificationId', async (req, res) => {
     }
 });
 
+userRoutes.post('/verifyRegistration', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const verificationCode = generateVerificationCode();
+        console.log(email);
+        transporter.sendMail({
+            from: 'jobjett@hotmail.com',
+            to: email,
+            subject: 'Registration verification',
+            text: `Your verification code is: ${verificationCode}`
+        }, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).json({ error: 'An error occurred while sending verification code email.' });
+            } else {
+                console.log('Email sent:', info.response);
+                return res.status(200).json({ code: verificationCode });
+            }
+        });
+        return res.status(200).json({ code: verificationCode });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        return res.status(500).json({ error: 'An error occurred while changing password.' });
+    }
+});
+
 module.exports = { userRoutes, registerUser , loginUser};

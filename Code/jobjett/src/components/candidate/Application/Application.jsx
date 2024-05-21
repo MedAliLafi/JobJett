@@ -55,20 +55,15 @@ const Application = () => {
             const offerResponse = await fetch(`http://localhost:9000/Candidate/JobOffer/${jobofferId}`, {
                 credentials: 'include'
             });
-
-            if (candidateResponse.ok && workExperienceResponse.ok && certificatesResponse.ok && educationResponse.ok && offerResponse.ok) {
-                const candidateData = await candidateResponse.json();
-                const workExperiencesData = await workExperienceResponse.json();
-                const certificatesData = await certificatesResponse.json();
-                const educationData = await educationResponse.json();
-                const offerData = await offerResponse.json();   
-                candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString("en-GB");
-                offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
-                setAdditionalQuestions(offerData.additionalQuestions);
-                calculateInitialScore(candidateData, educationData, workExperiencesData, certificatesData, offerData);
-            } else {
-                console.error(`Failed to fetch data`);
-            }
+            const candidateData = await candidateResponse.json();
+            const workExperiencesData = await workExperienceResponse.json();
+            const certificatesData = await certificatesResponse.json();
+            const educationData = await educationResponse.json();
+            const offerData = await offerResponse.json();   
+            candidateData.dateOfBirth = new Date(candidateData.dateOfBirth).toLocaleDateString("en-GB");
+            offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
+            setAdditionalQuestions(offerData.additionalQuestions);
+            calculateInitialScore(candidateData, educationData, workExperiencesData, certificatesData, offerData);
         } catch (error) {
             console.error('Error fetching data:', error);
         }

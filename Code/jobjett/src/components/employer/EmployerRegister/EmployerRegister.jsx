@@ -297,6 +297,11 @@ const countryOptions = [
 const EmployerRegister = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState(1);
+  const [email, setEmail] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [Code, setCode] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationCodeSent, setVerificationCodeSent] = useState(false);
 
   const nextButtonFunction = () => {
     setActive((prevActive) => Math.min(prevActive + 1, 3));
@@ -334,11 +339,35 @@ const EmployerRegister = () => {
     checkLoggedIn();
   }, []);
 
+  const handleVerificationSubmit = async () => {
+    try {
+        const response = await fetch('http://localhost:9000/User/verifyRegistration', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email }),
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setVerificationCode(data.code);
+          setVerificationCodeSent(true);
+      } else {
+          const errorData = await response.json();
+          console.error(errorData);
+          alert(`${errorData.error}`);            }
+
+    } catch (error) {
+        console.error('Error verifying candidate:', error);
+    }
+};
+
   const registerEmployer = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const password = formData.get("password");
-    const email = formData.get("email");
     const firstname = formData.get("firstname");
     const lastname = formData.get("lastname");
     const companyName = formData.get("companyName");
@@ -382,7 +411,10 @@ const EmployerRegister = () => {
         alert('New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)');
         return;
     }
-  
+    if (parseInt(Code) !== verificationCode) {
+      console.error('Incorrect verification code');
+      return;
+    }
     const day = parseInt(formData.get("day"), 10) + 1;
     const month = parseInt(formData.get("month"), 10) - 1;
     const year = parseInt(formData.get("year"), 10);
@@ -660,6 +692,18 @@ const EmployerRegister = () => {
                   required
                 ></input>
               </div>
+              {verificationCodeSent && (
+                <div>
+                  <label>Verification Code</label>
+                    <input
+                      type="text"
+                      placeholder="Verification Code"
+                      name="verificationCode"
+                      value={Code}
+                      onChange={(e) => setCode(e.target.value)}
+                      required
+                    ></input>
+                  </div>          )}
             </div>
             <div className="btn-group flex justify-between">
               <button
@@ -678,9 +722,14 @@ const EmployerRegister = () => {
               >
                 Next
               </button>
-              <button type="submit" className="btn-submit">
-                Submit
-              </button>
+              {!verificationCodeSent && (
+                <button type="button" className="btn-verify" onClick={handleVerificationSubmit}>
+                  Verify
+                </button>)}
+                {verificationCodeSent && (
+                <button type="submit" className="btn-submit">
+                  Submit
+                </button>)}
               <br></br>
               <p>
                 Already Registered?{" "}
