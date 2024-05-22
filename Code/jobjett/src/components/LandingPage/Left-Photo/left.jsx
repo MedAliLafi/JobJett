@@ -10,7 +10,7 @@ function Left(props) {
         <img src={props.image} className="left" alt="" />
         <div className="container">
           <h1>{props.title}</h1>
-          <p className="text-box2">sas{props.parg}</p>
+          <p className="text-box2">{props.parg}</p>
           <Link to="/candidate/login" className="btn">
             Start now
           </Link>

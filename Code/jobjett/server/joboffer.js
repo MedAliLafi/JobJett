@@ -86,8 +86,9 @@ jobofferRoutes.get('/loadjoboffers', async (req, res) => {
         }
         if (location) {
             if (whereClause) whereClause += ' AND ';
-            whereClause += 'Location LIKE ?';
-            queryParams.push(`%${location}%`);
+            whereClause += '(employer.Address LIKE ? OR employer.State LIKE ? OR employer.Country LIKE ?)';
+            const locationParam = `%${location}%`;
+            queryParams.push(locationParam, locationParam, locationParam);
         }
 
         // Build the JOIN clause to fetch company name from the employer table

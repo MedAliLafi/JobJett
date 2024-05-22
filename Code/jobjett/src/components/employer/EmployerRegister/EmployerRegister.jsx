@@ -353,6 +353,7 @@ const EmployerRegister = () => {
         if (response.ok) {
           const data = await response.json();
           setVerificationCode(data.code);
+          console.log(data.code);
           setVerificationCodeSent(true);
       } else {
           const errorData = await response.json();
@@ -391,6 +392,7 @@ const EmployerRegister = () => {
       !country ||
       !address
     ) {
+      console.log(email, password, firstname, lastname, companyName, industry,numberOfEmployees,phone,state,country,address);
       alert("Please fill in all fields.");
       return;
     }
@@ -671,6 +673,8 @@ const EmployerRegister = () => {
                   type="email"
                   name="email"
                   placeholder="e.g john@example.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                   required
                 ></input>
               </div>

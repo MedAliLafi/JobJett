@@ -160,6 +160,8 @@ function CandidateHomePage() {
                 setJobSearchText("");
                 setLocationSearchText("");
                 setCompanySearchText("");
+                setSearchClicked(true);
+                setCurrentPage(1);
               }}
             >
               Clear All
@@ -191,7 +193,6 @@ function CandidateHomePage() {
               Logo,
               Title,
               DatePosted,
-              Location,
               State,
               Country,
               Description,
@@ -211,7 +212,7 @@ function CandidateHomePage() {
                     <span>{DatePosted}</span>
                   </span>
                 </span>
-                <h6 className="text-[#ccc]">{Location}<br></br>{State}, {Country}</h6>
+                <h6 className="text-[#ccc]">{State}, {Country}</h6>
                 <div className=" text-[13px] text-[#959595] pt-[20px] border-t-[2px] mt-[20px] group-hover:text-white overflow-hidden">
                   {truncateDescription(Description)}
                   <div className="CompanyName flex items-center gap-2">

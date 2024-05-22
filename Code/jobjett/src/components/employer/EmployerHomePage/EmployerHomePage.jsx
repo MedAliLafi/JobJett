@@ -140,6 +140,8 @@ function EmployerHomePage() {
               onClick={() => {
                 setKeywordSearchText("");
                 setLocationSearchText("");
+                setSearchClicked(true);
+                setCurrentPage(1);
               }}
             >
               Clear All

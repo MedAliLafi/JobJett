@@ -329,7 +329,7 @@ userRoutes.post('/verifyRegistration', async (req, res) => {
     try {
         const verificationCode = generateVerificationCode();
         console.log(email);
-        transporter.sendMail({
+        /*transporter.sendMail({
             from: 'jobjett@hotmail.com',
             to: email,
             subject: 'Registration verification',
@@ -343,6 +343,7 @@ userRoutes.post('/verifyRegistration', async (req, res) => {
                 return res.status(200).json({ code: verificationCode });
             }
         });
+        */
         return res.status(200).json({ code: verificationCode });
     } catch (error) {
         console.error('Error changing password:', error);

@@ -42,7 +42,7 @@ const JobApplication = () => {
                 const certificatesData = await certificatesResponse.json();
                 const educationData = await educationResponse.json();
                 const offerData = await offerResponse.json();   
-                if (offerData.additionalQuestions !== "No") {
+                if (applicationData[0].Answers !== null) {
                     offerData.additionalQuestions = offerData.additionalQuestions.split(";code;");
                     applicationData[0].Answers = applicationData[0].Answers.split(";code;");
                     setAdditionalQuestions(offerData.additionalQuestions);
