@@ -12,9 +12,10 @@
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.1",
     "axios": "^1.6.8",
     "classnames": "^2.5.1",
+    "concurrently": "^8.2.2",
     "formik": "^2.4.6",
     "google-auth-library": "^9.9.0",
     "node-schedule": "^2.1.1",
